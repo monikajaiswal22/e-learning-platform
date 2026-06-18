@@ -1,0 +1,640 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Modern Form Styles */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .form-header {
+        background: var(--warning-gradient);
+        border-radius: 20px 20px 0 0;
+        padding: 25px 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .form-header::before {
+        content: '✏️';
+        position: absolute;
+        bottom: -20px;
+        right: 20px;
+        font-size: 80px;
+        opacity: 0.1;
+    }
+    
+    .form-header h3 {
+        margin: 0;
+        font-weight: 700;
+    }
+    
+    .form-header p {
+        margin: 5px 0 0;
+        opacity: 0.9;
+    }
+    
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+    
+    .form-body {
+        padding: 30px;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .form-label i {
+        color: #f6d365;
+    }
+    
+    .required-field::after {
+        content: '*';
+        color: #eb3349;
+        margin-left: 4px;
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #f6d365;
+        box-shadow: 0 0 0 3px rgba(246, 211, 101, 0.1);
+        outline: none;
+    }
+    
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+    }
+    
+    /* Image Preview Section */
+    .image-preview-container {
+        background: #f8f9fa;
+        border-radius: 16px;
+        padding: 20px;
+        margin-top: 15px;
+        text-align: center;
+    }
+    
+    .preview-image {
+        max-width: 100%;
+        max-height: 250px;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .current-image {
+        border: 3px solid #f6d365;
+        padding: 5px;
+    }
+    
+    /* Alert Styles */
+    .alert-custom {
+        border-radius: 12px;
+        border-left: 4px solid;
+        padding: 15px;
+    }
+    
+    .alert-warning-custom {
+        background: linear-gradient(135deg, #f6d36510, #fda08510);
+        border-left-color: #f6d365;
+    }
+    
+    /* Button Styles */
+    .btn-update {
+        background: var(--warning-gradient);
+        border: none;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        color: white;
+    }
+    
+    .btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(246, 211, 101, 0.3);
+        color: white;
+    }
+    
+    .btn-cancel {
+        background: #6c757d;
+        border: none;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-cancel:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        color: white;
+    }
+    
+    .btn-outline-danger {
+        background: transparent;
+        color: #eb3349;
+        border: 2px solid #eb3349;
+        padding: 5px 15px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .btn-outline-danger:hover {
+        background: #eb3349;
+        color: white;
+    }
+    
+    /* Toggle Switch for Price */
+    .price-toggle {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .toggle-btn {
+        padding: 8px 20px;
+        border-radius: 25px;
+        border: 2px solid #e9ecef;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    
+    .toggle-btn.active {
+        background: var(--success-gradient);
+        border-color: #11998e;
+        color: white;
+    }
+    
+    /* Character counter */
+    .char-counter {
+        text-align: right;
+        font-size: 12px;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+    
+    .char-counter.warning {
+        color: #f6d365;
+    }
+    
+    .char-counter.danger {
+        color: #eb3349;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .form-body {
+            padding: 20px;
+        }
+        
+        .form-header {
+            padding: 20px;
+        }
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.5s ease forwards;
+    }
+    
+    /* Loading state */
+    .btn-loading {
+        position: relative;
+        pointer-events: none;
+        opacity: 0.7;
+    }
+    
+    .btn-loading::after {
+        content: '';
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        top: 50%;
+        right: 15px;
+        margin-top: -9px;
+        border: 2px solid white;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    .course-badge {
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        padding: 5px 12px;
+        border-radius: 20px;
+        display: inline-block;
+        margin-top: 10px;
+        font-size: 13px;
+    }
+</style>
+
+<div class="row justify-content-center fade-in">
+    <div class="col-md-8 col-lg-7">
+        <div class="form-card">
+            <div class="form-header">
+                <h3><i class="fas fa-edit me-2"></i>Edit Course</h3>
+                <p>Update your course details and content</p>
+                <div class="course-badge">
+                    <i class="fas fa-book me-1"></i> {{ course.title }}
+                </div>
+            </div>
+            
+            <div class="form-body">
+                <!-- Info Alert -->
+                <div class="alert alert-custom alert-warning-custom">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Editing Course:</strong> Your changes will be immediately visible to students.
+                </div>
+                
+                <form method="POST" enctype="multipart/form-data" id="courseForm" action="{{ url_for('edit_course', course_id=course.id) }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Course Title -->
+                    <div class="form-group">
+                        {{ form.title.label(class="form-label required-field") }}
+                        {{ form.title(class="form-control", placeholder="e.g., Python Programming Masterclass: From Zero to Hero", id="courseTitle") }}
+                        <div class="char-counter" id="titleCounter">0/100 characters</div>
+                        {% for error in form.title.errors %}
+                            <span class="text-danger small">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Course Description -->
+                    <div class="form-group">
+                        {{ form.description.label(class="form-label required-field") }}
+                        {{ form.description(class="form-control", rows="6", placeholder="Describe what students will learn in this course.", id="courseDescription") }}
+                        <div class="char-counter" id="descCounter">0/2000 characters</div>
+                        {% for error in form.description.errors %}
+                            <span class="text-danger small">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Course Category -->
+                    <div class="form-group">
+                        {{ form.category.label(class="form-label required-field") }}
+                        {{ form.category(class="form-select", id="courseCategory") }}
+                        {% for error in form.category.errors %}
+                            <span class="text-danger small">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Course Level -->
+                    <div class="form-group">
+                        {{ form.level.label(class="form-label required-field") }}
+                        {{ form.level(class="form-select", id="courseLevel") }}
+                        {% for error in form.level.errors %}
+                            <span class="text-danger small">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Course Price with Toggle -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-dollar-sign"></i> Course Price
+                        </label>
+                        <div class="price-toggle">
+                            <button type="button" class="toggle-btn {% if course.price == 0 %}active{% endif %}" data-price="paid">💰 Paid Course</button>
+                            <button type="button" class="toggle-btn {% if course.price == 0 %}active{% endif %}" data-price="free">🎁 Free Course</button>
+                        </div>
+                        <div id="priceInputContainer">
+                            {{ form.price(class="form-control", placeholder="Enter price in USD (e.g., 49.99)", id="coursePrice") }}
+                        </div>
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle"></i> 
+                            Free courses attract more students!
+                        </small>
+                        {% for error in form.price.errors %}
+                            <span class="text-danger small">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Image Upload Section -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-image"></i> Course Image
+                        </label>
+                        
+                        <!-- Current Image -->
+                        {% if course.image_url %}
+                        <div class="mb-3">
+                            <label class="form-label">Current Image</label>
+                            <div>
+                                <img src="{{ course.image_url }}" alt="Current course image" class="preview-image current-image">
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Option 1: Upload from computer -->
+                        <div class="mb-3">
+                            {{ form.image.label(class="form-label") }}
+                            {{ form.image(class="form-control", accept="image/*", id="imageUpload") }}
+                            <small class="text-muted">
+                                <i class="fas fa-upload"></i> Upload new image from your computer (JPG, PNG, GIF - Max 16MB)
+                            </small>
+                            {% for error in form.image.errors %}
+                                <span class="text-danger small">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- OR Divider -->
+                        <div class="text-center my-3">
+                            <span class="badge bg-secondary">OR</span>
+                        </div>
+                        
+                        <!-- Option 2: Image URL -->
+                        <div class="mb-3">
+                            {{ form.image_url.label(class="form-label") }}
+                            {{ form.image_url(class="form-control", placeholder="https://example.com/course-image.jpg", id="imageUrl") }}
+                            <small class="text-muted">
+                                <i class="fas fa-link"></i> Paste a new image URL from the web
+                            </small>
+                            {% for error in form.image_url.errors %}
+                                <span class="text-danger small">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Image Preview -->
+                        <div id="imagePreviewContainer" style="display: none;">
+                            <div class="image-preview-container">
+                                <label class="form-label">New Image Preview</label>
+                                <div>
+                                    <img id="previewImage" src="" alt="Course preview" class="preview-image">
+                                </div>
+                                <button type="button" class="btn btn-outline-danger mt-2" id="clearImage">
+                                    <i class="fas fa-times"></i> Clear New Image
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Course Stats -->
+                    <div class="alert alert-info">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <strong>{{ course.lessons.count() }}</strong>
+                                <br>
+                                <small>Lessons</small>
+                            </div>
+                            <div class="col-4">
+                                <strong>{{ course.enrollments.count() }}</strong>
+                                <br>
+                                <small>Students</small>
+                            </div>
+                            <div class="col-4">
+                                <strong>{{ "%.1f"|format(course.avg_rating or 0) }}</strong>
+                                <br>
+                                <small>Rating</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pro Tips Alert -->
+                    <div class="alert alert-custom alert-warning-custom mt-3">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <strong>Pro Tips:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Keep your course description updated with new content</li>
+                            <li>Consider adjusting price based on student feedback</li>
+                            <li>Update your course image to attract more students</li>
+                            <li>Add new lessons regularly to keep content fresh</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Danger Zone -->
+                    <div class="alert alert-danger mt-4">
+                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Danger Zone</h6>
+                        <p class="small">Deleting this course will remove all lessons, enrollments, and student progress. This action cannot be undone.</p>
+                        <a href="{{ url_for('delete_course', course_id=course.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this course? All data will be permanently lost!')">
+                            <i class="fas fa-trash me-1"></i>Delete Course
+                        </a>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="d-grid gap-3 mt-4">
+                        {{ form.submit(class="btn btn-update text-white", value="💾 Update Course") }}
+                        <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-cancel text-white text-center">
+                            <i class="fas fa-arrow-left me-2"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Character counter for title
+    const titleInput = document.getElementById('courseTitle');
+    const titleCounter = document.getElementById('titleCounter');
+    
+    if (titleInput) {
+        titleInput.addEventListener('input', function() {
+            const length = this.value.length;
+            titleCounter.textContent = `${length}/100 characters`;
+            if (length > 100) {
+                titleCounter.classList.add('danger');
+                titleCounter.classList.remove('warning');
+            } else if (length > 80) {
+                titleCounter.classList.add('warning');
+                titleCounter.classList.remove('danger');
+            } else {
+                titleCounter.classList.remove('warning', 'danger');
+            }
+        });
+        titleInput.dispatchEvent(new Event('input'));
+    }
+    
+    // Character counter for description
+    const descInput = document.getElementById('courseDescription');
+    const descCounter = document.getElementById('descCounter');
+    
+    if (descInput) {
+        descInput.addEventListener('input', function() {
+            const length = this.value.length;
+            descCounter.textContent = `${length}/2000 characters`;
+            if (length > 2000) {
+                descCounter.classList.add('danger');
+                descCounter.classList.remove('warning');
+            } else if (length > 1800) {
+                descCounter.classList.add('warning');
+                descCounter.classList.remove('danger');
+            } else {
+                descCounter.classList.remove('warning', 'danger');
+            }
+        });
+        descInput.dispatchEvent(new Event('input'));
+    }
+    
+    // Price Toggle Functionality
+    const toggleBtns = document.querySelectorAll('.toggle-btn');
+    const priceInput = document.getElementById('coursePrice');
+    
+    toggleBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            toggleBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            if (this.dataset.price === 'free') {
+                priceInput.value = '0.00';
+                priceInput.disabled = true;
+                priceInput.style.opacity = '0.6';
+            } else {
+                priceInput.disabled = false;
+                priceInput.style.opacity = '1';
+                if (priceInput.value === '0.00') {
+                    priceInput.value = '';
+                }
+            }
+        });
+    });
+    
+    // Image Preview Function
+    const imageUpload = document.getElementById('imageUpload');
+    const imageUrl = document.getElementById('imageUrl');
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    const previewImage = document.getElementById('previewImage');
+    const clearBtn = document.getElementById('clearImage');
+    
+    function showPreview(src) {
+        if (src) {
+            previewImage.src = src;
+            previewContainer.style.display = 'block';
+            previewImage.onerror = function() {
+                previewImage.src = 'https://via.placeholder.com/800x400?text=Invalid+Image+URL';
+            };
+        } else {
+            previewContainer.style.display = 'none';
+        }
+    }
+    
+    // Handle file upload preview
+    if (imageUpload) {
+        imageUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    showPreview(e.target.result);
+                    imageUrl.value = '';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                if (!imageUrl.value) {
+                    previewContainer.style.display = 'none';
+                }
+            }
+        });
+    }
+    
+    // Handle URL input preview
+    if (imageUrl) {
+        imageUrl.addEventListener('input', function() {
+            const url = this.value;
+            if (url) {
+                showPreview(url);
+                imageUpload.value = '';
+            } else if (!imageUpload.files.length) {
+                previewContainer.style.display = 'none';
+            }
+        });
+    }
+    
+    // Clear image
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+            if (imageUpload) imageUpload.value = '';
+            if (imageUrl) imageUrl.value = '';
+            previewContainer.style.display = 'none';
+        });
+    }
+    
+    // Form validation before submit
+    const form = document.getElementById('courseForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const title = titleInput?.value.trim();
+            const description = descInput?.value.trim();
+            
+            if (!title || title.length === 0) {
+                e.preventDefault();
+                alert('Please enter a course title');
+                titleInput?.focus();
+                return false;
+            }
+            
+            if (title.length > 100) {
+                e.preventDefault();
+                alert('Course title must be less than 100 characters');
+                return false;
+            }
+            
+            if (!description || description.length === 0) {
+                e.preventDefault();
+                alert('Please enter a course description');
+                descInput?.focus();
+                return false;
+            }
+            
+            if (description.length > 2000) {
+                e.preventDefault();
+                alert('Course description must be less than 2000 characters');
+                return false;
+            }
+            
+            // Show loading state
+            const submitBtn = document.querySelector('.btn-update');
+            if (submitBtn) {
+                submitBtn.classList.add('btn-loading');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating Course...';
+            }
+            
+            return true;
+        });
+    }
+</script>
+{% endblock %}

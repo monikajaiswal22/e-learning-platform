@@ -1,0 +1,664 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Modern Public Profile Styles */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .profile-header {
+        background: var(--primary-gradient);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .profile-header::before {
+        content: '👤';
+        position: absolute;
+        bottom: -20px;
+        right: 20px;
+        font-size: 100px;
+        opacity: 0.1;
+    }
+    
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 4px solid white;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        object-fit: cover;
+    }
+    
+    .avatar-placeholder {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 4px solid white;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        font-weight: bold;
+        background: rgba(255,255,255,0.2);
+    }
+    
+    /* Info Cards */
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .info-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+    
+    .info-card-header {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: 15px 20px;
+        border-bottom: 2px solid #667eea;
+    }
+    
+    .info-card-header h5 {
+        margin: 0;
+        font-weight: 600;
+    }
+    
+    .info-card-body {
+        padding: 20px;
+    }
+    
+    /* Stats Cards */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .stat-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+        font-size: 22px;
+    }
+    
+    .stat-value {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+    
+    .stat-label {
+        font-size: 11px;
+        color: #6c757d;
+    }
+    
+    /* Skill Tags */
+    .skill-tag {
+        display: inline-block;
+        padding: 4px 10px;
+        background: linear-gradient(135deg, #667eea15, #764ba215);
+        color: #667eea;
+        border-radius: 20px;
+        font-size: 11px;
+        margin: 3px;
+        transition: all 0.3s ease;
+    }
+    
+    .skill-tag:hover {
+        background: var(--primary-gradient);
+        color: white;
+        transform: scale(1.05);
+    }
+    
+    /* Social Buttons */
+    .social-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+    
+    .social-btn {
+        padding: 8px 16px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+    }
+    
+    .social-btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .social-twitter {
+        background: #1DA1F2;
+        color: white;
+    }
+    
+    .social-linkedin {
+        background: #0077b5;
+        color: white;
+    }
+    
+    .social-github {
+        background: #333;
+        color: white;
+    }
+    
+    /* Course Cards */
+    .course-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        height: 100%;
+    }
+    
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+    
+    .course-image {
+        height: 140px;
+        object-fit: cover;
+        width: 100%;
+    }
+    
+    .course-body {
+        padding: 12px;
+    }
+    
+    .course-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    
+    .btn-primary {
+        background: var(--primary-gradient);
+        border: none;
+        transition: all 0.3s ease;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .btn-outline-primary {
+        border: 2px solid #667eea;
+        color: #667eea;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-primary:hover {
+        background: var(--primary-gradient);
+        border-color: transparent;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    /* Activity Timeline */
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+    
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 10px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+    
+    .timeline-item {
+        position: relative;
+        margin-bottom: 20px;
+        padding: 10px 15px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .timeline-item:hover {
+        background: #e9ecef;
+        transform: translateX(5px);
+    }
+    
+    .timeline-dot {
+        position: absolute;
+        left: -24px;
+        top: 15px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--primary-gradient);
+        border: 2px solid white;
+        box-shadow: 0 0 0 2px #667eea;
+    }
+    
+    .timeline-time {
+        font-size: 11px;
+        color: #6c757d;
+        margin-bottom: 5px;
+    }
+    
+    .timeline-text {
+        font-size: 13px;
+        margin: 0;
+    }
+    
+    /* Follow Button */
+    .follow-btn {
+        background: rgba(255,255,255,0.2);
+        border: 2px solid rgba(255,255,255,0.5);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+    
+    .follow-btn:hover {
+        background: white;
+        color: #667eea;
+        transform: translateY(-2px);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .profile-header {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .social-buttons {
+            justify-content: center;
+        }
+        
+        .timeline {
+            padding-left: 20px;
+        }
+        
+        .timeline-dot {
+            left: -14px;
+        }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .fade-in-up {
+        animation: fadeInUp 0.5s ease forwards;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+    }
+    
+    .empty-icon {
+        font-size: 50px;
+        color: #dee2e6;
+        margin-bottom: 15px;
+    }
+</style>
+
+<div class="fade-in-up">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="row align-items-center">
+            <div class="col-md-2 text-center text-md-start mb-3 mb-md-0">
+                {% if user.avatar %}
+                    <img src="{{ user.avatar }}" class="profile-avatar" alt="Avatar">
+                {% else %}
+                    <div class="avatar-placeholder mx-auto mx-md-0">
+                        {{ user.username[0].upper() }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-7 text-center text-md-start">
+                <h2 class="mb-1">{{ user.full_name or user.username }}</h2>
+                <p class="mb-2 opacity-90">
+                    <i class="fas fa-at me-1"></i>@{{ user.username }}
+                </p>
+                <div>
+                    {% if user.is_instructor %}
+                        <span class="badge bg-light text-primary px-3 py-2 me-2">
+                            <i class="fas fa-chalkboard-teacher me-1"></i>Instructor
+                        </span>
+                    {% else %}
+                        <span class="badge bg-light text-success px-3 py-2 me-2">
+                            <i class="fas fa-graduation-cap me-1"></i>Student
+                        </span>
+                    {% endif %}
+                    
+                    <span class="badge bg-light text-secondary px-3 py-2">
+                        <i class="far fa-calendar-alt me-1"></i>Joined {{ user.date_joined.strftime('%b %Y') }}
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-3 text-center text-md-end mt-3 mt-md-0">
+                {% if not is_owner and current_user.is_authenticated %}
+                    <button class="follow-btn" onclick="alert('Follow feature coming soon!')">
+                        <i class="fas fa-user-plus me-1"></i>Follow
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-lg-4">
+            <!-- Stats Overview -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <h5><i class="fas fa-chart-simple me-2"></i>Statistics</h5>
+                </div>
+                <div class="info-card-body">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #667eea20, #764ba220);">
+                                <i class="fas fa-calendar" style="color: #667eea;"></i>
+                            </div>
+                            <div class="stat-value">{{ user.date_joined.strftime('%Y') }}</div>
+                            <div class="stat-label">Member Since</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe20, #00f2fe20);">
+                                {% if user.is_instructor %}
+                                    <i class="fas fa-book" style="color: #4facfe;"></i>
+                                {% else %}
+                                    <i class="fas fa-graduation-cap" style="color: #4facfe;"></i>
+                                {% endif %}
+                            </div>
+                            <div class="stat-value">{{ total_courses }}</div>
+                            <div class="stat-label">
+                                {% if user.is_instructor %}Courses Created{% else %}Enrolled Courses{% endif %}
+                            </div>
+                        </div>
+                        
+                        {% if not user.is_instructor %}
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #11998e20, #38ef7d20);">
+                                <i class="fas fa-check-circle" style="color: #11998e;"></i>
+                            </div>
+                            <div class="stat-value">{{ completed_lessons }}</div>
+                            <div class="stat-label">Lessons Completed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #f6d36520, #fda08520);">
+                                <i class="fas fa-trophy" style="color: #f6d365;"></i>
+                            </div>
+                            <div class="stat-value">
+                                {% set ns = namespace(passed=0) %}
+                                {% for attempt in user.quiz_attempts %}
+                                    {% if attempt.passed %}
+                                        {% set ns.passed = ns.passed + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ ns.passed }}
+                            </div>
+                            <div class="stat-label">Certificates</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Info -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <h5><i class="fas fa-address-card me-2"></i>Contact Info</h5>
+                </div>
+                <div class="info-card-body">
+                    <div class="mb-2">
+                        <i class="fas fa-map-marker-alt me-2" style="color: #667eea;"></i>
+                        <strong>Location:</strong> {{ user.location or 'Not provided' }}
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-briefcase me-2" style="color: #667eea;"></i>
+                        <strong>Occupation:</strong> {{ user.occupation or 'Not provided' }}
+                    </div>
+                    <div>
+                        <i class="fas fa-university me-2" style="color: #667eea;"></i>
+                        <strong>Education:</strong> {{ user.education or 'Not provided' }}
+                    </div>
+                    {% if user.website %}
+                    <div class="mt-2">
+                        <i class="fas fa-globe me-2" style="color: #667eea;"></i>
+                        <strong>Website:</strong> <a href="{{ user.website }}" target="_blank">{{ user.website }}</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Skills -->
+            {% if user.skills %}
+            <div class="info-card">
+                <div class="info-card-header">
+                    <h5><i class="fas fa-code me-2"></i>Skills</h5>
+                </div>
+                <div class="info-card-body">
+                    <div>
+                        {% for skill in user.skills.split(',') %}
+                            <span class="skill-tag">{{ skill.strip() }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Social Links -->
+            {% if user.social_twitter or user.social_linkedin or user.social_github %}
+            <div class="info-card">
+                <div class="info-card-header">
+                    <h5><i class="fas fa-share-alt me-2"></i>Connect</h5>
+                </div>
+                <div class="info-card-body">
+                    <div class="social-buttons">
+                        {% if user.social_twitter %}
+                            <a href="{{ user.social_twitter }}" target="_blank" class="social-btn social-twitter">
+                                <i class="fab fa-twitter"></i> Twitter
+                            </a>
+                        {% endif %}
+                        {% if user.social_linkedin %}
+                            <a href="{{ user.social_linkedin }}" target="_blank" class="social-btn social-linkedin">
+                                <i class="fab fa-linkedin"></i> LinkedIn
+                            </a>
+                        {% endif %}
+                        {% if user.social_github %}
+                            <a href="{{ user.social_github }}" target="_blank" class="social-btn social-github">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Right Column -->
+        <div class="col-lg-8">
+            <!-- Bio -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <h5><i class="fas fa-user me-2"></i>About</h5>
+                </div>
+                <div class="info-card-body">
+                    <p>{{ user.bio or 'No bio provided yet.' }}</p>
+                </div>
+            </div>
+            
+            <!-- Courses (for Instructors) -->
+            {% if user.is_instructor and user.created_courses %}
+            <div class="info-card">
+                <div class="info-card-header">
+                    <h5><i class="fas fa-book me-2"></i>Courses by {{ user.username }}</h5>
+                    <small class="text-muted">{{ user.created_courses.count() if user.created_courses else 0 }} courses</small>
+                </div>
+                <div class="info-card-body">
+                    <div class="row">
+                        {% for course in user.created_courses.limit(4).all() %}
+                        <div class="col-md-6 mb-3">
+                            <div class="course-card">
+                                {% if course.image_url %}
+                                    <img src="{{ course.image_url }}" class="course-image" alt="{{ course.title }}"
+                                         onerror="this.src='https://via.placeholder.com/400x140?text=' + encodeURIComponent('{{ course.title }}')">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/400x140?text={{ course.title|replace(' ', '+') }}" class="course-image" alt="{{ course.title }}">
+                                {% endif %}
+                                <div class="course-body">
+                                    <div class="course-title">{{ course.title[:50] }}{% if course.title|length > 50 %}...{% endif %}</div>
+                                    <div class="text-muted small mb-2">
+                                        <i class="fas fa-users me-1"></i>{{ course.enrollments.count() }} students
+                                        {% if course.avg_rating %}
+                                        <br><i class="fas fa-star text-warning me-1"></i>{{ "%.1f"|format(course.avg_rating) }}/5
+                                        {% endif %}
+                                    </div>
+                                    <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-primary btn-sm w-100">
+                                        <i class="fas fa-eye me-1"></i>View Course
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if user.created_courses.count() > 4 %}
+                    <div class="text-center mt-2">
+                        <a href="{{ url_for('courses') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye me-1"></i>View All {{ user.created_courses.count() }} Courses
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Recent Activity -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <h5><i class="fas fa-history me-2"></i>Recent Activity</h5>
+                </div>
+                <div class="info-card-body">
+                    {% if recent_activities %}
+                        <div class="timeline">
+                            {% for activity in recent_activities[:10] %}
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-time">
+                                    <i class="far fa-clock me-1"></i>{{ activity.timestamp.strftime('%B %d, %Y at %I:%M %p') }}
+                                </div>
+                                <p class="timeline-text">{{ activity.description }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <p class="text-muted mb-0">No recent activity to show</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Message Button (if not owner) -->
+            {% if not is_owner and current_user.is_authenticated %}
+            <div class="info-card">
+                <div class="info-card-body text-center">
+                    <button class="btn btn-primary btn-lg w-100" onclick="alert('Messaging feature coming soon!')">
+                        <i class="fas fa-envelope me-2"></i>Send Message
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // Animate stats on load
+    window.addEventListener('load', () => {
+        const statValues = document.querySelectorAll('.stat-value');
+        statValues.forEach(stat => {
+            const value = stat.innerText;
+            if (value && !isNaN(parseFloat(value))) {
+                let current = 0;
+                const target = parseInt(value);
+                const increment = target / 50;
+                const updateValue = () => {
+                    if (current < target) {
+                        current += increment;
+                        stat.innerText = Math.floor(current);
+                        requestAnimationFrame(updateValue);
+                    } else {
+                        stat.innerText = target;
+                    }
+                };
+                updateValue();
+            }
+        });
+    });
+</script>
+{% endblock %}

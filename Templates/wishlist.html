@@ -1,0 +1,730 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Modern Wishlist Styles */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .wishlist-header {
+        background: var(--primary-gradient);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .wishlist-header::before {
+        content: '❤️';
+        position: absolute;
+        bottom: -20px;
+        right: 20px;
+        font-size: 100px;
+        opacity: 0.1;
+    }
+    
+    .wishlist-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    
+    /* Stats Cards */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+    
+    .stat-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+        font-size: 24px;
+    }
+    
+    .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+    
+    .stat-label {
+        color: #6c757d;
+        font-size: 13px;
+    }
+    
+    /* Course Cards */
+    .course-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        margin-bottom: 25px;
+        position: relative;
+    }
+    
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    
+    .card-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        z-index: 10;
+    }
+    
+    .price-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0,0,0,0.7);
+        backdrop-filter: blur(10px);
+        padding: 5px 12px;
+        border-radius: 20px;
+        color: white;
+        font-weight: 600;
+        z-index: 10;
+    }
+    
+    .course-image {
+        height: 200px;
+        object-fit: cover;
+        width: 100%;
+        transition: transform 0.3s ease;
+    }
+    
+    .course-card:hover .course-image {
+        transform: scale(1.05);
+    }
+    
+    .image-wrapper {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .wishlist-remove {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(235, 51, 73, 0.9);
+        color: white;
+        border: none;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+    
+    .wishlist-remove:hover {
+        transform: scale(1.1);
+        background: #eb3349;
+    }
+    
+    .course-content {
+        padding: 20px;
+    }
+    
+    .course-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    
+    .course-title a {
+        color: #2c3e50;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .course-title a:hover {
+        color: #667eea;
+    }
+    
+    .instructor-name {
+        color: #6c757d;
+        font-size: 0.85rem;
+        margin-bottom: 12px;
+    }
+    
+    .rating {
+        margin-bottom: 12px;
+    }
+    
+    .star-filled {
+        color: #ffc107;
+    }
+    
+    .star-half {
+        color: #ffc107;
+    }
+    
+    .star-empty {
+        color: #dee2e6;
+    }
+    
+    .course-description {
+        color: #6c757d;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 15px;
+    }
+    
+    .course-meta {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+    
+    .course-meta i {
+        margin-right: 5px;
+    }
+    
+    .btn-enroll {
+        background: var(--success-gradient);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: 100%;
+        color: white;
+    }
+    
+    .btn-enroll:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(17, 153, 142, 0.3);
+        color: white;
+    }
+    
+    .btn-outline-primary {
+        border: 2px solid #667eea;
+        color: #667eea;
+        background: transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-primary:hover {
+        background: var(--primary-gradient);
+        border-color: transparent;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: white;
+        border-radius: 20px;
+    }
+    
+    .empty-icon {
+        font-size: 80px;
+        color: #dee2e6;
+        margin-bottom: 20px;
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.1); opacity: 1; }
+    }
+    
+    .empty-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #2c3e50;
+    }
+    
+    .browse-btn {
+        background: var(--primary-gradient);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-weight: 600;
+        margin-top: 20px;
+        color: white;
+    }
+    
+    .browse-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    /* Bulk Actions */
+    .bulk-actions {
+        background: white;
+        border-radius: 16px;
+        padding: 15px 20px;
+        margin-bottom: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+    
+    .bulk-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .bulk-checkbox input {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+    
+    .btn-outline-danger-custom {
+        border: 1px solid #eb3349;
+        color: #eb3349;
+        background: transparent;
+        padding: 8px 20px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-danger-custom:hover {
+        background: #eb3349;
+        color: white;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .fade-in-up {
+        animation: fadeInUp 0.5s ease forwards;
+    }
+    
+    /* Toast Notification */
+    .toast-notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 10px;
+        z-index: 1000;
+        animation: slideInRight 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .wishlist-header {
+            padding: 20px;
+        }
+        
+        .wishlist-title {
+            font-size: 1.4rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .stat-value {
+            font-size: 22px;
+        }
+        
+        .bulk-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+</style>
+
+<div class="fade-in-up">
+    <!-- Wishlist Header -->
+    <div class="wishlist-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <div class="wishlist-title">
+                    <i class="fas fa-heart me-2"></i>My Wishlist
+                </div>
+                <p class="mb-0 opacity-90">
+                    Courses you've saved for later. Keep track of your favorite courses!
+                </p>
+            </div>
+            <a href="{{ url_for('courses') }}" class="btn btn-light mt-2 mt-md-0">
+                <i class="fas fa-search me-1"></i>Browse More Courses
+            </a>
+        </div>
+    </div>
+    
+    {% if wishlist_items %}
+        <!-- Statistics Cards -->
+        {% set total_items = wishlist_items|length %}
+        {% set total_price = 0 %}
+        {% set free_courses = 0 %}
+        {% for item in wishlist_items %}
+            {% set total_price = total_price + item.course.price %}
+            {% if item.course.price == 0 %}
+                {% set free_courses = free_courses + 1 %}
+            {% endif %}
+        {% endfor %}
+        {% set paid_courses = total_items - free_courses %}
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea20, #764ba220);">
+                    <i class="fas fa-heart" style="color: #667eea;"></i>
+                </div>
+                <div class="stat-value">{{ total_items }}</div>
+                <div class="stat-label">Courses in Wishlist</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #11998e20, #38ef7d20);">
+                    <i class="fas fa-gratipay" style="color: #11998e;"></i>
+                </div>
+                <div class="stat-value">{{ free_courses }}</div>
+                <div class="stat-label">Free Courses</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #f6d36520, #fda08520);">
+                    <i class="fas fa-dollar-sign" style="color: #f6d365;"></i>
+                </div>
+                <div class="stat-value">{{ paid_courses }}</div>
+                <div class="stat-label">Paid Courses</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe20, #00f2fe20);">
+                    <i class="fas fa-chart-line" style="color: #4facfe;"></i>
+                </div>
+                <div class="stat-value">${{ "%.2f"|format(total_price) }}</div>
+                <div class="stat-label">Total Value</div>
+            </div>
+        </div>
+        
+        <!-- Bulk Actions -->
+        <div class="bulk-actions">
+            <div class="bulk-checkbox">
+                <input type="checkbox" id="selectAll">
+                <label for="selectAll" class="mb-0">Select All</label>
+            </div>
+            <div>
+                <button class="btn-outline-danger-custom btn" id="removeSelectedBtn" disabled>
+                    <i class="fas fa-trash me-1"></i>Remove Selected
+                </button>
+            </div>
+            <div class="text-muted small">
+                <i class="fas fa-info-circle me-1"></i>
+                Click on any course to view details
+            </div>
+        </div>
+        
+        <!-- Course Grid -->
+        <div class="row" id="wishlistGrid">
+            {% for item in wishlist_items %}
+            <div class="col-lg-6" data-item-id="{{ item.id }}" data-course-id="{{ item.course.id }}">
+                <div class="course-card">
+                    <div class="card-badge">
+                        <input type="checkbox" class="item-checkbox" data-item-id="{{ item.id }}" style="width: 20px; height: 20px;">
+                    </div>
+                    
+                    <div class="price-badge">
+                        {% if item.course.price > 0 %}
+                            <i class="fas fa-tag me-1"></i>${{ "%.2f"|format(item.course.price) }}
+                        {% else %}
+                            <i class="fas fa-gift me-1"></i>FREE
+                        {% endif %}
+                    </div>
+                    
+                    <div class="image-wrapper">
+                        {% if item.course.image_url %}
+                            <img src="{{ item.course.image_url }}" class="course-image" alt="{{ item.course.title }}"
+                                 onerror="this.src='https://via.placeholder.com/400x200?text=' + encodeURIComponent('{{ item.course.title }}')">
+                        {% else %}
+                            <img src="https://via.placeholder.com/400x200?text={{ item.course.title|replace(' ', '+') }}" 
+                                 class="course-image" alt="{{ item.course.title }}">
+                        {% endif %}
+                        
+                        <button class="wishlist-remove" onclick="removeFromWishlist({{ item.course.id }})" title="Remove from wishlist">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="course-content">
+                        <h5 class="course-title">
+                            <a href="{{ url_for('course_detail', course_id=item.course.id) }}">{{ item.course.title }}</a>
+                        </h5>
+                        
+                        <p class="instructor-name">
+                            <i class="fas fa-user-graduate"></i> {{ item.course.instructor.username }}
+                        </p>
+                        
+                        <div class="rating">
+                            {% if item.course.avg_rating %}
+                                {% set full_stars = item.course.avg_rating|int %}
+                                {% set has_half = (item.course.avg_rating - full_stars) >= 0.5 %}
+                                
+                                {% for i in range(5) %}
+                                    {% if i < full_stars %}
+                                        <i class="fas fa-star star-filled"></i>
+                                    {% elif i == full_stars and has_half %}
+                                        <i class="fas fa-star-half-alt star-half"></i>
+                                    {% else %}
+                                        <i class="far fa-star star-empty"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="ms-2 text-muted small">({{ item.course.total_reviews }} reviews)</span>
+                            {% else %}
+                                <span class="text-muted small">No reviews yet</span>
+                            {% endif %}
+                        </div>
+                        
+                        <p class="course-description">
+                            {{ item.course.description[:100] }}{% if item.course.description|length > 100 %}...{% endif %}
+                        </p>
+                        
+                        <div class="course-meta">
+                            <span><i class="fas fa-video"></i> {{ item.course.lessons.count() }} lessons</span>
+                            <span><i class="fas fa-users"></i> {{ item.course.enrollments.count() }} students</span>
+                            <span><i class="fas fa-calendar"></i> {{ item.course.created_at.strftime('%b %Y') }}</span>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <a href="{{ url_for('enroll', course_id=item.course.id) }}" class="btn btn-enroll text-white" onclick="return confirm('Enroll in {{ item.course.title }}?')">
+                                <i class="fas fa-shopping-cart me-2"></i>Enroll Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+    {% else %}
+        <!-- Empty State -->
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="far fa-heart"></i>
+            </div>
+            <div class="empty-title">Your wishlist is empty</div>
+            <p class="text-muted mb-4">
+                Looks like you haven't added any courses to your wishlist yet.
+                Start exploring and save courses you love!
+            </p>
+            <a href="{{ url_for('courses') }}" class="btn browse-btn text-white">
+                <i class="fas fa-book-open me-2"></i>Browse Courses
+            </a>
+        </div>
+        
+        <!-- Suggested Courses Section -->
+        <div class="mt-5">
+            <h4 class="mb-4"><i class="fas fa-star me-2"></i>Popular Courses You Might Like</h4>
+            <div class="row">
+                <!-- FIXED: suggested_courses variable check -->
+                {% set suggested_courses = suggested_courses|default([]) %}
+                {% for course in suggested_courses[:3] %}
+                <div class="col-md-4">
+                    <div class="course-card">
+                        <div class="image-wrapper">
+                            {% if course.image_url %}
+                                <img src="{{ course.image_url }}" class="course-image" alt="{{ course.title }}" style="height: 150px; width: 100%; object-fit: cover;">
+                            {% else %}
+                                <img src="https://via.placeholder.com/400x150?text={{ course.title|replace(' ', '+') }}" class="course-image" alt="{{ course.title }}" style="height: 150px; width: 100%; object-fit: cover;">
+                            {% endif %}
+                        </div>
+                        <div class="course-content">
+                            <h6 class="course-title">{{ course.title[:40] }}</h6>
+                            <p class="instructor-name small">{{ course.instructor.username }}</p>
+                            <div class="d-grid">
+                                <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-eye me-1"></i>View Course
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    // Select All functionality
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const itemCheckboxes = document.querySelectorAll('.item-checkbox');
+    const removeSelectedBtn = document.getElementById('removeSelectedBtn');
+    
+    function updateRemoveButton() {
+        const checkedCount = document.querySelectorAll('.item-checkbox:checked').length;
+        if (removeSelectedBtn) {
+            removeSelectedBtn.disabled = checkedCount === 0;
+            removeSelectedBtn.innerHTML = `<i class="fas fa-trash me-1"></i>Remove Selected (${checkedCount})`;
+        }
+    }
+    
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            itemCheckboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+            updateRemoveButton();
+        });
+    }
+    
+    itemCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const allChecked = Array.from(itemCheckboxes).every(cb => cb.checked);
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = allChecked;
+            }
+            updateRemoveButton();
+        });
+    });
+    
+    updateRemoveButton();
+    
+    // Remove selected items
+    if (removeSelectedBtn) {
+        removeSelectedBtn.addEventListener('click', function() {
+            const selectedItems = Array.from(document.querySelectorAll('.item-checkbox:checked'))
+                .map(cb => cb.dataset.itemId);
+            
+            if (selectedItems.length === 0) return;
+            
+            if (confirm(`Remove ${selectedItems.length} course(s) from wishlist?`)) {
+                // Send delete requests sequentially
+                selectedItems.forEach(itemId => {
+                    fetch(`/wishlist/remove/${itemId}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    }).then(() => {
+                        // Remove from DOM
+                        document.querySelector(`.item-checkbox[data-item-id="${itemId}"]`)
+                            ?.closest('.col-lg-6')
+                            ?.remove();
+                    });
+                });
+                
+                // Show notification
+                showToast(`${selectedItems.length} course(s) removed from wishlist`);
+                
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            }
+        });
+    }
+    
+    // Remove single item
+    function removeFromWishlist(courseId) {
+        if (confirm('Remove this course from your wishlist?')) {
+            fetch(`/wishlist/remove/${courseId}`, {
+                method: 'GET'
+            }).then(() => {
+                showToast('Course removed from wishlist');
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
+            });
+        }
+    }
+    
+    // Toast notification
+    function showToast(message) {
+        let toast = document.querySelector('.toast-notification');
+        if (toast) toast.remove();
+        
+        toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.innerHTML = `<i class="fas fa-check-circle me-2"></i>${message}`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+    
+    // Animate stats on load
+    window.addEventListener('load', () => {
+        const statValues = document.querySelectorAll('.stat-value');
+        statValues.forEach(stat => {
+            const value = stat.innerText;
+            if (value && !isNaN(parseFloat(value))) {
+                let current = 0;
+                const target = parseFloat(value);
+                const increment = target / 50;
+                const updateValue = () => {
+                    if (current < target) {
+                        current += increment;
+                        stat.innerText = Math.floor(current);
+                        requestAnimationFrame(updateValue);
+                    } else {
+                        stat.innerText = target;
+                    }
+                };
+                updateValue();
+            }
+        });
+    });
+</script>
+{% endblock %}

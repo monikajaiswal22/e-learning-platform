@@ -1,0 +1,807 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Modern Courses Page Styles */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    }
+    
+    .page-header {
+        background: var(--primary-gradient);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .page-header::before {
+        content: '📚';
+        position: absolute;
+        bottom: -20px;
+        right: 20px;
+        font-size: 80px;
+        opacity: 0.1;
+    }
+    
+    .page-header h2 {
+        margin: 0;
+        font-weight: 700;
+    }
+    
+    .page-header p {
+        margin: 5px 0 0;
+        opacity: 0.9;
+    }
+    
+    /* Filter Section */
+    .filter-section {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+    
+    .filter-title {
+        font-weight: 600;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .filter-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+    
+    .filter-chip {
+        padding: 8px 20px;
+        border-radius: 30px;
+        border: 2px solid #e9ecef;
+        background: white;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    
+    .filter-chip:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+    }
+    
+    .filter-chip.active {
+        background: var(--primary-gradient);
+        border-color: #667eea;
+        color: white;
+    }
+    
+    .sort-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .sort-select {
+        padding: 8px 15px;
+        border-radius: 12px;
+        border: 2px solid #e9ecef;
+        background: white;
+        cursor: pointer;
+    }
+    
+    .results-count {
+        color: #6c757d;
+        font-size: 14px;
+    }
+    
+    /* Search Bar */
+    .search-wrapper {
+        position: relative;
+        margin-bottom: 20px;
+    }
+    
+    .search-wrapper i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+    
+    .search-input {
+        width: 100%;
+        padding: 12px 15px 12px 45px;
+        border: 2px solid #e9ecef;
+        border-radius: 50px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+    
+    .search-input:focus {
+        border-color: #667eea;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .clear-btn {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #6c757d;
+        cursor: pointer;
+    }
+    
+    /* Course Cards - Enhanced */
+    .course-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        height: 100%;
+        border: none;
+        position: relative;
+    }
+    
+    .course-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    .course-image-wrapper {
+        position: relative;
+        overflow: hidden;
+        height: 200px;
+    }
+    
+    .course-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .course-card:hover .course-image {
+        transform: scale(1.05);
+    }
+    
+    .course-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0,0,0,0.7);
+        backdrop-filter: blur(10px);
+        padding: 5px 12px;
+        border-radius: 20px;
+        color: white;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .course-price-badge {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        background: rgba(0,0,0,0.8);
+        padding: 5px 12px;
+        border-radius: 20px;
+        color: white;
+        font-weight: 700;
+        font-size: 14px;
+    }
+    
+    .free-badge {
+        background: var(--success-gradient);
+    }
+    
+    .course-body {
+        padding: 20px;
+    }
+    
+    .course-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #2c3e50;
+    }
+    
+    .course-title a {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .course-title a:hover {
+        color: #667eea;
+    }
+    
+    .instructor-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        font-size: 13px;
+        color: #6c757d;
+    }
+    
+    .instructor-avatar {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    
+    .rating {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+    
+    .stars {
+        color: #ffc107;
+        font-size: 13px;
+    }
+    
+    .rating-value {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    
+    .review-count {
+        font-size: 12px;
+        color: #6c757d;
+    }
+    
+    .course-meta {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 12px;
+        font-size: 12px;
+        color: #6c757d;
+    }
+    
+    .course-meta i {
+        margin-right: 4px;
+    }
+    
+    .course-description {
+        color: #6c757d;
+        font-size: 13px;
+        line-height: 1.5;
+        margin-bottom: 15px;
+    }
+    
+    .btn-view {
+        background: var(--primary-gradient);
+        border: none;
+        padding: 10px;
+        border-radius: 12px;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
+        color: white;
+    }
+    
+    .btn-view:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 20px;
+    }
+    
+    .empty-icon {
+        font-size: 80px;
+        color: #dee2e6;
+        margin-bottom: 20px;
+    }
+    
+    /* Loading Skeleton */
+    .skeleton-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        height: 400px;
+    }
+    
+    .skeleton-image {
+        height: 200px;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+    }
+    
+    @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-header {
+            padding: 20px;
+        }
+        
+        .filter-section {
+            padding: 15px;
+        }
+        
+        .filter-chip {
+            padding: 6px 15px;
+            font-size: 12px;
+        }
+        
+        .sort-section {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .course-image-wrapper {
+            height: 180px;
+        }
+    }
+    
+    /* Animation */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .course-card {
+        animation: fadeIn 0.5s ease backwards;
+    }
+    
+    .course-card:nth-child(1) { animation-delay: 0.05s; }
+    .course-card:nth-child(2) { animation-delay: 0.1s; }
+    .course-card:nth-child(3) { animation-delay: 0.15s; }
+    .course-card:nth-child(4) { animation-delay: 0.2s; }
+    .course-card:nth-child(5) { animation-delay: 0.25s; }
+    .course-card:nth-child(6) { animation-delay: 0.3s; }
+
+    /* Toast Notification */
+    .toast-notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 10px;
+        z-index: 1000;
+        animation: slideInRight 0.3s ease;
+    }
+    
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+</style>
+
+<div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <h2><i class="fas fa-book-open me-2"></i>All Courses</h2>
+                <p>Discover amazing courses from expert instructors</p>
+            </div>
+            <div class="mt-2 mt-md-0">
+                <span class="badge bg-light text-dark px-3 py-2">
+                    <i class="fas fa-graduation-cap me-1"></i> {{ courses|length }} Courses Available
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Search & Filter Section -->
+    <div class="filter-section">
+        <!-- Search Bar -->
+        <div class="search-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" class="search-input" 
+                   placeholder="Search courses by title, description, or instructor..."
+                   value="{{ request.args.get('search', '') }}">
+            {% if request.args.get('search') %}
+                <button class="clear-btn" onclick="clearSearch()">
+                    <i class="fas fa-times-circle"></i>
+                </button>
+            {% endif %}
+        </div>
+        
+        <!-- Filter Chips -->
+        <div class="filter-title">
+            <i class="fas fa-filter"></i> Filter by:
+        </div>
+        <div class="filter-buttons">
+            <button class="filter-chip active" data-filter="all">All Courses</button>
+            <button class="filter-chip" data-filter="free">Free Courses</button>
+            <button class="filter-chip" data-filter="paid">Paid Courses</button>
+            <button class="filter-chip" data-filter="popular">Most Popular</button>
+            <button class="filter-chip" data-filter="top-rated">Top Rated</button>
+        </div>
+        
+        <!-- Sort Section -->
+        <div class="sort-section">
+            <div class="results-count" id="resultsCount">
+                Showing <strong id="visibleCount">{{ courses|length }}</strong> of <strong>{{ courses|length }}</strong> courses
+            </div>
+            <div>
+                <label class="me-2">Sort by:</label>
+                <select id="sortSelect" class="sort-select">
+                    <option value="default">Default</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="rating">Highest Rated</option>
+                    <option value="popular">Most Popular</option>
+                    <option value="newest">Newest First</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Courses Grid -->
+    <div class="row" id="coursesGrid">
+        {% for course in courses %}
+        <div class="col-lg-4 col-md-6 mb-4"
+             data-course-id="{{ course.id }}"
+             data-price="{{ course.price }}"
+             data-rating="{{ course.avg_rating or 0 }}"
+             data-students="{{ course.enrollments.count() }}"
+             data-created="{{ course.created_at.strftime('%Y-%m-%d') }}"
+             data-title="{{ course.title|lower }}"
+             data-description="{{ course.description|lower }}"
+             data-instructor="{{ course.instructor.username|lower }}">
+            <div class="course-card">
+                <div class="course-image-wrapper">
+                    {% if course.image_url %}
+                        <img src="{{ course.image_url }}" class="course-image" alt="{{ course.title }}" 
+                             onerror="this.src='https://via.placeholder.com/400x200?text=' + encodeURIComponent('{{ course.title }}')">
+                    {% else %}
+                        <img src="https://via.placeholder.com/400x200?text={{ course.title|replace(' ', '+') }}" class="course-image" alt="{{ course.title }}">
+                    {% endif %}
+                    
+                    <!-- Badges -->
+                    {% if course.price == 0 %}
+                        <div class="course-badge" style="background: var(--success-gradient);">
+                            <i class="fas fa-gift me-1"></i> FREE
+                        </div>
+                    {% else %}
+                        <div class="course-badge" style="background: var(--primary-gradient);">
+                            <i class="fas fa-certificate me-1"></i> Premium
+                        </div>
+                    {% endif %}
+                    
+                    <div class="course-price-badge {% if course.price == 0 %}free-badge{% endif %}">
+                        {% if course.price > 0 %}
+                            ${{ "%.2f"|format(course.price) }}
+                        {% else %}
+                            <i class="fas fa-gift"></i> Free
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="course-body">
+                    <h5 class="course-title">
+                        <a href="{{ url_for('course_detail', course_id=course.id) }}">{{ course.title }}</a>
+                    </h5>
+                    
+                    <div class="instructor-info">
+                        {% if course.instructor.avatar %}
+                            <img src="{{ course.instructor.avatar }}" class="instructor-avatar" alt="{{ course.instructor.username }}">
+                        {% else %}
+                            <div class="instructor-avatar bg-primary text-white d-inline-flex align-items-center justify-content-center" style="font-size: 12px; width: 24px; height: 24px; border-radius: 50%;">
+                                {{ course.instructor.username[0].upper() }}
+                            </div>
+                        {% endif %}
+                        <span>{{ course.instructor.username }}</span>
+                    </div>
+                    
+                    <!-- Rating -->
+                    <div class="rating">
+                        <div class="stars">
+                            {% set rating = course.avg_rating or 0 %}
+                            {% for i in range(5) %}
+                                {% if i < rating|int %}
+                                    <i class="fas fa-star"></i>
+                                {% elif i < rating %}
+                                    <i class="fas fa-star-half-alt"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="rating-value">{{ "%.1f"|format(rating) }}</span>
+                        <span class="review-count">({{ course.total_reviews or 0 }} reviews)</span>
+                    </div>
+                    
+                    <!-- Course Meta -->
+                    <div class="course-meta">
+                        <span><i class="fas fa-video"></i> {{ course.lessons.count() }} lessons</span>
+                        <span><i class="fas fa-users"></i> {{ course.enrollments.count() }} students</span>
+                    </div>
+                    
+                    <p class="course-description">
+                        {{ course.description[:100] }}{% if course.description|length > 100 %}...{% endif %}
+                    </p>
+                    
+                    <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-view">
+                        <i class="fas fa-eye me-2"></i>View Course Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h4>No Courses Found</h4>
+                <p class="text-muted">
+                    {% if request.args.get('search') %}
+                        No courses match your search criteria. Try different keywords!
+                    {% else %}
+                        No courses are available at the moment. Please check back later!
+                    {% endif %}
+                </p>
+                {% if request.args.get('search') %}
+                    <a href="{{ url_for('courses') }}" class="btn btn-primary">
+                        <i class="fas fa-times me-2"></i>Clear Search
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    // DOM Elements
+    const searchInput = document.getElementById('searchInput');
+    const filterChips = document.querySelectorAll('.filter-chip');
+    const sortSelect = document.getElementById('sortSelect');
+    const coursesGrid = document.getElementById('coursesGrid');
+    const visibleCountSpan = document.getElementById('visibleCount');
+    const totalCount = {{ courses|length }};
+    
+    let currentFilter = 'all';
+    let currentSearchTerm = '';
+    
+    // Get all course cards
+    function getAllCourses() {
+        return Array.from(document.querySelectorAll('#coursesGrid > div[data-course-id]'));
+    }
+    
+    // Filter courses
+    function filterCourses() {
+        const courses = getAllCourses();
+        let visibleCount = 0;
+        
+        courses.forEach(course => {
+            let show = true;
+            
+            // Filter by price/free/popular/top-rated
+            if (currentFilter !== 'all') {
+                const price = parseFloat(course.dataset.price);
+                const rating = parseFloat(course.dataset.rating);
+                const students = parseInt(course.dataset.students);
+                
+                switch(currentFilter) {
+                    case 'free':
+                        show = price === 0;
+                        break;
+                    case 'paid':
+                        show = price > 0;
+                        break;
+                    case 'popular':
+                        show = students >= 10;
+                        break;
+                    case 'top-rated':
+                        show = rating >= 4.0;
+                        break;
+                }
+            }
+            
+            // Search filter
+            if (show && currentSearchTerm) {
+                const title = course.dataset.title;
+                const description = course.dataset.description;
+                const instructor = course.dataset.instructor;
+                show = title.includes(currentSearchTerm) || 
+                       description.includes(currentSearchTerm) ||
+                       instructor.includes(currentSearchTerm);
+            }
+            
+            course.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
+        });
+        
+        if (visibleCountSpan) {
+            visibleCountSpan.textContent = visibleCount;
+        }
+        return visibleCount;
+    }
+    
+    // Sort courses
+    function sortCourses() {
+        const courses = getAllCourses();
+        const visibleCourses = courses.filter(c => c.style.display !== 'none');
+        const sortBy = sortSelect.value;
+        
+        visibleCourses.sort((a, b) => {
+            switch(sortBy) {
+                case 'price-low':
+                    return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+                case 'price-high':
+                    return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+                case 'rating':
+                    return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+                case 'popular':
+                    return parseInt(b.dataset.students) - parseInt(a.dataset.students);
+                case 'newest':
+                    return b.dataset.created.localeCompare(a.dataset.created);
+                default:
+                    return 0;
+            }
+        });
+        
+        // Reorder DOM elements
+        visibleCourses.forEach(course => {
+            coursesGrid.appendChild(course);
+        });
+    }
+    
+    // Update UI after filter/sort
+    function updateUI() {
+        filterCourses();
+        sortCourses();
+    }
+    
+    // Search input handler
+    function handleSearch() {
+        currentSearchTerm = searchInput.value.toLowerCase().trim();
+        updateUI();
+        
+        // Update URL without reload
+        const url = new URL(window.location.href);
+        if (currentSearchTerm) {
+            url.searchParams.set('search', currentSearchTerm);
+        } else {
+            url.searchParams.delete('search');
+        }
+        window.history.pushState({}, '', url);
+    }
+    
+    // Clear search
+    function clearSearch() {
+        searchInput.value = '';
+        handleSearch();
+    }
+    
+    // Filter chip handler
+    filterChips.forEach(chip => {
+        chip.addEventListener('click', function() {
+            filterChips.forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.dataset.filter;
+            updateUI();
+        });
+    });
+    
+    // Sort handler
+    sortSelect.addEventListener('change', updateUI);
+    
+    // Search with debounce
+    let searchTimeout;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(handleSearch, 300);
+    });
+    
+    // Initialize
+    updateUI();
+    
+    // Add loading skeleton effect (optional)
+    function showSkeleton() {
+        const skeletonHTML = `
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="skeleton-card">
+                    <div class="skeleton-image"></div>
+                </div>
+            </div>
+        `.repeat(6);
+        coursesGrid.innerHTML = skeletonHTML;
+    }
+    
+    // Export functionality (optional)
+    function exportCourses() {
+        const visibleCourses = getAllCourses().filter(c => c.style.display !== 'none');
+        let csvContent = "Title,Instructor,Price,Rating,Students\n";
+        
+        visibleCourses.forEach(course => {
+            const title = course.querySelector('.course-title a')?.innerText || '';
+            const instructor = course.dataset.instructor;
+            const price = course.dataset.price;
+            const rating = course.dataset.rating;
+            const students = course.dataset.students;
+            csvContent += `"${title}","${instructor}",${price},${rating},${students}\n`;
+        });
+        
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `courses_export_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showToast('Courses exported successfully!');
+    }
+    
+    function showToast(message) {
+        let toast = document.querySelector('.toast-notification');
+        if (toast) toast.remove();
+        
+        toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.innerHTML = `<i class="fas fa-check-circle me-2"></i>${message}`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => toast.remove(), 3000);
+    }
+    
+    // Add export button to filter section
+    const sortSection = document.querySelector('.sort-section');
+    if (sortSection && {{ courses|length }} > 0) {
+        const exportBtn = document.createElement('button');
+        exportBtn.className = 'filter-chip';
+        exportBtn.innerHTML = '<i class="fas fa-download me-1"></i>Export';
+        exportBtn.style.background = '#28a745';
+        exportBtn.style.color = 'white';
+        exportBtn.style.border = 'none';
+        exportBtn.onclick = exportCourses;
+        const filterButtons = document.querySelector('.filter-buttons');
+        if (filterButtons) {
+            filterButtons.appendChild(exportBtn);
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,739 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Professional Certificate Styles */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gold-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        --border-gold: #c9a84c;
+    }
+    
+    .certificate-container {
+        padding: 60px 20px;
+        background: linear-gradient(135deg, #f5f0eb 0%, #e8e0d8 100%);
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .certificate-wrapper {
+        max-width: 950px;
+        width: 100%;
+        margin: 0 auto;
+        animation: fadeInUp 0.8s ease;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .certificate {
+        background: #fffdf7;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+        position: relative;
+        border: 1px solid rgba(201, 168, 76, 0.3);
+    }
+    
+    /* Outer Border Decoration */
+    .certificate-border {
+        padding: 35px;
+        background: linear-gradient(135deg, #fffdf7 0%, #fcf6ea 100%);
+        position: relative;
+    }
+    
+    .certificate-border::before {
+        content: '';
+        position: absolute;
+        inset: 12px;
+        border: 3px solid #c9a84c;
+        border-radius: 16px;
+        opacity: 0.5;
+        pointer-events: none;
+    }
+    
+    /* Inner Certificate */
+    .certificate-inner {
+        border: 2px solid #c9a84c;
+        padding: 50px 45px;
+        position: relative;
+        background: white;
+        border-radius: 16px;
+        box-shadow: inset 0 0 60px rgba(201, 168, 76, 0.05);
+    }
+    
+    /* Corner Decorations */
+    .certificate-inner .corner {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        border-color: #c9a84c;
+        border-style: solid;
+        border-width: 0;
+    }
+    .certificate-inner .corner-tl {
+        top: 15px;
+        left: 15px;
+        border-top-width: 3px;
+        border-left-width: 3px;
+    }
+    .certificate-inner .corner-tr {
+        top: 15px;
+        right: 15px;
+        border-top-width: 3px;
+        border-right-width: 3px;
+    }
+    .certificate-inner .corner-bl {
+        bottom: 15px;
+        left: 15px;
+        border-bottom-width: 3px;
+        border-left-width: 3px;
+    }
+    .certificate-inner .corner-br {
+        bottom: 15px;
+        right: 15px;
+        border-bottom-width: 3px;
+        border-right-width: 3px;
+    }
+    
+    /* Certificate Header */
+    .certificate-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .certificate-seal {
+        display: inline-block;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--gold-gradient);
+        padding: 5px;
+        margin-bottom: 15px;
+        box-shadow: 0 5px 20px rgba(246, 211, 101, 0.4);
+    }
+    
+    .certificate-seal-inner {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+    }
+    
+    .certificate-title {
+        font-size: 2.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 6px;
+        background: linear-gradient(135deg, #c9a84c, #f6d365, #c9a84c);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 5px;
+        font-family: 'Georgia', serif;
+        animation: shine 3s linear infinite;
+    }
+    
+    @keyframes shine {
+        0% { background-position: -200% center; }
+        100% { background-position: 200% center; }
+    }
+    
+    .certificate-subtitle {
+        font-size: 1rem;
+        color: #8a7a6a;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        font-weight: 300;
+    }
+    
+    .certificate-divider {
+        width: 120px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+        margin: 15px auto;
+    }
+    
+    /* Certificate Body */
+    .certificate-body {
+        text-align: center;
+        padding: 20px 0;
+    }
+    
+    .certificate-label {
+        font-size: 1.1rem;
+        color: #8a7a6a;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-weight: 300;
+    }
+    
+    .recipient-name {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #2c3e50;
+        margin: 10px 0 20px;
+        padding-bottom: 15px;
+        display: inline-block;
+        font-family: 'Georgia', serif;
+        letter-spacing: 2px;
+        border-bottom: 3px solid var(--gold-gradient);
+        position: relative;
+    }
+    
+    .recipient-name::after {
+        content: '✦';
+        position: absolute;
+        bottom: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: #c9a84c;
+        font-size: 14px;
+        background: white;
+        padding: 0 8px;
+    }
+    
+    .completion-text {
+        font-size: 1.1rem;
+        color: #6c757d;
+        margin: 15px 0;
+        line-height: 1.8;
+        letter-spacing: 0.5px;
+    }
+    
+    .course-name {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #667eea;
+        margin: 15px 0;
+        font-style: italic;
+        letter-spacing: 1px;
+    }
+    
+    .course-name::before {
+        content: '"';
+        color: #c9a84c;
+    }
+    .course-name::after {
+        content: '"';
+        color: #c9a84c;
+    }
+    
+    .badge-container {
+        margin: 25px 0;
+    }
+    
+    .completion-badge {
+        display: inline-block;
+        background: var(--gold-gradient);
+        color: white;
+        padding: 10px 30px;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        box-shadow: 0 5px 20px rgba(246, 211, 101, 0.3);
+    }
+    
+    .completion-badge i {
+        margin-right: 8px;
+    }
+    
+    .completion-text-detail {
+        font-size: 0.95rem;
+        color: #8a7a6a;
+        margin: 15px 0 0;
+        line-height: 1.8;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    /* Certificate Footer */
+    .certificate-footer {
+        margin-top: 40px;
+        border-top: 1px solid #e9ecef;
+        padding-top: 30px;
+    }
+    
+    .signature-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+    
+    .signature-item {
+        text-align: center;
+        flex: 1;
+        min-width: 150px;
+    }
+    
+    .signature-line {
+        width: 180px;
+        border-bottom: 2px solid #2c3e50;
+        margin: 0 auto 10px;
+        padding-top: 15px;
+    }
+    
+    .signature-name {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 1.05rem;
+    }
+    
+    .signature-title {
+        font-size: 0.8rem;
+        color: #8a7a6a;
+        letter-spacing: 1px;
+    }
+    
+    .signature-seal {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--gold-gradient);
+        margin-bottom: 5px;
+        line-height: 30px;
+        color: white;
+        font-size: 14px;
+    }
+    
+    .date-section {
+        text-align: center;
+        margin-top: 25px;
+    }
+    
+    .date-text {
+        font-size: 0.95rem;
+        color: #6c757d;
+        letter-spacing: 1px;
+    }
+    
+    .date-text i {
+        color: #c9a84c;
+    }
+    
+    .certificate-number {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 0.75rem;
+        color: #adb5bd;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 1px;
+    }
+    
+    .certificate-number i {
+        color: #c9a84c;
+    }
+    
+    /* Watermark */
+    .certificate-watermark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 200px;
+        opacity: 0.03;
+        font-family: 'Georgia', serif;
+        pointer-events: none;
+        color: #c9a84c;
+        font-weight: bold;
+    }
+    
+    /* Action Buttons */
+    .action-buttons {
+        margin-top: 35px;
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .btn-certificate {
+        padding: 14px 32px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        border: none;
+        text-decoration: none;
+        font-size: 0.95rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .btn-certificate:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    .btn-print {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+    }
+    .btn-print:hover { color: white; }
+    
+    .btn-download {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+        color: white;
+    }
+    .btn-download:hover { color: white; }
+    
+    .btn-share {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        color: white;
+    }
+    .btn-share:hover { color: white; }
+    
+    .btn-back {
+        background: #6c757d;
+        color: white;
+    }
+    .btn-back:hover {
+        background: #5a6268;
+        color: white;
+    }
+    
+    /* Print Styles */
+    @media print {
+        .navbar, footer, .action-buttons, .back-to-top, .certificate-notification {
+            display: none !important;
+        }
+        .certificate-container {
+            padding: 0;
+            background: white;
+        }
+        .certificate {
+            box-shadow: none;
+            border: none;
+        }
+        .certificate-border {
+            padding: 20px;
+        }
+        .certificate-border::before {
+            display: none;
+        }
+        .certificate-inner {
+            border: 2px solid #333;
+            padding: 25px;
+            box-shadow: none;
+        }
+        .certificate-inner .corner {
+            border-color: #333;
+        }
+        .recipient-name {
+            color: #000;
+        }
+        .recipient-name::after {
+            background: white;
+        }
+        .signature-line {
+            border-bottom: 1px solid #000;
+        }
+        body { background: white; }
+        .certificate-title {
+            -webkit-text-fill-color: #333;
+            color: #333;
+            background: none;
+            animation: none;
+        }
+        .certificate-watermark { display: none; }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .certificate-inner {
+            padding: 20px 15px;
+        }
+        .certificate-title {
+            font-size: 1.6rem;
+            letter-spacing: 3px;
+        }
+        .recipient-name {
+            font-size: 1.8rem;
+        }
+        .course-name {
+            font-size: 1.3rem;
+        }
+        .signature-line {
+            width: 100px;
+        }
+        .signature-section {
+            flex-direction: column;
+            align-items: center;
+        }
+        .certificate-border {
+            padding: 15px;
+        }
+        .certificate-container {
+            padding: 30px 10px;
+        }
+        .certificate-inner .corner {
+            width: 25px;
+            height: 25px;
+        }
+        .btn-certificate {
+            padding: 10px 20px;
+            font-size: 0.85rem;
+        }
+        .certificate-seal {
+            width: 60px;
+            height: 60px;
+        }
+        .certificate-seal-inner {
+            font-size: 24px;
+        }
+        .certificate-watermark {
+            font-size: 120px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .certificate-title {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+        }
+        .recipient-name {
+            font-size: 1.4rem;
+        }
+        .course-name {
+            font-size: 1rem;
+        }
+        .certificate-inner {
+            padding: 15px 10px;
+        }
+        .certificate-inner .corner {
+            width: 18px;
+            height: 18px;
+        }
+        .certificate-border {
+            padding: 10px;
+        }
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        .btn-certificate {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="certificate-container">
+    <div class="certificate-wrapper">
+        <div class="certificate" id="certificate">
+            <div class="certificate-border">
+                <div class="certificate-inner">
+                    <!-- Corner Decorations -->
+                    <span class="corner corner-tl"></span>
+                    <span class="corner corner-tr"></span>
+                    <span class="corner corner-bl"></span>
+                    <span class="corner corner-br"></span>
+                    
+                    <!-- Watermark -->
+                    <div class="certificate-watermark">✦</div>
+                    
+                    <!-- Certificate Header -->
+                    <div class="certificate-header">
+                        <div class="certificate-seal">
+                            <div class="certificate-seal-inner">🎓</div>
+                        </div>
+                        <h1 class="certificate-title">Certificate of Completion</h1>
+                        <div class="certificate-divider"></div>
+                        <p class="certificate-subtitle">— This certificate is proudly presented to —</p>
+                    </div>
+                    
+                    <!-- Certificate Body -->
+                    <div class="certificate-body">
+                        <h2 class="recipient-name">{{ user.full_name or user.username }}</h2>
+                        
+                        <p class="completion-text">for successfully completing the course</p>
+                        
+                        <h3 class="course-name">{{ course.title }}</h3>
+                        
+                        <div class="badge-container">
+                            <span class="completion-badge">
+                                <i class="fas fa-check-circle"></i> 100% Complete
+                            </span>
+                        </div>
+                        
+                        <p class="completion-text-detail">
+                            This certificate acknowledges the achievement of all learning objectives
+                            and successful completion of all course requirements with outstanding performance.
+                        </p>
+                    </div>
+                    
+                    <!-- Certificate Footer -->
+                    <div class="certificate-footer">
+                        <div class="signature-section">
+                            <div class="signature-item">
+                                <div class="signature-seal">✍</div>
+                                <div class="signature-line"></div>
+                                <div class="signature-name">{{ course.instructor.full_name or course.instructor.username }}</div>
+                                <div class="signature-title">Course Instructor</div>
+                            </div>
+                            <div class="signature-item">
+                                <div class="signature-seal">🏛</div>
+                                <div class="signature-line"></div>
+                                <div class="signature-name">Academic Director</div>
+                                <div class="signature-title">E-Learning Platform</div>
+                            </div>
+                        </div>
+                        
+                        <div class="date-section">
+                            <p class="date-text">
+                                <i class="far fa-calendar-alt"></i>
+                                Issued on: {{ now.strftime('%B %d, %Y') }}
+                            </p>
+                        </div>
+                        
+                        <div class="certificate-number">
+                            <i class="fas fa-hashtag"></i>
+                            Certificate ID: CERT-{{ course.id }}-{{ user.id }}-{{ now.strftime('%Y%m%d') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button onclick="window.print()" class="btn-certificate btn-print">
+                <i class="fas fa-print"></i> Print
+            </button>
+            <button onclick="downloadCertificate()" class="btn-certificate btn-download">
+                <i class="fas fa-download"></i> Download PDF
+            </button>
+            <button onclick="shareCertificate()" class="btn-certificate btn-share">
+                <i class="fas fa-share-alt"></i> Share
+            </button>
+            <a href="{{ url_for('learn_course', course_id=course.id) }}" class="btn-certificate btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Course
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function downloadCertificate() {
+        showNotification('Preparing your certificate...', 'info');
+        
+        if (typeof html2pdf !== 'undefined') {
+            var element = document.getElementById('certificate');
+            var opt = {
+                margin: [0.5, 0.5, 0.5, 0.5],
+                filename: 'Certificate_{{ course.title|replace(' ', '_') }}_{{ user.username }}.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, letterRendering: true, useCORS: true },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        } else {
+            window.print();
+            showNotification('Print dialog opened. Save as PDF.', 'info');
+        }
+    }
+    
+    function shareCertificate() {
+        if (navigator.share) {
+            navigator.share({
+                title: 'Course Completion Certificate',
+                text: 'I have successfully completed the course "{{ course.title }}"! 🎓',
+                url: window.location.href,
+            }).catch(function() {
+                copyToClipboard();
+            });
+        } else {
+            copyToClipboard();
+        }
+    }
+    
+    function copyToClipboard() {
+        var dummy = document.createElement('textarea');
+        dummy.value = window.location.href;
+        document.body.appendChild(dummy);
+        dummy.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummy);
+        showNotification('Link copied to clipboard! ✅', 'success');
+    }
+    
+    function showNotification(message, type) {
+        var existing = document.querySelector('.certificate-notification');
+        if (existing) existing.remove();
+        
+        var notification = document.createElement('div');
+        notification.className = 'certificate-notification alert-' + (type || 'success');
+        notification.innerHTML = '<i class="fas fa-' + 
+            (type === 'info' ? 'info-circle' : type === 'error' ? 'exclamation-circle' : 'check-circle') + 
+            ' me-2"></i>' + message;
+        document.body.appendChild(notification);
+        
+        setTimeout(function() {
+            notification.style.animation = 'slideOutRight 0.3s ease';
+            setTimeout(function() { notification.remove(); }, 300);
+        }, 3000);
+    }
+    
+    var downloadBtn = document.querySelector('.btn-download');
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', function(e) {
+            if (typeof html2pdf === 'undefined') {
+                e.preventDefault();
+                var script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+                script.onload = function() {
+                    showNotification('PDF generator loaded! Retrying...', 'info');
+                    setTimeout(function() {
+                        downloadBtn.click();
+                    }, 500);
+                };
+                document.head.appendChild(script);
+                showNotification('Loading PDF generator...', 'info');
+            }
+        });
+    }
+    
+    // Confetti effect on first view
+    window.addEventListener('load', function() {
+        var hasSeen = sessionStorage.getItem('certificate_confetti');
+        if (!hasSeen) {
+            var script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1';
+            script.onload = function() {
+                if (typeof confetti !== 'undefined') {
+                    confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+                }
+            };
+            document.head.appendChild(script);
+            sessionStorage.setItem('certificate_confetti', 'true');
+        }
+    });
+</script>
+
+<!-- html2pdf library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+{% endblock %}

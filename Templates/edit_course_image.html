@@ -1,0 +1,666 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Modern Edit Image Styles */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .page-header {
+        background: var(--primary-gradient);
+        border-radius: 20px;
+        padding: 25px 30px;
+        margin-bottom: 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .page-header::before {
+        content: '🖼️';
+        position: absolute;
+        bottom: -20px;
+        right: 20px;
+        font-size: 80px;
+        opacity: 0.1;
+    }
+    
+    .page-header h3 {
+        margin: 0;
+        font-weight: 700;
+    }
+    
+    .page-header p {
+        margin: 5px 0 0;
+        opacity: 0.9;
+    }
+    
+    .course-badge {
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        padding: 5px 12px;
+        border-radius: 20px;
+        display: inline-block;
+        margin-top: 10px;
+        font-size: 13px;
+    }
+    
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+    
+    .form-body {
+        padding: 30px;
+    }
+    
+    /* Image Preview Section */
+    .preview-container {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 16px;
+        padding: 30px;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+    
+    .preview-wrapper {
+        position: relative;
+        display: inline-block;
+        max-width: 100%;
+    }
+    
+    .preview-image {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+    }
+    
+    .preview-image:hover {
+        transform: scale(1.02);
+    }
+    
+    .image-badge {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(0,0,0,0.7);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+    }
+    
+    /* URL Input Section */
+    .url-input-wrapper {
+        position: relative;
+        margin-bottom: 25px;
+    }
+    
+    .url-input-wrapper i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+    
+    .url-input {
+        width: 100%;
+        padding: 12px 15px 12px 45px;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+    
+    .url-input:focus {
+        border-color: #667eea;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    /* File Upload Section */
+    .upload-section {
+        background: #f8f9fa;
+        border-radius: 16px;
+        padding: 25px;
+        text-align: center;
+        margin-bottom: 25px;
+        border: 2px dashed #dee2e6;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .upload-section:hover {
+        border-color: #667eea;
+        background: linear-gradient(135deg, #667eea05, #764ba205);
+    }
+    
+    .upload-icon {
+        font-size: 48px;
+        color: #667eea;
+        margin-bottom: 15px;
+    }
+    
+    .upload-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    
+    .upload-subtitle {
+        font-size: 12px;
+        color: #6c757d;
+    }
+    
+    .file-input {
+        display: none;
+    }
+    
+    /* Suggested Images Grid */
+    .suggested-title {
+        font-weight: 600;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .suggested-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .suggested-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 2px solid #e9ecef;
+    }
+    
+    .suggested-card:hover {
+        transform: translateY(-5px);
+        border-color: #667eea;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .suggested-image {
+        width: 100%;
+        height: 80px;
+        object-fit: cover;
+    }
+    
+    .suggested-name {
+        padding: 8px;
+        font-size: 12px;
+        text-align: center;
+        font-weight: 500;
+        background: white;
+    }
+    
+    /* Action Buttons */
+    .btn-update {
+        background: var(--primary-gradient);
+        border: none;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        width: 100%;
+        color: white;
+    }
+    
+    .btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .btn-cancel {
+        background: #6c757d;
+        border: none;
+        padding: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-cancel:hover {
+        background: #5a6268;
+        color: white;
+    }
+    
+    .btn-light {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .btn-light:hover {
+        background: rgba(255,255,255,0.3);
+        color: white;
+    }
+    
+    /* Alert */
+    .alert-custom {
+        border-radius: 12px;
+        border-left: 4px solid;
+        margin-top: 20px;
+        padding: 15px 20px;
+    }
+    
+    .alert-info {
+        background: linear-gradient(135deg, #4facfe20, #00f2fe20);
+        border-left-color: #4facfe;
+        color: #4facfe;
+    }
+    
+    .alert-info a {
+        color: #4facfe;
+        text-decoration: underline;
+    }
+    
+    .alert-info a:hover {
+        color: #2a7fbf;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .form-body {
+            padding: 20px;
+        }
+        
+        .preview-container {
+            padding: 20px;
+        }
+        
+        .suggested-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.5s ease forwards;
+    }
+    
+    /* Loading Spinner */
+    .btn-loading {
+        position: relative;
+        pointer-events: none;
+        opacity: 0.7;
+    }
+    
+    .btn-loading::after {
+        content: '';
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        top: 50%;
+        right: 15px;
+        margin-top: -9px;
+        border: 2px solid white;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    /* Toast Notification */
+    .toast-notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 10px;
+        z-index: 1000;
+        animation: slideInRight 0.3s ease;
+    }
+    
+    .toast-error {
+        background: #eb3349;
+    }
+    
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+</style>
+
+<div class="container fade-in">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <h3><i class="fas fa-edit me-2"></i>Edit Course Image</h3>
+                <p>Update the course thumbnail image</p>
+                <div class="course-badge">
+                    <i class="fas fa-book me-1"></i> {{ course.title }}
+                </div>
+            </div>
+            <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-light">
+                <i class="fas fa-eye me-2"></i>View Course
+            </a>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="form-card">
+                <div class="form-body">
+                    <!-- FIXED: Added action -->
+                    <form method="POST" id="imageForm" enctype="multipart/form-data" action="{{ url_for('edit_course_image', course_id=course.id) }}">
+                        <!-- Current Image Preview -->
+                        <div class="preview-container">
+                            <div class="preview-wrapper">
+                                <img id="preview" class="preview-image" 
+                                     src="{{ course.image_url or 'https://via.placeholder.com/800x400?text=No+Image+Selected' }}" 
+                                     alt="Course preview"
+                                     onerror="this.src='https://via.placeholder.com/800x400?text=Invalid+Image+URL'">
+                                <div class="image-badge">
+                                    <i class="fas fa-image me-1"></i>Course Thumbnail
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Option 1: Image URL -->
+                        <div class="url-input-wrapper">
+                            <i class="fas fa-link"></i>
+                            <input type="text" class="url-input" id="image_url" name="image_url" 
+                                   value="{{ course.image_url or '' }}" 
+                                   placeholder="Enter image URL (e.g., https://example.com/image.jpg)">
+                        </div>
+                        
+                        <div class="text-center my-3">
+                            <span class="badge bg-secondary">OR</span>
+                        </div>
+                        
+                        <!-- Option 2: File Upload -->
+                        <div class="upload-section" onclick="document.getElementById('fileUpload').click()">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="upload-title">Upload from Computer</div>
+                            <div class="upload-subtitle">Click or drag & drop image file</div>
+                            <input type="file" id="fileUpload" class="file-input" name="image" accept="image/jpeg,image/png,image/gif,image/webp">
+                            <div id="fileName" class="mt-2 small text-muted" style="display: none;"></div>
+                        </div>
+                        
+                        <!-- Suggested Images -->
+                        <div class="suggested-title">
+                            <i class="fas fa-images"></i>
+                            <span>Suggested Images (Click to use)</span>
+                        </div>
+                        <div class="suggested-grid">
+                            {% for img in suggested_images %}
+                            <div class="suggested-card" onclick="useSuggestedImage('{{ img.url }}', '{{ img.name }}')">
+                                <img src="{{ img.url }}" class="suggested-image" alt="{{ img.name }}" 
+                                     onerror="this.src='https://via.placeholder.com/120x80?text={{ img.name }}'">
+                                <div class="suggested-name">
+                                    <i class="fas fa-{{ 'code' if img.name == 'Programming' else 'globe' if img.name == 'Web Development' else 'chart-line' if img.name == 'Business' else 'paint-brush' if img.name == 'Design' else 'camera' }} me-1"></i>
+                                    {{ img.name }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Image Tips -->
+                        <div class="alert alert-info alert-custom">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            <strong>Image Tips:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Recommended size: <strong>800x400 pixels</strong> (16:9 aspect ratio)</li>
+                                <li>Supported formats: JPG, PNG, GIF, WebP</li>
+                                <li>Maximum file size: <strong>16MB</strong></li>
+                                <li>Use high-quality, relevant images for better engagement</li>
+                                <li>Free stock photos: <a href="https://unsplash.com" target="_blank">Unsplash</a> | 
+                                    <a href="https://pixabay.com" target="_blank">Pixabay</a> | 
+                                    <a href="https://pexels.com" target="_blank">Pexels</a>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-3 mt-4">
+                            <button type="submit" class="btn btn-update text-white" id="submitBtn">
+                                <i class="fas fa-save me-2"></i>Update Course Image
+                            </button>
+                            <a href="{{ url_for('manage_lessons', course_id=course.id) }}" class="btn btn-cancel text-white text-center">
+                                <i class="fas fa-arrow-left me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // DOM Elements
+    const imageUrlInput = document.getElementById('image_url');
+    const preview = document.getElementById('preview');
+    const fileUpload = document.getElementById('fileUpload');
+    const fileName = document.getElementById('fileName');
+    const form = document.getElementById('imageForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Update preview from URL input
+    function updatePreviewFromUrl() {
+        if (!imageUrlInput) return;
+        const url = imageUrlInput.value.trim();
+        if (url) {
+            preview.src = url;
+            preview.onerror = function() {
+                this.src = 'https://via.placeholder.com/800x400?text=Invalid+Image+URL';
+                showToast('Invalid image URL. Please check the link.', 'error');
+            };
+        } else {
+            preview.src = 'https://via.placeholder.com/800x400?text=No+Image+Selected';
+        }
+    }
+    
+    if (imageUrlInput) {
+        imageUrlInput.addEventListener('input', updatePreviewFromUrl);
+    }
+    
+    // Handle file upload
+    if (fileUpload) {
+        fileUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                if (!validTypes.includes(file.type)) {
+                    showToast('Invalid file type. Please upload JPG, PNG, GIF, or WebP.', 'error');
+                    fileUpload.value = '';
+                    return;
+                }
+                
+                // Validate file size (max 16MB)
+                if (file.size > 16 * 1024 * 1024) {
+                    showToast('File too large. Maximum size is 16MB.', 'error');
+                    fileUpload.value = '';
+                    return;
+                }
+                
+                // Show file name
+                if (fileName) {
+                    fileName.textContent = 'Selected: ' + file.name;
+                    fileName.style.display = 'block';
+                }
+                
+                // Preview the uploaded image
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    // Clear URL input when using file upload
+                    if (imageUrlInput) imageUrlInput.value = '';
+                };
+                reader.readAsDataURL(file);
+                
+                showToast('Image loaded successfully! Click "Update Course Image" to save.', 'success');
+            }
+        });
+    }
+    
+    // Use suggested image
+    function useSuggestedImage(url, name) {
+        if (imageUrlInput) {
+            imageUrlInput.value = url;
+            updatePreviewFromUrl();
+        }
+        if (fileUpload) {
+            fileUpload.value = '';
+        }
+        if (fileName) {
+            fileName.style.display = 'none';
+        }
+        showToast('Using suggested image: ' + name, 'success');
+        
+        // Highlight the selected suggestion
+        document.querySelectorAll('.suggested-card').forEach(card => {
+            card.style.borderColor = '#e9ecef';
+        });
+        if (event && event.currentTarget) {
+            event.currentTarget.style.borderColor = '#667eea';
+        }
+    }
+    
+    // Form validation and submission
+    function validateForm() {
+        if (!imageUrlInput || !fileUpload) return false;
+        const url = imageUrlInput.value.trim();
+        const file = fileUpload.files[0];
+        
+        if (!url && !file) {
+            showToast('Please provide an image URL or upload a file.', 'error');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            if (!validateForm()) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Show loading state
+            if (submitBtn) {
+                submitBtn.classList.add('btn-loading');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating Image...';
+            }
+        });
+    }
+    
+    // Show toast notification
+    function showToast(message, type = 'success') {
+        let toast = document.querySelector('.toast-notification');
+        if (toast) toast.remove();
+        
+        toast = document.createElement('div');
+        toast.className = 'toast-notification' + (type === 'error' ? ' toast-error' : '');
+        toast.innerHTML = `<i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'} me-2"></i>${message}`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.animation = 'slideOutRight 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+    
+    // Drag and drop functionality
+    const uploadSection = document.querySelector('.upload-section');
+    
+    if (uploadSection) {
+        uploadSection.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#667eea';
+            this.style.background = 'linear-gradient(135deg, #667eea10, #764ba210)';
+        });
+        
+        uploadSection.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#dee2e6';
+            this.style.background = '#f8f9fa';
+        });
+        
+        uploadSection.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#dee2e6';
+            this.style.background = '#f8f9fa';
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                if (fileUpload) {
+                    fileUpload.files = e.dataTransfer.files;
+                    const changeEvent = new Event('change');
+                    fileUpload.dispatchEvent(changeEvent);
+                }
+            } else {
+                showToast('Please drop an image file.', 'error');
+            }
+        });
+    }
+    
+    // Add keyboard shortcut (Ctrl/Cmd + Enter to submit)
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            if (form) {
+                e.preventDefault();
+                form.dispatchEvent(new Event('submit'));
+            }
+        }
+    });
+</script>
+{% endblock %}

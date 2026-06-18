@@ -1,0 +1,888 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Modern Manage Lessons Styles */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .page-header {
+        background: var(--primary-gradient);
+        border-radius: 20px;
+        padding: 25px 30px;
+        margin-bottom: 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .page-header::before {
+        content: '📋';
+        position: absolute;
+        bottom: -20px;
+        right: 20px;
+        font-size: 80px;
+        opacity: 0.1;
+    }
+    
+    .page-header h3 {
+        margin: 0;
+        font-weight: 700;
+    }
+    
+    .page-header p {
+        margin: 5px 0 0;
+        opacity: 0.9;
+    }
+    
+    .stats-bar {
+        display: flex;
+        gap: 20px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+    }
+    
+    .stat-pill {
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-size: 14px;
+    }
+    
+    /* Toolbar */
+    .toolbar {
+        background: white;
+        border-radius: 16px;
+        padding: 15px 20px;
+        margin-bottom: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+    
+    .search-box {
+        position: relative;
+        min-width: 250px;
+    }
+    
+    .search-box i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+    
+    .search-box input {
+        padding-left: 35px;
+        border: 2px solid #e9ecef;
+        border-radius: 25px;
+        padding: 10px 15px 10px 35px;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+    
+    .search-box input:focus {
+        border-color: #667eea;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .filter-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+        padding: 8px 16px;
+        border-radius: 25px;
+        border: 2px solid #e9ecef;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 13px;
+    }
+    
+    .filter-btn.active {
+        background: var(--primary-gradient);
+        border-color: #667eea;
+        color: white;
+    }
+    
+    .filter-btn:hover:not(.active) {
+        background: #f8f9fa;
+        border-color: #667eea;
+    }
+    
+    .add-btn {
+        background: var(--success-gradient);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .add-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(17, 153, 142, 0.3);
+        color: white;
+    }
+    
+    /* Table Styles */
+    .table-container {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+    
+    .table-custom {
+        margin-bottom: 0;
+    }
+    
+    .table-custom thead {
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        color: white;
+    }
+    
+    .table-custom th {
+        padding: 15px;
+        font-weight: 600;
+        border: none;
+    }
+    
+    .table-custom td {
+        padding: 15px;
+        vertical-align: middle;
+    }
+    
+    .table-custom tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .table-custom tbody tr:hover {
+        background: #f8f9fa;
+        transform: scale(1.01);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .lesson-order {
+        width: 50px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 18px;
+        color: #667eea;
+    }
+    
+    .drag-handle {
+        cursor: move;
+        color: #adb5bd;
+        transition: color 0.3s ease;
+    }
+    
+    .drag-handle:hover {
+        color: #667eea;
+    }
+    
+    /* Badge Styles */
+    .badge-custom {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .badge-video {
+        background: linear-gradient(135deg, #4facfe20, #00f2fe20);
+        color: #4facfe;
+    }
+    
+    .badge-quiz {
+        background: linear-gradient(135deg, #f6d36520, #fda08520);
+        color: #f6d365;
+    }
+    
+    .badge-no {
+        background: #e9ecef;
+        color: #6c757d;
+    }
+    
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    
+    .action-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    
+    .action-btn-view {
+        background: #4facfe20;
+        color: #4facfe;
+    }
+    
+    .action-btn-view:hover {
+        background: #4facfe;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .action-btn-edit {
+        background: #f6d36520;
+        color: #f6d365;
+    }
+    
+    .action-btn-edit:hover {
+        background: #f6d365;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .action-btn-quiz {
+        background: #667eea20;
+        color: #667eea;
+    }
+    
+    .action-btn-quiz:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .action-btn-delete {
+        background: #eb334920;
+        color: #eb3349;
+    }
+    
+    .action-btn-delete:hover {
+        background: #eb3349;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    /* Content Preview */
+    .content-preview {
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: #6c757d;
+        font-size: 13px;
+    }
+    
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+    
+    .empty-icon {
+        font-size: 80px;
+        color: #dee2e6;
+        margin-bottom: 20px;
+    }
+    
+    .btn-primary {
+        background: var(--primary-gradient);
+        border: none;
+        color: white;
+        padding: 10px 25px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .btn-secondary {
+        background: #6c757d;
+        border: none;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover {
+        background: #5a6268;
+        color: white;
+    }
+    
+    .btn-danger {
+        background: var(--danger-gradient);
+        border: none;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(235, 51, 73, 0.4);
+        color: white;
+    }
+    
+    .btn-light {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-light:hover {
+        background: rgba(255,255,255,0.3);
+        color: white;
+    }
+    
+    .btn-outline-light {
+        background: transparent;
+        border: 2px solid white;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-light:hover {
+        background: white;
+        color: #667eea;
+    }
+    
+    /* Toast Notification */
+    .toast-notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 10px;
+        z-index: 1000;
+        animation: slideInRight 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    /* Bulk Actions Bar */
+    .bulk-actions-bar {
+        background: #667eea;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .bulk-actions-bar.show {
+        display: flex;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Modal Styles */
+    .modal-content {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    
+    .modal-header {
+        padding: 15px 20px;
+        border-bottom: none;
+    }
+    
+    .modal-footer {
+        border-top: none;
+        padding: 15px 20px;
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .btn-close-white {
+        filter: brightness(0) invert(1);
+    }
+    
+    /* Alert */
+    .alert-danger {
+        background: linear-gradient(135deg, #eb334920, #f45c4320);
+        border: none;
+        border-radius: 12px;
+        color: #eb3349;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-header {
+            padding: 20px;
+        }
+        
+        .toolbar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .search-box {
+            width: 100%;
+        }
+        
+        .table-custom {
+            font-size: 13px;
+        }
+        
+        .table-custom td, 
+        .table-custom th {
+            padding: 10px;
+        }
+        
+        .action-buttons {
+            flex-wrap: wrap;
+        }
+        
+        .content-preview {
+            max-width: 120px;
+        }
+    }
+    
+    /* Dragging styles */
+    .dragging {
+        opacity: 0.5;
+        background: #f8f9fa;
+    }
+    
+    .drag-over {
+        border-top: 2px solid #667eea;
+    }
+</style>
+
+<div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <h3><i class="fas fa-chalkboard-teacher me-2"></i>Manage Lessons</h3>
+                <p>{{ course.title }}</p>
+            </div>
+            <a href="{{ url_for('add_lesson', course_id=course.id) }}" class="add-btn">
+                <i class="fas fa-plus me-2"></i>Add New Lesson
+            </a>
+        </div>
+        <div class="stats-bar">
+            <div class="stat-pill">
+                <i class="fas fa-book me-1"></i> Total Lessons: {{ lessons|length }}
+            </div>
+            <div class="stat-pill">
+                <i class="fas fa-video me-1"></i> With Video: {{ lessons_with_video }}
+            </div>
+            <div class="stat-pill">
+                <i class="fas fa-puzzle-piece me-1"></i> With Quizzes: {{ lessons_with_quizzes }}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bulk Actions Bar -->
+    <div class="bulk-actions-bar" id="bulkActionsBar">
+        <div>
+            <i class="fas fa-check-circle me-2"></i>
+            <span id="selectedCount">0</span> lessons selected
+        </div>
+        <div>
+            <button class="btn btn-light" onclick="bulkDelete()">
+                <i class="fas fa-trash me-1"></i> Delete Selected
+            </button>
+            <button class="btn btn-outline-light" onclick="clearSelection()">
+                <i class="fas fa-times me-1"></i> Cancel
+            </button>
+        </div>
+    </div>
+    
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search lessons...">
+        </div>
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="video">With Video</button>
+            <button class="filter-btn" data-filter="no-video">No Video</button>
+            <button class="filter-btn" data-filter="quiz">With Quiz</button>
+            <button class="filter-btn" data-filter="no-quiz">No Quiz</button>
+        </div>
+    </div>
+    
+    <!-- Lessons Table -->
+    <div class="table-container">
+        {% if lessons %}
+            <div class="table-responsive">
+                <table class="table table-custom" id="lessonsTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 30px;">
+                                <input type="checkbox" id="selectAllCheckbox" style="width: 18px; height: 18px; cursor: pointer;">
+                            </th>
+                            <th style="width: 60px;">#</th>
+                            <th>Lesson Title</th>
+                            <th>Video</th>
+                            <th>Quiz</th>
+                            <th>Content</th>
+                            <th style="width: 180px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lessonsTableBody">
+                        {% for lesson in lessons %}
+                        <tr data-lesson-id="{{ lesson.id }}" data-has-video="{% if lesson.video_url %}true{% else %}false{% endif %}" data-has-quiz="{% if lesson.quizzes.count() > 0 %}true{% else %}false{% endif %}">
+                            <td>
+                                <input type="checkbox" class="lesson-checkbox" data-lesson-id="{{ lesson.id }}" data-lesson-title="{{ lesson.title }}" style="width: 18px; height: 18px; cursor: pointer;">
+                            </td>
+                            <td class="lesson-order">{{ lesson.order }}</td>
+                            <td>
+                                <strong>{{ lesson.title }}</strong>
+                                <br>
+                                <small class="text-muted">ID: {{ lesson.id }}</small>
+                            </td>
+                            <td>
+                                {% if lesson.video_url %}
+                                    <span class="badge-custom badge-video">
+                                        <i class="fas fa-video"></i> Yes
+                                    </span>
+                                {% else %}
+                                    <span class="badge-custom badge-no">
+                                        <i class="fas fa-times"></i> No
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% set quiz_count = lesson.quizzes.count() %}
+                                {% if quiz_count > 0 %}
+                                    <span class="badge-custom badge-quiz">
+                                        <i class="fas fa-puzzle-piece"></i> {{ quiz_count }} Q
+                                    </span>
+                                {% else %}
+                                    <span class="badge-custom badge-no">
+                                        <i class="fas fa-times"></i> No
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="content-preview" title="{{ lesson.content }}">
+                                    {{ lesson.content[:60] }}{% if lesson.content|length > 60 %}...{% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{{ url_for('learn_course', course_id=course.id) }}#lesson-{{ lesson.id }}" 
+                                       class="action-btn action-btn-view" target="_blank" title="View Lesson">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ url_for('edit_lesson', lesson_id=lesson.id) }}" 
+                                       class="action-btn action-btn-edit" title="Edit Lesson">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    {% if lesson.quizzes.count() > 0 %}
+                                        <a href="{{ url_for('manage_quizzes', lesson_id=lesson.id) }}" 
+                                           class="action-btn action-btn-quiz" title="Manage Quizzes">
+                                            <i class="fas fa-puzzle-piece"></i>
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ url_for('add_quiz', lesson_id=lesson.id) }}" 
+                                           class="action-btn action-btn-quiz" title="Add Quiz">
+                                            <i class="fas fa-plus"></i>
+                                        </a>
+                                    {% endif %}
+                                    <button type="button" 
+                                            class="action-btn action-btn-delete" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#deleteModal{{ lesson.id }}" title="Delete Lesson">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Delete Modal for each lesson -->
+                        <div class="modal fade" id="deleteModal{{ lesson.id }}" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header" style="background: var(--danger-gradient); color: white;">
+                                        <h5 class="modal-title">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>Delete Lesson
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to delete <strong class="text-danger">"{{ lesson.title }}"</strong>?</p>
+                                        <div class="alert alert-danger">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            <strong>This action cannot be undone!</strong> The following will be permanently deleted:
+                                            <ul class="mt-2 mb-0">
+                                                <li>All quizzes and questions in this lesson</li>
+                                                <li>All student quiz attempts and progress</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <a href="{{ url_for('delete_lesson', lesson_id=lesson.id) }}" class="btn btn-danger">
+                                            <i class="fas fa-trash me-1"></i>Yes, Delete
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h4>No Lessons Yet</h4>
+                <p class="text-muted">Start creating your first lesson for this course!</p>
+                <a href="{{ url_for('add_lesson', course_id=course.id) }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Add First Lesson
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const tableRows = document.querySelectorAll('#lessonsTableBody tr');
+    let currentFilter = 'all';
+    
+    function filterTable() {
+        if (!searchInput) return;
+        const searchTerm = searchInput.value.toLowerCase();
+        
+        tableRows.forEach(row => {
+            const title = row.querySelector('td:nth-child(3) strong')?.innerText.toLowerCase() || '';
+            const content = row.querySelector('.content-preview')?.innerText.toLowerCase() || '';
+            const hasVideo = row.dataset.hasVideo === 'true';
+            const hasQuiz = row.dataset.hasQuiz === 'true';
+            
+            let matchesFilter = true;
+            switch(currentFilter) {
+                case 'video':
+                    matchesFilter = hasVideo;
+                    break;
+                case 'no-video':
+                    matchesFilter = !hasVideo;
+                    break;
+                case 'quiz':
+                    matchesFilter = hasQuiz;
+                    break;
+                case 'no-quiz':
+                    matchesFilter = !hasQuiz;
+                    break;
+                default:
+                    matchesFilter = true;
+            }
+            
+            const matchesSearch = title.includes(searchTerm) || content.includes(searchTerm);
+            
+            if (matchesFilter && matchesSearch) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', filterTable);
+    }
+    
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.dataset.filter;
+            filterTable();
+        });
+    });
+    
+    // Select All functionality
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    const lessonCheckboxes = document.querySelectorAll('.lesson-checkbox');
+    const bulkActionsBar = document.getElementById('bulkActionsBar');
+    const selectedCountSpan = document.getElementById('selectedCount');
+    
+    function updateBulkActions() {
+        const checkedCount = document.querySelectorAll('.lesson-checkbox:checked').length;
+        if (checkedCount > 0) {
+            if (bulkActionsBar) bulkActionsBar.classList.add('show');
+            if (selectedCountSpan) selectedCountSpan.innerText = checkedCount;
+        } else {
+            if (bulkActionsBar) bulkActionsBar.classList.remove('show');
+        }
+        
+        // Update select all checkbox
+        if (selectAllCheckbox) {
+            const visibleCheckboxes = Array.from(lessonCheckboxes).filter(cb => cb.closest('tr').style.display !== 'none');
+            const allChecked = visibleCheckboxes.length > 0 && visibleCheckboxes.every(cb => cb.checked);
+            selectAllCheckbox.checked = allChecked;
+            selectAllCheckbox.indeterminate = visibleCheckboxes.some(cb => cb.checked) && !allChecked;
+        }
+    }
+    
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const isChecked = this.checked;
+            const visibleRows = Array.from(document.querySelectorAll('#lessonsTableBody tr')).filter(row => row.style.display !== 'none');
+            visibleRows.forEach(row => {
+                const checkbox = row.querySelector('.lesson-checkbox');
+                if (checkbox) checkbox.checked = isChecked;
+            });
+            updateBulkActions();
+        });
+    }
+    
+    lessonCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateBulkActions);
+    });
+    
+    function clearSelection() {
+        lessonCheckboxes.forEach(cb => cb.checked = false);
+        updateBulkActions();
+    }
+    
+    function bulkDelete() {
+        const selectedLessons = Array.from(document.querySelectorAll('.lesson-checkbox:checked'))
+            .map(cb => ({
+                id: cb.dataset.lessonId,
+                title: cb.dataset.lessonTitle
+            }));
+        
+        if (selectedLessons.length === 0) return;
+        
+        if (confirm(`Delete ${selectedLessons.length} lesson(s)?\n\n${selectedLessons.map(l => `• ${l.title}`).join('\n')}\n\nThis action cannot be undone!`)) {
+            window.location.href = `/instructor/lesson/${selectedLessons[0].id}/delete`;
+        }
+    }
+    
+    // Export to CSV
+    function exportToCSV() {
+        const visibleRows = Array.from(document.querySelectorAll('#lessonsTableBody tr')).filter(row => row.style.display !== 'none');
+        let csvContent = "Order,Title,Has Video,Has Quiz,Content Preview\n";
+        
+        visibleRows.forEach(row => {
+            const order = row.querySelector('.lesson-order')?.innerText || '';
+            const title = row.querySelector('td:nth-child(3) strong')?.innerText || '';
+            const hasVideo = row.dataset.hasVideo === 'true' ? 'Yes' : 'No';
+            const hasQuiz = row.dataset.hasQuiz === 'true' ? 'Yes' : 'No';
+            const content = row.querySelector('.content-preview')?.innerText || '';
+            
+            csvContent += `"${order}","${title}","${hasVideo}","${hasQuiz}","${content}"\n`;
+        });
+        
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `lessons_export_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showToast('Export complete!');
+    }
+    
+    function showToast(message) {
+        let toast = document.querySelector('.toast-notification');
+        if (toast) toast.remove();
+        
+        toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.innerHTML = `<i class="fas fa-check-circle me-2"></i>${message}`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+    
+    // Add export button to toolbar
+    const toolbar = document.querySelector('.toolbar');
+    if (toolbar && document.querySelector('#lessonsTableBody tr')) {
+        const exportBtn = document.createElement('button');
+        exportBtn.className = 'filter-btn';
+        exportBtn.innerHTML = '<i class="fas fa-download me-1"></i>Export';
+        exportBtn.onclick = exportToCSV;
+        const filterButtons = toolbar.querySelector('.filter-buttons');
+        if (filterButtons) {
+            filterButtons.appendChild(exportBtn);
+        }
+    }
+    
+    // Animate on load
+    window.addEventListener('load', () => {
+        document.querySelectorAll('.table-custom tbody tr').forEach((row, index) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+                row.style.transition = 'all 0.3s ease';
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+            }, index * 50);
+        });
+    });
+</script>
+{% endblock %}

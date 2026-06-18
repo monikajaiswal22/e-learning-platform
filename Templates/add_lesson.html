@@ -1,0 +1,928 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Modern Form Styles */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .form-container {
+        padding: 20px;
+    }
+    
+    .form-header {
+        background: var(--primary-gradient);
+        border-radius: 20px 20px 0 0;
+        padding: 25px 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .form-header::before {
+        content: '📖';
+        position: absolute;
+        bottom: -20px;
+        right: 20px;
+        font-size: 80px;
+        opacity: 0.1;
+    }
+    
+    .form-header h3 {
+        margin: 0;
+        font-weight: 700;
+    }
+    
+    .form-header p {
+        margin: 5px 0 0;
+        opacity: 0.9;
+    }
+    
+    .course-badge {
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 30px;
+        display: inline-block;
+        margin-top: 15px;
+        font-size: 14px;
+    }
+    
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+    
+    .form-body {
+        padding: 30px;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .form-label i {
+        color: #667eea;
+        width: 18px;
+    }
+    
+    .required-field::after {
+        content: '*';
+        color: #eb3349;
+        margin-left: 4px;
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+    }
+    
+    .form-control.is-valid {
+        border-color: #11998e;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2311998e' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+        padding-right: 35px;
+    }
+    
+    .form-control.is-invalid {
+        border-color: #eb3349;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23eb3349'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23eb3349' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+        padding-right: 35px;
+    }
+    
+    .invalid-feedback {
+        color: #eb3349;
+        font-size: 12px;
+        margin-top: 5px;
+        display: block;
+    }
+    
+    .valid-feedback {
+        color: #11998e;
+        font-size: 12px;
+        margin-top: 5px;
+        display: block;
+    }
+    
+    /* Video Preview */
+    .video-preview-container {
+        background: #f8f9fa;
+        border-radius: 16px;
+        padding: 20px;
+        margin-top: 15px;
+        text-align: center;
+    }
+    
+    .video-preview {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #000;
+    }
+    
+    .video-preview iframe,
+    .video-preview video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+    
+    .video-placeholder {
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        padding: 40px;
+        text-align: center;
+        border-radius: 12px;
+        color: white;
+    }
+    
+    .video-placeholder i {
+        font-size: 48px;
+        margin-bottom: 15px;
+        opacity: 0.5;
+    }
+    
+    /* Order Input with Stepper */
+    .order-input-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .order-stepper {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .stepper-btn {
+        width: 36px;
+        height: 36px;
+        border: 2px solid #e9ecef;
+        background: white;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .stepper-btn:hover {
+        background: #667eea;
+        border-color: #667eea;
+        color: white;
+    }
+    
+    .order-value {
+        width: 80px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 18px;
+    }
+    
+    /* Template Suggestions */
+    .template-section {
+        margin-top: 20px;
+    }
+    
+    .template-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+    
+    .template-btn {
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .template-btn:hover {
+        background: var(--primary-gradient);
+        color: white;
+        border-color: #667eea;
+    }
+    
+    /* Submit Buttons */
+    .btn-submit {
+        background: var(--success-gradient);
+        border: none;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        color: white;
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(17, 153, 142, 0.3);
+        color: white;
+    }
+    
+    .btn-cancel {
+        background: #6c757d;
+        border: none;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-cancel:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        color: white;
+    }
+    
+    .btn-outline-danger {
+        background: transparent;
+        color: #eb3349;
+        border: 2px solid #eb3349;
+        padding: 5px 15px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .btn-outline-danger:hover {
+        background: #eb3349;
+        color: white;
+    }
+    
+    /* Character Counters */
+    .char-counter {
+        text-align: right;
+        font-size: 12px;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+    
+    .char-counter.warning {
+        color: #f6d365;
+    }
+    
+    .char-counter.danger {
+        color: #eb3349;
+    }
+    
+    /* Tips Card */
+    .tips-card {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 16px;
+        padding: 20px;
+        margin-top: 30px;
+    }
+    
+    .tips-title {
+        font-weight: 600;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .tips-list {
+        margin: 0;
+        padding-left: 20px;
+    }
+    
+    .tips-list li {
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+    
+    /* Loading */
+    .btn-loading {
+        position: relative;
+        pointer-events: none;
+        opacity: 0.7;
+    }
+    
+    .btn-loading::after {
+        content: '';
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        top: 50%;
+        right: 15px;
+        margin-top: -9px;
+        border: 2px solid white;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .form-body {
+            padding: 20px;
+        }
+        
+        .form-header {
+            padding: 20px;
+        }
+        
+        .order-input-wrapper {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .order-stepper {
+            justify-content: center;
+        }
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.5s ease forwards;
+    }
+</style>
+
+<div class="container form-container fade-in">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="form-card">
+                <div class="form-header">
+                    <h3><i class="fas fa-plus-circle me-2"></i>Add New Lesson</h3>
+                    <p>Create engaging content for your students</p>
+                    <div class="course-badge">
+                        <i class="fas fa-book me-1"></i> {{ course.title }}
+                    </div>
+                </div>
+                
+                <div class="form-body">
+                    <!-- FIXED: Added action -->
+                    <form method="POST" id="lessonForm" action="{{ url_for('add_lesson', course_id=course.id) }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <!-- Lesson Title -->
+                        <div class="form-group">
+                            <label class="form-label required-field" for="lessonTitle">
+                                <i class="fas fa-heading"></i> Lesson Title
+                            </label>
+                            {{ form.title(class="form-control", placeholder="e.g., Introduction to Python Programming", id="lessonTitle") }}
+                            <div class="char-counter" id="titleCounter">0/100 characters</div>
+                            <div class="invalid-feedback" id="titleError"></div>
+                            <div class="valid-feedback" id="titleValid"></div>
+                            {% for error in form.title.errors %}
+                                <span class="text-danger small">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Lesson Content -->
+                        <div class="form-group">
+                            <label class="form-label required-field" for="lessonContent">
+                                <i class="fas fa-align-left"></i> Lesson Content
+                            </label>
+                            {{ form.content(class="form-control", rows="6", placeholder="Write the lesson content here. Include key points, explanations, examples, and summary.", id="lessonContent") }}
+                            <div class="char-counter" id="contentCounter">0/5000 characters</div>
+                            <div class="invalid-feedback" id="contentError"></div>
+                            {% for error in form.content.errors %}
+                                <span class="text-danger small">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Content Templates -->
+                        <div class="template-section">
+                            <label class="form-label">
+                                <i class="fas fa-magic"></i> Content Templates
+                            </label>
+                            <div class="template-buttons">
+                                <button type="button" class="template-btn" onclick="insertTemplate('introduction')">
+                                    📖 Introduction
+                                </button>
+                                <button type="button" class="template-btn" onclick="insertTemplate('tutorial')">
+                                    🎯 Tutorial
+                                </button>
+                                <button type="button" class="template-btn" onclick="insertTemplate('summary')">
+                                    📝 Summary
+                                </button>
+                                <button type="button" class="template-btn" onclick="insertTemplate('quiz')">
+                                    ❓ Quiz Prep
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Video URL -->
+                        <div class="form-group">
+                            <label class="form-label" for="videoUrl">
+                                <i class="fas fa-video"></i> Video URL
+                            </label>
+                            {{ form.video_url(class="form-control", placeholder="https://www.youtube.com/watch?v=VIDEO_ID or https://www.youtube.com/embed/VIDEO_ID", id="videoUrl") }}
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle"></i> 
+                                Supports YouTube, Vimeo, and direct MP4 links
+                            </small>
+                            <div class="invalid-feedback" id="videoError"></div>
+                            {% for error in form.video_url.errors %}
+                                <span class="text-danger small">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Video Preview -->
+                        <div id="videoPreviewContainer" style="display: none;">
+                            <div class="video-preview-container">
+                                <label class="form-label">
+                                    <i class="fas fa-eye"></i> Video Preview
+                                </label>
+                                <div id="videoPreview" class="video-preview">
+                                    <!-- Video preview will appear here -->
+                                </div>
+                                <button type="button" class="btn btn-outline-danger mt-2" id="clearVideo">
+                                    <i class="fas fa-times"></i> Remove Video
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Lesson Order -->
+                        <div class="form-group">
+                            <label class="form-label required-field" for="lessonOrder">
+                                <i class="fas fa-sort-numeric-down"></i> Lesson Order
+                            </label>
+                            <div class="order-input-wrapper">
+                                <div class="order-stepper">
+                                    <button type="button" class="stepper-btn" id="orderMinus">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    {{ form.order(class="form-control order-value", id="lessonOrder", style="text-align: center;") }}
+                                    <button type="button" class="stepper-btn" id="orderPlus">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle"></i> 
+                                    Lessons are ordered from smallest to largest number
+                                </small>
+                            </div>
+                            <div class="invalid-feedback" id="orderError"></div>
+                            {% for error in form.order.errors %}
+                                <span class="text-danger small">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-3 mt-4">
+                            {{ form.submit(class="btn btn-submit text-white", value="➕ Add Lesson") }}
+                            <a href="{{ url_for('manage_lessons', course_id=course.id) }}" class="btn btn-cancel text-white text-center">
+                                <i class="fas fa-arrow-left me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                    
+                    <!-- Pro Tips -->
+                    <div class="tips-card">
+                        <div class="tips-title">
+                            <i class="fas fa-lightbulb text-warning"></i>
+                            <span>Pro Tips for Great Lessons</span>
+                        </div>
+                        <ul class="tips-list">
+                            <li><strong>Keep it concise:</strong> Aim for 5-15 minute videos for better engagement</li>
+                            <li><strong>Use visuals:</strong> Add images, diagrams, and examples to reinforce concepts</li>
+                            <li><strong>Include practice:</strong> Add exercises or quizzes after each lesson</li>
+                            <li><strong>Structure matters:</strong> Use clear headings and bullet points for easy reading</li>
+                            <li><strong>Add resources:</strong> Provide downloadable materials when relevant</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Character counters
+    const titleInput = document.getElementById('lessonTitle');
+    const titleCounter = document.getElementById('titleCounter');
+    const contentInput = document.getElementById('lessonContent');
+    const contentCounter = document.getElementById('contentCounter');
+    
+    // Get error elements
+    const titleError = document.getElementById('titleError');
+    const contentError = document.getElementById('contentError');
+    const videoError = document.getElementById('videoError');
+    const orderError = document.getElementById('orderError');
+    const titleValid = document.getElementById('titleValid');
+    
+    function setInvalid(input, errorElement, message) {
+        input.classList.add('is-invalid');
+        input.classList.remove('is-valid');
+        if (errorElement) errorElement.textContent = message;
+    }
+    
+    function setValid(input, errorElement) {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+        if (errorElement) errorElement.textContent = '';
+    }
+    
+    if (titleInput) {
+        titleInput.addEventListener('input', function() {
+            const length = this.value.length;
+            if (titleCounter) {
+                titleCounter.textContent = `${length}/100 characters`;
+                if (length > 100) {
+                    titleCounter.classList.add('danger');
+                    titleCounter.classList.remove('warning');
+                    setInvalid(titleInput, titleError, 'Title must be less than 100 characters');
+                    if (titleValid) titleValid.textContent = '';
+                } else if (length > 80) {
+                    titleCounter.classList.add('warning');
+                    titleCounter.classList.remove('danger');
+                    setValid(titleInput, titleError);
+                    if (titleValid) titleValid.textContent = 'Good title!';
+                } else if (length > 0) {
+                    titleCounter.classList.remove('warning', 'danger');
+                    setValid(titleInput, titleError);
+                    if (titleValid) titleValid.textContent = 'Looks good!';
+                } else {
+                    titleCounter.classList.remove('warning', 'danger');
+                    titleInput.classList.remove('is-valid', 'is-invalid');
+                    if (titleValid) titleValid.textContent = '';
+                }
+            }
+        });
+        titleInput.dispatchEvent(new Event('input'));
+    }
+    
+    if (contentInput) {
+        contentInput.addEventListener('input', function() {
+            const length = this.value.length;
+            if (contentCounter) {
+                contentCounter.textContent = `${length}/5000 characters`;
+                if (length > 5000) {
+                    contentCounter.classList.add('danger');
+                    contentCounter.classList.remove('warning');
+                    setInvalid(contentInput, contentError, 'Content must be less than 5000 characters');
+                } else if (length > 4500) {
+                    contentCounter.classList.add('warning');
+                    contentCounter.classList.remove('danger');
+                    setValid(contentInput, contentError);
+                } else if (length > 0) {
+                    contentCounter.classList.remove('warning', 'danger');
+                    setValid(contentInput, contentError);
+                } else {
+                    contentCounter.classList.remove('warning', 'danger');
+                    contentInput.classList.remove('is-valid', 'is-invalid');
+                }
+            }
+        });
+        contentInput.dispatchEvent(new Event('input'));
+    }
+    
+    // Order stepper
+    const orderInput = document.getElementById('lessonOrder');
+    const orderMinus = document.getElementById('orderMinus');
+    const orderPlus = document.getElementById('orderPlus');
+    
+    if (orderMinus) {
+        orderMinus.addEventListener('click', function() {
+            let value = parseInt(orderInput.value) || 1;
+            if (value > 1) {
+                orderInput.value = value - 1;
+                orderInput.dispatchEvent(new Event('input'));
+            }
+        });
+    }
+    
+    if (orderPlus) {
+        orderPlus.addEventListener('click', function() {
+            let value = parseInt(orderInput.value) || 1;
+            orderInput.value = value + 1;
+            orderInput.dispatchEvent(new Event('input'));
+        });
+    }
+    
+    if (orderInput) {
+        orderInput.addEventListener('input', function() {
+            let value = parseInt(this.value);
+            if (isNaN(value) || value < 1) {
+                this.value = 1;
+            }
+            setValid(orderInput, orderError);
+        });
+    }
+    
+    // Video URL preview
+    const videoUrlInput = document.getElementById('videoUrl');
+    const previewContainer = document.getElementById('videoPreviewContainer');
+    const previewDiv = document.getElementById('videoPreview');
+    const clearVideoBtn = document.getElementById('clearVideo');
+    
+    function getYoutubeEmbedUrl(url) {
+        // YouTube watch URL patterns
+        const watchRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/;
+        const match = url.match(watchRegex);
+        if (match) {
+            return `https://www.youtube.com/embed/${match[1]}`;
+        }
+        
+        // Already embed URL
+        if (url.includes('youtube.com/embed/')) {
+            return url;
+        }
+        
+        return null;
+    }
+    
+    function getVimeoEmbedUrl(url) {
+        const regex = /vimeo\.com\/(\d+)/;
+        const match = url.match(regex);
+        if (match) {
+            return `https://player.vimeo.com/video/${match[1]}`;
+        }
+        return null;
+    }
+    
+    function updateVideoPreview() {
+        if (!videoUrlInput) return;
+        let url = videoUrlInput.value.trim();
+        
+        if (!url) {
+            if (previewContainer) previewContainer.style.display = 'none';
+            return;
+        }
+        
+        let embedUrl = null;
+        let isDirectVideo = false;
+        
+        // Check for YouTube
+        embedUrl = getYoutubeEmbedUrl(url);
+        
+        // Check for Vimeo
+        if (!embedUrl) {
+            embedUrl = getVimeoEmbedUrl(url);
+        }
+        
+        // Check for direct MP4/WebM
+        if (!embedUrl && (url.endsWith('.mp4') || url.endsWith('.webm'))) {
+            isDirectVideo = true;
+        }
+        
+        // If still no match, check if it's already an embed URL
+        if (!embedUrl && !isDirectVideo && (url.includes('/embed/') || url.includes('player.'))) {
+            embedUrl = url;
+        }
+        
+        if (previewContainer && previewDiv) {
+            if (embedUrl || isDirectVideo) {
+                previewContainer.style.display = 'block';
+                if (embedUrl) {
+                    previewDiv.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                } else if (isDirectVideo) {
+                    previewDiv.innerHTML = `<video controls width="100%"><source src="${url}" type="video/mp4">Your browser does not support the video tag.</video>`;
+                }
+                setValid(videoUrlInput, videoError);
+            } else if (url) {
+                previewContainer.style.display = 'block';
+                previewDiv.innerHTML = `
+                    <div class="video-placeholder">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h6>Invalid or Unsupported URL</h6>
+                        <p class="mb-0 small">Please enter a valid YouTube, Vimeo, or direct video link</p>
+                    </div>
+                `;
+                setInvalid(videoUrlInput, videoError, 'Please enter a valid video URL');
+            }
+        }
+    }
+    
+    if (videoUrlInput) {
+        videoUrlInput.addEventListener('input', updateVideoPreview);
+        // Trigger preview on load if there's a value
+        if (videoUrlInput.value) {
+            updateVideoPreview();
+        }
+    }
+    
+    if (clearVideoBtn) {
+        clearVideoBtn.addEventListener('click', function() {
+            if (videoUrlInput) {
+                videoUrlInput.value = '';
+                if (previewContainer) previewContainer.style.display = 'none';
+                videoUrlInput.classList.remove('is-valid', 'is-invalid');
+                if (videoError) videoError.textContent = '';
+            }
+        });
+    }
+    
+    // Template insertion
+    const templates = {
+        introduction: `## Lesson Overview
+
+In this lesson, you will learn:
+
+• Key concept 1
+• Key concept 2  
+• Key concept 3
+
+## Prerequisites
+- Basic understanding of [topic]
+- [Software/Tools] installed
+
+## Learning Objectives
+By the end of this lesson, you will be able to:
+1. Understand [main concept]
+2. Apply [technique] to solve problems
+3. Create your own [project/exercise]`,
+        
+        tutorial: `## Step-by-Step Tutorial
+
+### Step 1: Setup
+1. First, [action]
+2. Then, [action]
+3. Finally, [action]
+
+### Step 2: Implementation
+\`\`\`
+// Example code here
+function example() {
+    console.log("Hello World");
+}
+\`\`\`
+
+### Step 3: Testing
+Test your implementation by:
+- [Test case 1]
+- [Test case 2]
+
+### Common Issues & Solutions
+- **Issue 1:** [Description] → Solution: [Fix]
+- **Issue 2:** [Description] → Solution: [Fix]`,
+        
+        summary: `## Lesson Summary
+
+### Key Takeaways
+- ✅ [Main point 1]
+- ✅ [Main point 2]
+- ✅ [Main point 3]
+
+### Important Terms
+| Term | Definition |
+|------|------------|
+| Term 1 | Definition |
+| Term 2 | Definition |
+
+### Practice Questions
+1. [Question 1]
+2. [Question 2]
+3. [Question 3]
+
+### Next Steps
+- Complete the quiz
+- Work on the assignment
+- Read the additional resources`,
+        
+        quiz: `## Quiz Preparation
+
+### Review Questions
+1. What is [concept]?
+   
+2. Explain how [topic] works.
+
+3. What are the benefits of [technique]?
+
+### Practice Exercise
+**Task:** [Describe the exercise]
+
+**Requirements:**
+- [Requirement 1]
+- [Requirement 2]
+
+**Bonus Challenge:** [Advanced task]
+
+### Key Terms to Remember
+- [Term 1]: [Brief definition]
+- [Term 2]: [Brief definition]`
+    };
+    
+    function insertTemplate(type) {
+        if (contentInput && templates[type]) {
+            const currentContent = contentInput.value;
+            const template = templates[type];
+            contentInput.value = currentContent ? currentContent + '\n\n' + template : template;
+            contentInput.dispatchEvent(new Event('input'));
+            contentInput.focus();
+        }
+    }
+    
+    // Form validation
+    const form = document.getElementById('lessonForm');
+    
+    function validateTitle() {
+        if (!titleInput) return false;
+        const value = titleInput.value.trim();
+        if (!value) {
+            setInvalid(titleInput, titleError, 'Lesson title is required');
+            if (titleValid) titleValid.textContent = '';
+            return false;
+        } else if (value.length > 100) {
+            setInvalid(titleInput, titleError, 'Title must be less than 100 characters');
+            if (titleValid) titleValid.textContent = '';
+            return false;
+        } else {
+            setValid(titleInput, titleError);
+            if (titleValid) titleValid.textContent = 'Looks good!';
+            return true;
+        }
+    }
+    
+    function validateContent() {
+        if (!contentInput) return false;
+        const value = contentInput.value.trim();
+        if (!value) {
+            setInvalid(contentInput, contentError, 'Lesson content is required');
+            return false;
+        } else if (value.length > 5000) {
+            setInvalid(contentInput, contentError, 'Content must be less than 5000 characters');
+            return false;
+        } else {
+            setValid(contentInput, contentError);
+            return true;
+        }
+    }
+    
+    if (titleInput) titleInput.addEventListener('blur', validateTitle);
+    if (contentInput) contentInput.addEventListener('blur', validateContent);
+    
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const isTitleValid = validateTitle();
+            const isContentValid = validateContent();
+            
+            if (!isTitleValid || !isContentValid) {
+                e.preventDefault();
+                alert('Please fix the errors before submitting.');
+                // Focus first invalid field
+                const firstInvalid = document.querySelector('.is-invalid');
+                if (firstInvalid) {
+                    firstInvalid.focus();
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                return false;
+            }
+            
+            // Show loading state
+            const submitBtn = document.querySelector('.btn-submit');
+            if (submitBtn) {
+                submitBtn.classList.add('btn-loading');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Adding Lesson...';
+            }
+        });
+    }
+</script>
+{% endblock %}

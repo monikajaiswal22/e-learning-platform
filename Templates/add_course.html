@@ -1,0 +1,704 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Modern Form Styles */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .form-header {
+        background: var(--primary-gradient);
+        border-radius: 20px 20px 0 0;
+        padding: 25px 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .form-header::before {
+        content: '📚';
+        position: absolute;
+        bottom: -20px;
+        right: 20px;
+        font-size: 80px;
+        opacity: 0.1;
+    }
+    
+    .form-header h3 {
+        margin: 0;
+        font-weight: 700;
+    }
+    
+    .form-header p {
+        margin: 5px 0 0;
+        opacity: 0.9;
+    }
+    
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+    
+    .form-body {
+        padding: 30px;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .form-label i {
+        color: #667eea;
+    }
+    
+    .required-field::after {
+        content: '*';
+        color: #eb3349;
+        margin-left: 4px;
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+    }
+    
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+    }
+    
+    /* Image Preview Section */
+    .image-preview-container {
+        background: #f8f9fa;
+        border-radius: 16px;
+        padding: 20px;
+        margin-top: 15px;
+        text-align: center;
+    }
+    
+    .preview-image {
+        max-width: 100%;
+        max-height: 250px;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .sample-images-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 15px;
+        margin-top: 10px;
+    }
+    
+    .sample-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .sample-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+    
+    .sample-image {
+        width: 100%;
+        height: 80px;
+        object-fit: cover;
+    }
+    
+    .sample-label {
+        padding: 8px;
+        font-size: 12px;
+        text-align: center;
+        font-weight: 500;
+        background: white;
+    }
+    
+    /* Alert Styles */
+    .alert-custom {
+        border-radius: 12px;
+        border-left: 4px solid;
+        padding: 15px;
+    }
+    
+    .alert-info-custom {
+        background: linear-gradient(135deg, #4facfe10, #00f2fe10);
+        border-left-color: #4facfe;
+    }
+    
+    /* Button Styles */
+    .btn-submit {
+        background: var(--success-gradient);
+        border: none;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        color: white;
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(17, 153, 142, 0.3);
+        color: white;
+    }
+    
+    .btn-cancel {
+        background: #6c757d;
+        border: none;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-cancel:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        color: white;
+    }
+    
+    .btn-outline-danger {
+        background: transparent;
+        color: #eb3349;
+        border: 2px solid #eb3349;
+        padding: 5px 15px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .btn-outline-danger:hover {
+        background: #eb3349;
+        color: white;
+    }
+    
+    /* Toggle Switch for Price */
+    .price-toggle {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .toggle-btn {
+        padding: 8px 20px;
+        border-radius: 25px;
+        border: 2px solid #e9ecef;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    
+    .toggle-btn.active {
+        background: var(--success-gradient);
+        border-color: #11998e;
+        color: white;
+    }
+    
+    /* Character counter */
+    .char-counter {
+        text-align: right;
+        font-size: 12px;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+    
+    .char-counter.warning {
+        color: #f6d365;
+    }
+    
+    .char-counter.danger {
+        color: #eb3349;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .form-body {
+            padding: 20px;
+        }
+        
+        .form-header {
+            padding: 20px;
+        }
+        
+        .sample-images-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.5s ease forwards;
+    }
+    
+    /* Tooltip */
+    .tooltip-icon {
+        cursor: help;
+        color: #6c757d;
+        margin-left: 5px;
+        font-size: 12px;
+    }
+    
+    .tooltip-icon:hover {
+        color: #667eea;
+    }
+    
+    /* Loading state */
+    .btn-loading {
+        position: relative;
+        pointer-events: none;
+        opacity: 0.7;
+    }
+    
+    .btn-loading::after {
+        content: '';
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        top: 50%;
+        right: 15px;
+        margin-top: -9px;
+        border: 2px solid white;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+</style>
+
+<div class="row justify-content-center fade-in">
+    <div class="col-md-8 col-lg-7">
+        <div class="form-card">
+            <div class="form-header">
+                <h3><i class="fas fa-plus-circle me-2"></i>Create New Course</h3>
+                <p>Share your knowledge with the world. Create an engaging course that students will love!</p>
+            </div>
+            
+            <div class="form-body">
+                <!-- FIXED: Added action -->
+                <form method="POST" enctype="multipart/form-data" id="courseForm" action="{{ url_for('add_course') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Course Title -->
+                    <div class="form-group">
+                        {{ form.title.label(class="form-label required-field") }}
+                        {{ form.title(class="form-control", placeholder="e.g., Python Programming Masterclass: From Zero to Hero", id="courseTitle") }}
+                        <div class="char-counter" id="titleCounter">0/100 characters</div>
+                        {% for error in form.title.errors %}
+                            <span class="text-danger small">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Course Description -->
+                    <div class="form-group">
+                        {{ form.description.label(class="form-label required-field") }}
+                        {{ form.description(class="form-control", rows="6", placeholder="Describe what students will learn in this course. Be specific and engaging! Include learning outcomes, prerequisites, and target audience.", id="courseDescription") }}
+                        <div class="char-counter" id="descCounter">0/2000 characters</div>
+                        {% for error in form.description.errors %}
+                            <span class="text-danger small">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Course Category -->
+                    <div class="form-group">
+                        {{ form.category.label(class="form-label required-field") }}
+                        {{ form.category(class="form-select", id="courseCategory") }}
+                        {% for error in form.category.errors %}
+                            <span class="text-danger small">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Course Level -->
+                    <div class="form-group">
+                        {{ form.level.label(class="form-label required-field") }}
+                        {{ form.level(class="form-select", id="courseLevel") }}
+                        {% for error in form.level.errors %}
+                            <span class="text-danger small">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Course Price with Toggle -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-dollar-sign"></i> Course Price
+                            <span class="tooltip-icon" data-bs-toggle="tooltip" title="Set a price for your course or make it free!">
+                                <i class="fas fa-question-circle"></i>
+                            </span>
+                        </label>
+                        <div class="price-toggle">
+                            <div class="toggle-btn" data-price="paid">💰 Paid Course</div>
+                            <div class="toggle-btn" data-price="free">🎁 Free Course</div>
+                        </div>
+                        <div id="priceInputContainer">
+                            {{ form.price(class="form-control", placeholder="Enter price in USD (e.g., 49.99)", id="coursePrice") }}
+                        </div>
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle"></i> 
+                            Free courses attract more students! You can always change this later.
+                        </small>
+                        {% for error in form.price.errors %}
+                            <span class="text-danger small">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Image Upload Section -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-image"></i> Course Image
+                        </label>
+                        
+                        <!-- Option 1: Upload from computer -->
+                        <div class="mb-3">
+                            {{ form.image.label(class="form-label") }}
+                            {{ form.image(class="form-control", accept="image/*", id="imageUpload") }}
+                            <small class="text-muted">
+                                <i class="fas fa-upload"></i> Upload from your computer (JPG, PNG, GIF - Max 16MB)
+                            </small>
+                            {% for error in form.image.errors %}
+                                <span class="text-danger small">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- OR Divider -->
+                        <div class="text-center my-3">
+                            <span class="badge bg-secondary">OR</span>
+                        </div>
+                        
+                        <!-- Option 2: Image URL -->
+                        <div class="mb-3">
+                            {{ form.image_url.label(class="form-label") }}
+                            {{ form.image_url(class="form-control", placeholder="https://example.com/course-image.jpg", id="imageUrl") }}
+                            <small class="text-muted">
+                                <i class="fas fa-link"></i> Paste an image URL from the web (Unsplash, Imgur, etc.)
+                            </small>
+                            {% for error in form.image_url.errors %}
+                                <span class="text-danger small">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Image Preview -->
+                        <div id="imagePreviewContainer" style="display: none;">
+                            <div class="image-preview-container">
+                                <label class="form-label">Image Preview</label>
+                                <div>
+                                    <img id="previewImage" src="" alt="Course preview" class="preview-image">
+                                </div>
+                                <button type="button" class="btn btn-outline-danger mt-2" id="clearImage">
+                                    <i class="fas fa-times"></i> Clear Image
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sample Images Gallery -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-images"></i> Sample Images (Click to use)
+                        </label>
+                        <div class="sample-images-grid">
+                            <div class="sample-card" onclick="useSampleImage('https://images.unsplash.com/photo-1461749280684-dccba630e2f6')">
+                                <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6" class="sample-image" alt="Programming">
+                                <div class="sample-label">💻 Programming</div>
+                            </div>
+                            <div class="sample-card" onclick="useSampleImage('https://images.unsplash.com/photo-1516116216624-53e697fedbea')">
+                                <img src="https://images.unsplash.com/photo-1516116216624-53e697fedbea" class="sample-image" alt="Web Development">
+                                <div class="sample-label">🌐 Web Dev</div>
+                            </div>
+                            <div class="sample-card" onclick="useSampleImage('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40')">
+                                <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40" class="sample-image" alt="Business">
+                                <div class="sample-label">📈 Business</div>
+                            </div>
+                            <div class="sample-card" onclick="useSampleImage('https://images.unsplash.com/photo-1561070791-2526d30994b5')">
+                                <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5" class="sample-image" alt="Design">
+                                <div class="sample-label">🎨 Design</div>
+                            </div>
+                            <div class="sample-card" onclick="useSampleImage('https://images.unsplash.com/photo-1517694712202-14dd9538aa97')">
+                                <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97" class="sample-image" alt="Data Science">
+                                <div class="sample-label">📊 Data Science</div>
+                            </div>
+                            <div class="sample-card" onclick="useSampleImage('https://images.unsplash.com/photo-1555066931-4365d14bab8c')">
+                                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c" class="sample-image" alt="Coding">
+                                <div class="sample-label">⌨️ Coding</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pro Tips Alert -->
+                    <div class="alert alert-custom alert-info-custom mt-3">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <strong>Pro Tips for a Successful Course:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Use a high-quality, relevant image (800x400 pixels recommended)</li>
+                            <li>Write a compelling description that highlights learning outcomes</li>
+                            <li>Price your course competitively - start lower to attract initial students</li>
+                            <li>Add engaging video lessons after creating the course</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="d-grid gap-3 mt-4">
+                        {{ form.submit(class="btn btn-submit text-white", value="Create Course ➝") }}
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-cancel text-white text-center">
+                            <i class="fas fa-arrow-left me-2"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+    
+    // Character counter for title
+    const titleInput = document.getElementById('courseTitle');
+    const titleCounter = document.getElementById('titleCounter');
+    
+    if (titleInput) {
+        titleInput.addEventListener('input', function() {
+            const length = this.value.length;
+            titleCounter.textContent = `${length}/100 characters`;
+            if (length > 100) {
+                titleCounter.classList.add('danger');
+                titleCounter.classList.remove('warning');
+            } else if (length > 80) {
+                titleCounter.classList.add('warning');
+                titleCounter.classList.remove('danger');
+            } else {
+                titleCounter.classList.remove('warning', 'danger');
+            }
+        });
+        titleInput.dispatchEvent(new Event('input'));
+    }
+    
+    // Character counter for description
+    const descInput = document.getElementById('courseDescription');
+    const descCounter = document.getElementById('descCounter');
+    
+    if (descInput) {
+        descInput.addEventListener('input', function() {
+            const length = this.value.length;
+            descCounter.textContent = `${length}/2000 characters`;
+            if (length > 2000) {
+                descCounter.classList.add('danger');
+                descCounter.classList.remove('warning');
+            } else if (length > 1800) {
+                descCounter.classList.add('warning');
+                descCounter.classList.remove('danger');
+            } else {
+                descCounter.classList.remove('warning', 'danger');
+            }
+        });
+        descInput.dispatchEvent(new Event('input'));
+    }
+    
+    // Price Toggle Functionality
+    const toggleBtns = document.querySelectorAll('.toggle-btn');
+    const priceInput = document.getElementById('coursePrice');
+    const priceContainer = document.getElementById('priceInputContainer');
+    
+    toggleBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            toggleBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            if (this.dataset.price === 'free') {
+                priceInput.value = '0.00';
+                priceInput.disabled = true;
+                priceInput.style.opacity = '0.6';
+            } else {
+                priceInput.disabled = false;
+                priceInput.style.opacity = '1';
+                if (priceInput.value === '0.00') {
+                    priceInput.value = '';
+                }
+            }
+        });
+    });
+    
+    // Check current price on load
+    if (priceInput && parseFloat(priceInput.value) === 0) {
+        const freeBtn = document.querySelector('.toggle-btn[data-price="free"]');
+        if (freeBtn) freeBtn.click();
+    } else {
+        const paidBtn = document.querySelector('.toggle-btn[data-price="paid"]');
+        if (paidBtn) paidBtn.classList.add('active');
+    }
+    
+    // Image Preview Function
+    const imageUpload = document.getElementById('imageUpload');
+    const imageUrl = document.getElementById('imageUrl');
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    const previewImage = document.getElementById('previewImage');
+    const clearBtn = document.getElementById('clearImage');
+    
+    function showPreview(src) {
+        if (src) {
+            previewImage.src = src;
+            previewContainer.style.display = 'block';
+            previewImage.onerror = function() {
+                previewImage.src = 'https://via.placeholder.com/800x400?text=Invalid+Image+URL';
+            };
+        } else {
+            previewContainer.style.display = 'none';
+        }
+    }
+    
+    // Handle file upload preview
+    if (imageUpload) {
+        imageUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    showPreview(e.target.result);
+                    imageUrl.value = ''; // Clear URL field
+                };
+                reader.readAsDataURL(file);
+            } else {
+                if (!imageUrl.value) {
+                    previewContainer.style.display = 'none';
+                }
+            }
+        });
+    }
+    
+    // Handle URL input preview
+    if (imageUrl) {
+        imageUrl.addEventListener('input', function() {
+            const url = this.value;
+            if (url) {
+                showPreview(url);
+                imageUpload.value = ''; // Clear file input
+            } else if (!imageUpload.files.length) {
+                previewContainer.style.display = 'none';
+            }
+        });
+    }
+    
+    // Clear image
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+            if (imageUpload) imageUpload.value = '';
+            if (imageUrl) imageUrl.value = '';
+            previewContainer.style.display = 'none';
+        });
+    }
+    
+    // Use sample image
+    function useSampleImage(url) {
+        if (imageUrl) {
+            imageUrl.value = url;
+            showPreview(url);
+            if (imageUpload) imageUpload.value = '';
+        }
+    }
+    
+    // Form validation before submit
+    const form = document.getElementById('courseForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const title = titleInput?.value.trim();
+            const description = descInput?.value.trim();
+            
+            if (!title || title.length === 0) {
+                e.preventDefault();
+                alert('Please enter a course title');
+                titleInput?.focus();
+                return false;
+            }
+            
+            if (title.length > 100) {
+                e.preventDefault();
+                alert('Course title must be less than 100 characters');
+                return false;
+            }
+            
+            if (!description || description.length === 0) {
+                e.preventDefault();
+                alert('Please enter a course description');
+                descInput?.focus();
+                return false;
+            }
+            
+            if (description.length > 2000) {
+                e.preventDefault();
+                alert('Course description must be less than 2000 characters');
+                return false;
+            }
+            
+            // Show loading state
+            const submitBtn = document.querySelector('.btn-submit');
+            if (submitBtn) {
+                submitBtn.classList.add('btn-loading');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Course...';
+            }
+            
+            return true;
+        });
+    }
+    
+    // Auto-fill demo data (helpful for testing)
+    function fillDemoData() {
+        if (titleInput && !titleInput.value) {
+            titleInput.value = 'Complete Web Development Bootcamp 2024';
+            titleInput.dispatchEvent(new Event('input'));
+        }
+        if (descInput && !descInput.value) {
+            descInput.value = 'Learn HTML, CSS, JavaScript, React, Node.js, and MongoDB from scratch. Build real-world projects and become a full-stack developer. This course includes 50+ hours of video content, 20+ projects, and lifetime access. Perfect for beginners and experienced developers looking to upgrade their skills.';
+            descInput.dispatchEvent(new Event('input'));
+        }
+    }
+    
+    // Uncomment to auto-fill demo data (optional)
+    // fillDemoData();
+</script>
+{% endblock %}

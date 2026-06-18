@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="E-Learning Platform - Learn from the best instructors worldwide">
+    <meta name="keywords" content="e-learning, online courses, education, learning">
+    <title>E-Learning Platform - Learn Anytime, Anywhere</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Modern Global Styles */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --dark-bg: #1a1a2e;
+            --light-bg: #f8f9fa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light-bg);
+            color: #2c3e50;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #5a67d8, #6b46a0);
+        }
+        
+        /* Navbar Styles */
+        .navbar {
+            background: var(--dark-bg) !important;
+            backdrop-filter: blur(10px);
+            padding: 12px 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+            border-radius: 10px;
+            padding: 8px 16px !important;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link.active {
+            background: var(--primary-gradient);
+            color: white !important;
+        }
+        
+        /* Dropdown Styles */
+        .dropdown-menu {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 10px 0;
+            margin-top: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .dropdown-item {
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+            border-radius: 0;
+        }
+        
+        .dropdown-item:hover {
+            background: var(--primary-gradient);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .dropdown-item i {
+            width: 20px;
+            margin-right: 10px;
+        }
+        
+        .dropdown-divider {
+            margin: 8px 0;
+        }
+        
+        /* Avatar Styles */
+        .avatar-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+        
+        .avatar-initials {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .avatar-initials:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Flash Messages */
+        .flash-messages {
+            margin-top: 20px;
+            animation: slideDown 0.5s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert {
+            border: none;
+            border-radius: 12px;
+            padding: 15px 20px;
+            font-weight: 500;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #11998e15, #38ef7d15);
+            border-left: 4px solid #11998e;
+            color: #11998e;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #eb334915, #f45c4315);
+            border-left: 4px solid #eb3349;
+            color: #eb3349;
+        }
+        
+        .alert-warning {
+            background: linear-gradient(135deg, #f6d36515, #fda08515);
+            border-left: 4px solid #f6d365;
+            color: #f6d365;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #4facfe15, #00f2fe15);
+            border-left: 4px solid #4facfe;
+            color: #4facfe;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            min-height: calc(100vh - 200px);
+        }
+        
+        /* Footer Styles */
+        footer {
+            background: var(--dark-bg);
+            color: #e9ecef;
+            padding: 40px 0 20px;
+            margin-top: 50px;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+            display: inline-block;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .social-icon:hover {
+            background: var(--primary-gradient);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #adb5bd;
+        }
+        
+        /* Search Modal */
+        .search-modal .modal-content {
+            border-radius: 20px;
+            background: var(--dark-bg);
+            color: white;
+        }
+        
+        .search-input {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+        }
+        
+        .search-input:focus {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            box-shadow: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            .nav-link {
+                padding: 8px 12px !important;
+            }
+            
+            footer {
+                text-align: center;
+            }
+            
+            .footer-links {
+                margin-bottom: 20px;
+            }
+        }
+        
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .back-to-top.show {
+            display: flex;
+        }
+
+        /* FIX: Add btn-primary styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46a0 100%);
+        }
+        
+        .btn-outline-primary {
+            border: 2px solid #667eea;
+            color: #667eea;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-primary:hover {
+            background: var(--primary-gradient);
+            border-color: transparent;
+            transform: translateY(-2px);
+            color: white;
+        }
+        
+        /* Course Card Styles (Global) */
+        .course-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            height: 100%;
+            border: none;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        /* Responsive table */
+        @media (max-width: 768px) {
+            .table-responsive {
+                font-size: 12px;
+            }
+        }
+
+        /* FIX: Add btn-loading styles that were inside body */
+        .btn-loading {
+            opacity: 0.7;
+            cursor: wait;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-graduation-cap me-2"></i>E-Learning
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('courses') }}">
+                            <i class="fas fa-book me-1"></i> Courses
+                        </a>
+                    </li>
+                    
+                    {% if current_user.is_authenticated %}
+                        <!-- Wishlist Link -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('wishlist') }}">
+                                <i class="fas fa-heart me-1"></i> Wishlist
+                            </a>
+                        </li>
+                        
+                        <!-- Dashboard Link -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('dashboard') }}">
+                                <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                            </a>
+                        </li>
+                        
+                        <!-- Quiz Results Link -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('quiz_results') }}">
+                                <i class="fas fa-puzzle-piece me-1"></i> Quizzes
+                            </a>
+                        </li>
+                        
+                        <!-- Profile Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {% if current_user.avatar %}
+                                    <img src="{{ current_user.avatar }}" class="avatar-small me-1" alt="Avatar">
+                                {% else %}
+                                    <div class="avatar-initials me-1">
+                                        {{ current_user.username[0].upper() }}
+                                    </div>
+                                {% endif %}
+                                <span>{{ current_user.username }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('profile') }}">
+                                        <i class="fas fa-id-card"></i> My Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('edit_profile') }}">
+                                        <i class="fas fa-edit"></i> Edit Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('public_profile', username=current_user.username) }}">
+                                        <i class="fas fa-globe"></i> Public Profile
+                                    </a>
+                                </li>
+                                {% if current_user.is_instructor %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('add_course') }}">
+                                        <i class="fas fa-plus-circle"></i> Create Course
+                                    </a>
+                                </li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login') }}">
+                                <i class="fas fa-sign-in-alt me-1"></i> Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register') }}">
+                                <i class="fas fa-user-plus me-1"></i> Register
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container mt-4">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show flash-messages" role="alert">
+                            <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Page Content -->
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5><i class="fas fa-graduation-cap me-2"></i>E-Learning Platform</h5>
+                    <p class="text-muted small">Empowering learners worldwide with quality education. Learn from industry experts and advance your career.</p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon" onclick="alert('Facebook page coming soon!')">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-icon" onclick="alert('Twitter page coming soon!')">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-icon" onclick="alert('LinkedIn page coming soon!')">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="social-icon" onclick="alert('Instagram page coming soon!')">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-icon" onclick="alert('GitHub page coming soon!')">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-md-2 col-6 mb-4 mb-md-0">
+                    <h6>Quick Links</h6>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('index') }}">Home</a></li>
+                        <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                        <li><a href="#" onclick="alert('About page coming soon!')">About Us</a></li>
+                        <li><a href="#" onclick="alert('Contact page coming soon!')">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-3 col-6 mb-4 mb-md-0">
+                    <h6>Resources</h6>
+                    <ul class="footer-links">
+                        <li><a href="#" onclick="alert('Blog coming soon!')">Blog</a></li>
+                        <li><a href="#" onclick="alert('FAQs coming soon!')">FAQs</a></li>
+                        <li><a href="#" onclick="alert('Support coming soon!')">Support</a></li>
+                        <li><a href="#" onclick="alert('Privacy Policy coming soon!')">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-3">
+                    <h6>Newsletter</h6>
+                    <p class="small text-muted">Subscribe to get updates on new courses</p>
+                    <div class="input-group">
+                        <input type="email" class="form-control form-control-sm" placeholder="Your email" style="background: rgba(255,255,255,0.1); border: none; color: white;">
+                        <button class="btn btn-primary btn-sm" onclick="alert('Newsletter feature coming soon!')">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2024 E-Learning Platform. All rights reserved.</p>
+                <p class="small">
+                    <i class="fas fa-code"></i> Built with Flask | 
+                    <i class="fas fa-heart text-danger"></i> Made for learners
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Image error handler
+        function handleImageError(img) {
+            img.src = 'https://via.placeholder.com/400x200?text=Image+Not+Found';
+            img.onerror = null;
+        }
+        
+        // Add active class to current navigation item
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentLocation = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href !== '#' && currentLocation.includes(href)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // Back to Top Button
+        const backToTopBtn = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        });
+        
+        backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                setTimeout(() => bsAlert.close(), 5000);
+            });
+        }, 1000);
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add loading class to form submissions
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function() {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn && !submitBtn.classList.contains('btn-loading')) {
+                    submitBtn.classList.add('btn-loading');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<span class="loading-spinner me-2"></span>Loading...';
+                    setTimeout(() => {
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.classList.remove('btn-loading');
+                    }, 3000);
+                }
+            });
+        });
+        
+        // Tooltip initialization (if any)
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Console message
+        console.log('%c🎓 E-Learning Platform', 'color: #667eea; font-size: 20px; font-weight: bold;');
+        console.log('%cWelcome to the best learning experience!', 'color: #11998e; font-size: 14px;');
+    </script>
+</body>
+</html>
