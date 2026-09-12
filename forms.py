@@ -39,9 +39,15 @@ def validate_video_url(form, field):
 
 
 def validate_image_url(form, field):
-    """Custom validator for image URLs."""
+    """
+    Custom validator for image URLs.
+    Accepts:
+      - External URLs (http:// or https://)
+      - Relative paths like /static/uploads/... (for existing course images)
+    """
     url = field.data
     if url:
+        # Must end with an image extension
         image_pattern = r'\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$'
         if not re.search(image_pattern, url, re.IGNORECASE):
             raise ValidationError(
@@ -68,13 +74,12 @@ def validate_file_size(form, field):
         except ValidationError:
             raise
         except Exception:
-            # Ignore validation errors from non-file objects
             pass
     return True
 
 
 def validate_terms(form, field):
-    """Custom validator for terms checkbox (DataRequired doesn't work well with checkboxes)."""
+    """Custom validator for terms checkbox."""
     if not field.data:
         raise ValidationError('You must agree to the terms and conditions to register.')
 
@@ -185,7 +190,7 @@ class CourseForm(FlaskForm):
         Length(min=20, max=5000, message='Description must be between 20 and 5000 characters.')
     ])
     price = FloatField('Price ($)', validators=[
-        Optional(),                                    # ✅ DataRequired hata diya
+        Optional(),
         NumberRange(min=0, max=9999, message='Price must be between $0 and $9,999.')
     ], default=0.0)
     image = ValidatedFileField('Course Image (Upload from computer)', validators=[
@@ -194,7 +199,7 @@ class CourseForm(FlaskForm):
     ], max_size_mb=16)
     image_url = StringField('Image URL (Optional)', validators=[
         Optional(),
-        URL(message='Please enter a valid URL.'),
+        # URL() validator REMOVED — accepts relative paths too
         validate_image_url
     ])
     category = SelectField('Category', choices=[

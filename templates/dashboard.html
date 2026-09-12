@@ -24,7 +24,6 @@
         --crimson-50:  #fef2f2;
     }
 
-    /* ==================== ANIMATIONS ==================== */
     @keyframes fadeInDown {
         from { opacity: 0; transform: translateY(-24px); }
         to   { opacity: 1; transform: translateY(0); }
@@ -48,10 +47,6 @@
     @keyframes gradientShift {
         0%, 100% { background-position: 0% 50%; }
         50%      { background-position: 100% 50%; }
-    }
-    @keyframes pulseGlow {
-        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
-        50%      { box-shadow: 0 0 0 12px rgba(220, 38, 38, 0); }
     }
     @keyframes scaleIn {
         from { opacity: 0; transform: scale(0.9); }
@@ -147,17 +142,6 @@
         overflow: hidden;
     }
 
-    .dashboard-header .btn-light::before {
-        content: '';
-        position: absolute;
-        top: 0; left: -100%;
-        width: 100%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(185, 28, 28, 0.12), transparent);
-        transition: left 0.6s ease;
-    }
-
-    .dashboard-header .btn-light:hover::before { left: 100%; }
-
     .dashboard-header .btn-light:hover {
         transform: translateY(-3px);
         box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
@@ -211,11 +195,7 @@
 
     .stat-card:hover .stat-icon {
         transform: scale(1.1) rotate(-6deg);
-        box-shadow: 0 10px 24px rgba(127, 29, 29, 0.25);
     }
-
-    .stat-icon i { transition: transform 0.3s ease; }
-    .stat-card:hover .stat-icon i { transform: scale(1.15); }
 
     .stat-number {
         font-size: 2rem;
@@ -224,12 +204,6 @@
         color: var(--crimson-900);
         font-family: 'Plus Jakarta Sans', sans-serif;
         letter-spacing: -0.03em;
-        transition: transform 0.3s ease;
-    }
-
-    .stat-card:hover .stat-number {
-        transform: scale(1.05);
-        color: var(--crimson-700);
     }
 
     .stat-card .text-muted {
@@ -289,12 +263,6 @@
         font-weight: 600;
         z-index: 1;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        transition: all 0.3s ease;
-    }
-
-    .course-card:hover .course-badge {
-        transform: scale(1.08);
-        background: rgba(127, 29, 29, 0.95);
     }
 
     /* ==================== PROGRESS BAR ==================== */
@@ -319,63 +287,9 @@
     .progress-bar-custom::after {
         content: '';
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
+        inset: 0;
         background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
         animation: shimmer 2s infinite;
-    }
-
-    .text-primary { color: var(--crimson-700) !important; }
-
-    /* ==================== BUTTONS ==================== */
-    .btn-custom {
-        padding: 10px 20px;
-        border-radius: 10px;
-        font-weight: 600;
-        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
-        border: none;
-        font-size: 0.88rem;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .btn-custom::before {
-        content: '';
-        position: absolute;
-        top: 0; left: -100%;
-        width: 100%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        transition: left 0.6s ease;
-    }
-
-    .btn-custom:hover::before { left: 100%; }
-
-    .btn-custom-primary {
-        background: var(--primary-gradient);
-        color: white;
-        box-shadow: 0 4px 12px rgba(127, 29, 29, 0.2);
-    }
-
-    .btn-custom-primary:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 24px rgba(127, 29, 29, 0.35);
-        color: white;
-        background: linear-gradient(135deg, #991b1b 0%, #450a0a 100%);
-    }
-
-    .btn-custom-success {
-        background: var(--success-gradient);
-        color: white;
-        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
-    }
-
-    .btn-custom-success:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 24px rgba(5, 150, 105, 0.35);
-        color: white;
     }
 
     /* ==================== COURSE ACTION BUTTONS ==================== */
@@ -410,7 +324,6 @@
         background: var(--primary-gradient) !important;
         border-color: transparent !important;
         color: white !important;
-        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.3);
     }
 
     .btn-outline-info {
@@ -421,7 +334,6 @@
         background: var(--info-gradient) !important;
         border-color: transparent !important;
         color: white !important;
-        box-shadow: 0 6px 16px rgba(8, 145, 178, 0.3);
     }
 
     .btn-outline-warning {
@@ -432,7 +344,6 @@
         background: var(--warning-gradient) !important;
         border-color: transparent !important;
         color: white !important;
-        box-shadow: 0 6px 16px rgba(217, 119, 6, 0.3);
     }
 
     .btn-outline-success {
@@ -443,7 +354,6 @@
         background: var(--success-gradient) !important;
         border-color: transparent !important;
         color: white !important;
-        box-shadow: 0 6px 16px rgba(5, 150, 105, 0.3);
     }
 
     .btn-outline-danger {
@@ -454,7 +364,6 @@
         background: var(--primary-gradient) !important;
         border-color: transparent !important;
         color: white !important;
-        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.3);
     }
 
     /* ==================== TABLE ==================== */
@@ -478,7 +387,6 @@
         border: none;
     }
 
-    .quiz-table tbody tr { transition: background 0.2s ease; }
     .quiz-table tbody tr:hover { background: var(--crimson-50); }
 
     .quiz-table td {
@@ -488,12 +396,6 @@
     }
 
     /* ==================== BADGES ==================== */
-    .badge-custom {
-        padding: 8px 15px;
-        border-radius: 20px;
-        font-weight: 500;
-    }
-
     .badge.bg-success { background: var(--success-gradient) !important; }
     .badge.bg-danger  { background: var(--primary-gradient) !important; }
     .badge.bg-warning { background: var(--warning-gradient) !important; color: #fff !important; }
@@ -515,13 +417,11 @@
     .section-title::after {
         content: '';
         position: absolute;
-        bottom: 0;
-        left: 0;
+        bottom: 0; left: 0;
         width: 50px;
         height: 3px;
         background: var(--primary-gradient);
         border-radius: 2px;
-        animation: scaleIn 0.6s ease both;
     }
 
     /* ==================== EMPTY STATE ==================== */
@@ -531,7 +431,6 @@
         background: white;
         border-radius: 20px;
         border: 1px solid var(--crimson-100);
-        animation: fadeInUp 0.5s ease;
     }
 
     .empty-state-icon {
@@ -733,56 +632,31 @@
                             {% endif %}
                         </div>
 
-                        <!-- ✅ COURSE ACTIONS (2x2 grid) -->
+                        <!-- COURSE ACTIONS -->
                         <div class="course-actions">
-                            <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-outline-primary" title="View Course">
+                            <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-outline-primary" title="View">
                                 <i class="fas fa-eye"></i> View
                             </a>
-                            <a href="{{ url_for('edit_course', course_id=course.id) }}" class="btn btn-outline-info" title="Edit Course Details">
+                            <a href="{{ url_for('edit_course', course_id=course.id) }}" class="btn btn-outline-info" title="Edit">
                                 <i class="fas fa-pen"></i> Edit
                             </a>
-                            <a href="{{ url_for('manage_lessons', course_id=course.id) }}" class="btn btn-outline-warning" title="Manage Lessons">
+                            <a href="{{ url_for('manage_lessons', course_id=course.id) }}" class="btn btn-outline-warning" title="Lessons">
                                 <i class="fas fa-list"></i> Lessons
                             </a>
-                            <a href="{{ url_for('add_lesson', course_id=course.id) }}" class="btn btn-outline-success" title="Add New Lesson">
+                            <a href="{{ url_for('add_lesson', course_id=course.id) }}" class="btn btn-outline-success" title="Add">
                                 <i class="fas fa-plus"></i> Add
                             </a>
-                            <a href="{{ url_for('edit_course_image', course_id=course.id) }}" class="btn btn-outline-secondary" title="Edit Course Image" style="grid-column: 1 / -1;">
+                            <a href="{{ url_for('edit_course_image', course_id=course.id) }}" class="btn btn-outline-secondary" title="Edit Image" style="grid-column: 1 / -1;">
                                 <i class="fas fa-image"></i> Edit Image
                             </a>
-                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteCourseModal{{ course.id }}" title="Delete Course" style="grid-column: 1 / -1;">
+                            <!-- DELETE: Direct link with confirm (NO MODAL) -->
+                            <a href="{{ url_for('delete_course', course_id=course.id) }}"
+                               class="btn btn-outline-danger"
+                               style="grid-column: 1 / -1;"
+                               title="Delete Course"
+                               onclick="return confirm('Are you sure you want to delete \'{{ course.title }}\'?\n\nThis will permanently delete all lessons, enrollments, and progress. This cannot be undone!');">
                                 <i class="fas fa-trash"></i> Delete Course
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Delete Course Modal -->
-            <div class="modal fade" id="deleteCourseModal{{ course.id }}" tabindex="-1">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                <i class="fas fa-triangle-exclamation me-2"></i>Delete Course
-                            </h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p class="mb-3">Are you sure you want to delete <strong class="text-danger">"{{ course.title }}"</strong>?</p>
-                            <div class="alert alert-danger">
-                                <i class="fas fa-circle-info me-2"></i>
-                                <strong>This action cannot be undone!</strong> The following will be permanently deleted:
-                                <ul class="mt-2 mb-0">
-                                    <li>All {{ course.lessons.count() }} lessons in this course</li>
-                                    <li>{{ course.enrollments.count() }} student enrollments</li>
-                                    <li>All reviews, ratings, and progress data</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <a href="{{ url_for('delete_course', course_id=course.id) }}" class="btn btn-danger">Yes, Delete</a>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -1037,48 +911,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Performance Stats -->
-    {% if quiz_attempts %}
-    <div class="row mt-4 reveal-stagger">
-        <div class="col-md-4 mb-3">
-            <div class="stat-card text-center p-3">
-                <div class="small text-muted mb-2">Average Score</div>
-                {% set ns = namespace(total_percentage=0) %}
-                {% for attempt in quiz_attempts %}
-                    {% set ns.total_percentage = ns.total_percentage + attempt.percentage %}
-                {% endfor %}
-                {% set avg_score = ns.total_percentage / quiz_attempts|length %}
-                <div class="stat-number mb-0" style="font-size: 1.75rem;">{{ "%.1f"|format(avg_score) }}%</div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="stat-card text-center p-3">
-                <div class="small text-muted mb-2">Best Performance</div>
-                {% set ns = namespace(best_score=0) %}
-                {% for attempt in quiz_attempts %}
-                    {% if attempt.percentage > ns.best_score %}
-                        {% set ns.best_score = attempt.percentage %}
-                    {% endif %}
-                {% endfor %}
-                <div class="stat-number mb-0" style="font-size: 1.75rem;">{{ "%.0f"|format(ns.best_score) }}%</div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="stat-card text-center p-3">
-                <div class="small text-muted mb-2">Pass Rate</div>
-                {% set ns = namespace(pass_count=0) %}
-                {% for attempt in quiz_attempts %}
-                    {% if attempt.passed %}
-                        {% set ns.pass_count = ns.pass_count + 1 %}
-                    {% endif %}
-                {% endfor %}
-                {% set pass_rate = (ns.pass_count / quiz_attempts|length * 100) if quiz_attempts|length > 0 else 0 %}
-                <div class="stat-number mb-0" style="font-size: 1.75rem;">{{ "%.0f"|format(pass_rate) }}%</div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
 
 {% endif %}
 
