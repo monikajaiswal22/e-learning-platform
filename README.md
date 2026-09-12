@@ -2,7 +2,7 @@
 
 A full-featured E-Learning Platform built with Python Flask that provides courses, video lessons, quizzes, certificates, and separate portals for Admin, Instructor, and Student.
 
-🔗 Live Demo: https://elearning-platform-xxxx.onrender.com *(deploy ke baad update karna)*
+🔗 Live Demo: https://elearning-platform-xxxx.onrender.com
 
 🔗 GitHub Repository: https://github.com/monikajaiswal22/e-learning-platform
 
