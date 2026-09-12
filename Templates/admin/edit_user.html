@@ -1,0 +1,876 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* ============================================================
+       ADMIN EDIT USER — CRIMSON RED
+       ============================================================ */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+
+        --crimson-900: #450a0a;
+        --crimson-800: #7f1d1d;
+        --crimson-700: #991b1b;
+        --crimson-600: #b91c1c;
+        --crimson-500: #dc2626;
+        --crimson-400: #ef4444;
+        --crimson-300: #f87171;
+        --crimson-200: #fecaca;
+        --crimson-100: #fee2e2;
+        --crimson-50:  #fef2f2;
+    }
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
+    }
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-14px) rotate(3deg); }
+    }
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
+    }
+    @keyframes shimmer {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    @keyframes slideInRight {
+        from { transform: translateX(120%); opacity: 0; }
+        to   { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to   { transform: translateX(120%); opacity: 0; }
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.6s cubic-bezier(.2,.7,.2,1),
+                    transform 0.6s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    /* ==================== FORM CARD ==================== */
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(127, 29, 29, 0.1);
+        margin-bottom: 30px;
+        border: 1px solid var(--crimson-100);
+        animation: fadeInUp 0.7s cubic-bezier(.2,.7,.2,1);
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
+        padding: 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .form-header::before {
+        content: '';
+        position: absolute;
+        top: -50%; right: -25%;
+        width: 340px; height: 340px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .form-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50%; left: -15%;
+        width: 280px; height: 280px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 10s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .form-header > * { position: relative; z-index: 1; }
+
+    .form-header h3 {
+        margin: 0;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .form-header h3 i {
+        color: #fbbf24;
+        animation: float 3.5s ease-in-out infinite;
+        filter: drop-shadow(0 4px 10px rgba(251, 191, 36, 0.4));
+    }
+
+    .form-header p { margin: 8px 0 0; opacity: 0.92; font-size: 0.95rem; }
+
+    .user-badge {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 30px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 15px;
+        font-size: 13px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .user-badge:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .user-badge-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .user-badge-initials {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+        font-weight: 800;
+        font-size: 0.85rem;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .form-body { padding: 30px; }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 5px 0 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--crimson-100);
+        position: relative;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 50px;
+        height: 2px;
+        background: var(--primary-gradient);
+        border-radius: 2px;
+    }
+
+    .section-title h5 {
+        margin: 0;
+        font-weight: 700;
+        color: var(--crimson-900);
+        font-size: 1rem;
+        letter-spacing: -0.01em;
+    }
+
+    .section-title i {
+        color: var(--crimson-600);
+        font-size: 1.15rem;
+    }
+
+    .form-group { margin-bottom: 22px; }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--crimson-900);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+    }
+
+    .form-label i {
+        color: var(--crimson-600);
+        transition: transform 0.3s ease;
+        width: 18px;
+    }
+
+    .form-group:hover .form-label i { transform: scale(1.15); }
+
+    .required-field::after {
+        content: '*';
+        color: var(--crimson-600);
+        margin-left: 2px;
+        font-weight: 700;
+    }
+
+    /* ==================== INPUTS ==================== */
+    .form-control, .form-select {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px 16px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        font-size: 14px;
+        color: var(--crimson-900);
+        background: #fafafa;
+    }
+
+    .form-control::placeholder { color: #94a3b8; }
+
+    .form-control:hover, .form-select:hover {
+        border-color: var(--crimson-200);
+        background: white;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--crimson-500);
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+        outline: none;
+        background: white;
+        transform: translateY(-1px);
+    }
+
+    .form-control.is-invalid {
+        border-color: var(--crimson-500);
+        background: #fef2f2;
+    }
+
+    .form-text {
+        color: #94a3b8;
+        font-size: 0.78rem;
+        margin-top: 6px;
+        display: block;
+    }
+
+    .form-text i { color: var(--crimson-500); }
+
+    .invalid-feedback {
+        color: var(--crimson-600);
+        font-size: 12px;
+        margin-top: 6px;
+        display: block;
+        font-weight: 500;
+    }
+
+    /* ==================== TOGGLE SWITCH ==================== */
+    .toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 18px;
+        background: linear-gradient(135deg, #fef2f2 0%, #fafafa 100%);
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
+        margin-bottom: 14px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+    }
+
+    .toggle-row:hover {
+        border-color: var(--crimson-300);
+        background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.08);
+    }
+
+    .toggle-row.admin-toggle {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border-color: var(--crimson-300);
+    }
+
+    .toggle-info {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex: 1;
+    }
+
+    .toggle-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+        transition: all 0.3s ease;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+    }
+
+    .toggle-icon.instructor { background: linear-gradient(135deg, #cffafe, #a5f3fc); color: #0891b2; }
+    .toggle-icon.admin { background: linear-gradient(135deg, #fecaca, #fca5a5); color: #b91c1c; }
+
+    .toggle-row:hover .toggle-icon {
+        transform: scale(1.08) rotate(-6deg);
+    }
+
+    .toggle-text h6 {
+        margin: 0;
+        font-weight: 700;
+        color: var(--crimson-900);
+        font-size: 0.92rem;
+        margin-bottom: 2px;
+    }
+
+    .toggle-text p {
+        margin: 0;
+        font-size: 0.78rem;
+        color: #64748b;
+    }
+
+    /* Custom toggle switch */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 54px;
+        height: 30px;
+        flex-shrink: 0;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #cbd5e1;
+        transition: 0.3s cubic-bezier(.2,.7,.2,1);
+        border-radius: 30px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 22px;
+        width: 22px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.3s cubic-bezier(.2,.7,.2,1);
+        border-radius: 50%;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .switch input:checked + .slider {
+        background: var(--primary-gradient);
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.15), 0 0 0 4px rgba(220, 38, 38, 0.1);
+    }
+
+    .switch input:checked + .slider:before {
+        transform: translateX(24px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .switch input:focus + .slider {
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.2);
+    }
+
+    /* ==================== ACTION BUTTONS ==================== */
+    .action-buttons {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 24px;
+        border-top: 2px solid var(--crimson-100);
+    }
+
+    .btn-update {
+        background: linear-gradient(180deg, var(--crimson-600) 0%, var(--crimson-700) 100%);
+        border: 1px solid var(--crimson-800);
+        padding: 14px 24px;
+        font-size: 1rem;
+        font-weight: 700;
+        border-radius: 12px;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        color: white;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 4px 16px rgba(127, 29, 29, 0.25);
+        position: relative;
+        overflow: hidden;
+        letter-spacing: -0.01em;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .btn-update::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-update:hover::before { left: 100%; }
+
+    .btn-update:hover {
+        transform: translateY(-3px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 12px 28px rgba(127, 29, 29, 0.4);
+        color: white;
+        background: linear-gradient(180deg, var(--crimson-700) 0%, var(--crimson-800) 100%);
+    }
+
+    .btn-back {
+        background: #f1f5f9;
+        border: 2px solid #e2e8f0;
+        padding: 14px 24px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        color: #475569;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    .btn-back:hover {
+        background: #e2e8f0;
+        border-color: #cbd5e1;
+        color: var(--crimson-800);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+    }
+
+    .btn-back i { transition: transform 0.3s ease; }
+    .btn-back:hover i { transform: translateX(-4px); }
+
+    /* ==================== ALERTS ==================== */
+    .alert-custom {
+        border-radius: 14px;
+        border: none;
+        border-left: 4px solid;
+        padding: 18px 22px;
+        font-size: 0.9rem;
+        animation: fadeInUp 0.5s ease;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .alert-info-custom {
+        background: linear-gradient(135deg, #e0f2fe 0%, #ecfeff 100%);
+        border-left-color: #0891b2;
+        color: #155e75;
+    }
+
+    .alert-info-custom i {
+        color: #0891b2;
+        font-size: 1.15rem;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .alert-info-custom strong { color: #0e7490; }
+
+    /* ==================== DANGER ZONE ==================== */
+    .danger-zone {
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        border: 2px dashed var(--crimson-300);
+        border-radius: 16px;
+        padding: 22px;
+        margin-top: 30px;
+    }
+
+    .danger-zone h6 {
+        color: var(--crimson-800);
+        font-weight: 700;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
+    }
+
+    .danger-zone h6 i { color: var(--crimson-600); }
+
+    .danger-zone p {
+        color: #991b1b;
+        font-size: 0.85rem;
+        margin-bottom: 14px;
+    }
+
+    .btn-danger-custom {
+        background: var(--primary-gradient);
+        border: none;
+        color: white;
+        padding: 10px 22px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 4px 12px rgba(127, 29, 29, 0.25);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+    }
+
+    .btn-danger-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 24px rgba(127, 29, 29, 0.4);
+        color: white;
+    }
+
+    /* ==================== TOAST ==================== */
+    .toast-notification {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: linear-gradient(135deg, #059669, #10b981);
+        color: white;
+        padding: 14px 24px;
+        border-radius: 12px;
+        z-index: 9999;
+        animation: slideInRight 0.35s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 12px 32px rgba(5, 150, 105, 0.35);
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .toast-error {
+        background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+        box-shadow: 0 12px 32px rgba(127, 29, 29, 0.4);
+    }
+
+    /* ==================== LOADING ==================== */
+    .btn-loading {
+        position: relative;
+        pointer-events: none;
+        opacity: 0.85;
+    }
+
+    .btn-loading::after {
+        content: '';
+        position: absolute;
+        width: 18px; height: 18px;
+        top: 50%; right: 18px;
+        margin-top: -9px;
+        border: 2px solid rgba(255,255,255,0.4);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+        .form-body { padding: 22px; }
+        .form-header { padding: 22px; }
+        .form-header h3 { font-size: 1.3rem; }
+        .action-buttons {
+            grid-template-columns: 1fr;
+        }
+        .toggle-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .switch { align-self: flex-end; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        .reveal { opacity: 1; transform: none; }
+    }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-md-9 col-lg-8">
+        <div class="form-card">
+
+            <!-- ==================== HEADER ==================== -->
+            <div class="form-header">
+                <h3><i class="fas fa-user-pen me-2"></i>Edit User</h3>
+                <p>Update user details, roles, and permissions</p>
+
+                <div class="user-badge">
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar }}" class="user-badge-avatar" alt="{{ user.username }}">
+                    {% else %}
+                        <div class="user-badge-initials">{{ user.username[0].upper() }}</div>
+                    {% endif %}
+                    <div>
+                        <strong>{{ user.full_name or user.username }}</strong>
+                        <span style="opacity: 0.8;"> · @{{ user.username }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== BODY ==================== -->
+            <div class="form-body">
+
+                <!-- Info Alert -->
+                <div class="alert-custom alert-info-custom">
+                    <i class="fas fa-circle-info"></i>
+                    <div>
+                        <strong>Editing User #{{ user.id }}</strong>
+                        <br>
+                        <span style="font-size: 0.85rem;">Changes will take effect immediately.</span>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <form method="POST" id="editUserForm" action="{{ url_for('admin_edit_user', user_id=user.id) }}" novalidate>
+                    {{ form.hidden_tag() }}
+
+                    <!-- ==================== ACCOUNT INFO ==================== -->
+                    <div class="section-title reveal">
+                        <i class="fas fa-id-card"></i>
+                        <h5>Account Information</h5>
+                    </div>
+
+                    <!-- Username -->
+                    <div class="form-group reveal">
+                        {{ form.username.label(class="form-label required-field") }}
+                        {{ form.username(class="form-control", placeholder="Enter username", id="username") }}
+                        <small class="form-text">
+                            <i class="fas fa-circle-info me-1"></i>3-80 characters, letters, numbers, underscores only
+                        </small>
+                        {% for error in form.username.errors %}
+                            <span class="invalid-feedback d-block">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group reveal">
+                        {{ form.email.label(class="form-label required-field") }}
+                        {{ form.email(class="form-control", placeholder="user@example.com", id="email", type="email") }}
+                        <small class="form-text">
+                            <i class="fas fa-circle-info me-1"></i>Must be a valid email address
+                        </small>
+                        {% for error in form.email.errors %}
+                            <span class="invalid-feedback d-block">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Full Name -->
+                    <div class="form-group reveal">
+                        {{ form.full_name.label(class="form-label") }}
+                        {{ form.full_name(class="form-control", placeholder="Enter full name (optional)", id="full_name") }}
+                        {% for error in form.full_name.errors %}
+                            <span class="invalid-feedback d-block">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- ==================== PASSWORD ==================== -->
+                    <div class="section-title reveal" style="margin-top: 30px;">
+                        <i class="fas fa-lock"></i>
+                        <h5>Password</h5>
+                    </div>
+
+                    <div class="form-group reveal">
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-control", placeholder="Leave blank to keep current password", id="password", type="password") }}
+                        <small class="form-text">
+                            <i class="fas fa-triangle-exclamation me-1" style="color: #d97706;"></i>
+                            Only fill if you want to change the password. Minimum 6 characters.
+                        </small>
+                        {% for error in form.password.errors %}
+                            <span class="invalid-feedback d-block">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- ==================== ROLES & PERMISSIONS ==================== -->
+                    <div class="section-title reveal" style="margin-top: 30px;">
+                        <i class="fas fa-shield-halved"></i>
+                        <h5>Roles & Permissions</h5>
+                    </div>
+
+                    <!-- Instructor Toggle -->
+                    <div class="toggle-row reveal">
+                        <div class="toggle-info">
+                            <div class="toggle-icon instructor">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </div>
+                            <div class="toggle-text">
+                                <h6>Instructor</h6>
+                                <p>Can create and manage courses, lessons, and quizzes</p>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            {{ form.is_instructor(id="is_instructor") }}
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Admin Toggle -->
+                    <div class="toggle-row admin-toggle reveal">
+                        <div class="toggle-info">
+                            <div class="toggle-icon admin">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <div class="toggle-text">
+                                <h6>Administrator</h6>
+                                <p>Full access to admin panel, user management, and all features</p>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            {{ form.is_admin(id="is_admin") }}
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- ==================== ACTION BUTTONS ==================== -->
+                    <div class="action-buttons reveal">
+                        <button type="submit" class="btn-update" id="submitBtn">
+                            <i class="fas fa-floppy-disk"></i>Save Changes
+                        </button>
+                        <a href="{{ url_for('admin_users') }}" class="btn-back">
+                            <i class="fas fa-arrow-left"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+
+                <!-- ==================== DANGER ZONE ==================== -->
+                {% if user.id != current_user.id %}
+                <div class="danger-zone reveal">
+                    <h6>
+                        <i class="fas fa-triangle-exclamation"></i>Danger Zone
+                    </h6>
+                    <p>Deleting this user will permanently remove all their data, courses, enrollments, and progress. This action cannot be undone.</p>
+                    <a href="#" class="btn-danger-custom" onclick="if(confirm('Are you absolutely sure you want to delete {{ user.username }}? This cannot be undone!')) { window.location.href='{{ url_for('admin_delete_user', user_id=user.id) }}'; } return false;">
+                        <i class="fas fa-trash"></i>Delete User
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==================== SCROLL REVEAL ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal');
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => obs.observe(el));
+    });
+
+    // ==================== FORM VALIDATION ====================
+    const form = document.getElementById('editUserForm');
+    const usernameInput = document.getElementById('username');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function showToast(msg, type = 'error') {
+        let toast = document.querySelector('.toast-notification');
+        if (toast) toast.remove();
+
+        toast = document.createElement('div');
+        toast.className = 'toast-notification' + (type === 'error' ? ' toast-error' : '');
+        toast.innerHTML = `<i class="fas fa-${type === 'error' ? 'circle-exclamation' : 'circle-check'} me-2"></i>${msg}`;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.animation = 'slideOutRight 0.3s ease forwards';
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
+    }
+
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const username = usernameInput?.value.trim();
+            const email = emailInput?.value.trim();
+            const password = passwordInput?.value.trim();
+            const emailRegex = /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/;
+
+            if (!username) {
+                e.preventDefault();
+                showToast('Username is required');
+                usernameInput.focus();
+                return false;
+            }
+
+            if (username.length < 3) {
+                e.preventDefault();
+                showToast('Username must be at least 3 characters');
+                usernameInput.focus();
+                return false;
+            }
+
+            if (!email) {
+                e.preventDefault();
+                showToast('Email is required');
+                emailInput.focus();
+                return false;
+            }
+
+            if (!emailRegex.test(email)) {
+                e.preventDefault();
+                showToast('Please enter a valid email address');
+                emailInput.focus();
+                return false;
+            }
+
+            if (password && password.length < 6) {
+                e.preventDefault();
+                showToast('Password must be at least 6 characters');
+                passwordInput.focus();
+                return false;
+            }
+
+            if (submitBtn) {
+                submitBtn.classList.add('btn-loading');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Saving...';
+            }
+            return true;
+        });
+    }
+</script>
+{% endblock %}

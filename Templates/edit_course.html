@@ -2,363 +2,644 @@
 
 {% block content %}
 <style>
-    /* Modern Form Styles */
+    /* ============================================================
+       EDIT COURSE — CRIMSON RED + ANIMATIONS
+       ============================================================ */
     :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --primary-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --danger-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+
+        --crimson-900: #450a0a;
+        --crimson-800: #7f1d1d;
+        --crimson-700: #991b1b;
+        --crimson-600: #b91c1c;
+        --crimson-500: #dc2626;
+        --crimson-400: #ef4444;
+        --crimson-300: #f87171;
+        --crimson-200: #fecaca;
+        --crimson-100: #fee2e2;
+        --crimson-50:  #fef2f2;
     }
-    
-    .form-header {
-        background: var(--warning-gradient);
-        border-radius: 20px 20px 0 0;
-        padding: 25px 30px;
-        color: white;
-        position: relative;
-        overflow: hidden;
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-24px); }
+        to   { opacity: 1; transform: translateY(0); }
     }
-    
-    .form-header::before {
-        content: '✏️';
-        position: absolute;
-        bottom: -20px;
-        right: 20px;
-        font-size: 80px;
-        opacity: 0.1;
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
     }
-    
-    .form-header h3 {
-        margin: 0;
-        font-weight: 700;
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
     }
-    
-    .form-header p {
-        margin: 5px 0 0;
-        opacity: 0.9;
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-14px) rotate(3deg); }
     }
-    
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
+    }
+    @keyframes shimmer {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes slideInRight {
+        from { transform: translateX(120%); opacity: 0; }
+        to   { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to   { transform: translateX(120%); opacity: 0; }
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.6s cubic-bezier(.2,.7,.2,1),
+                    transform 0.6s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    /* ==================== FORM CARD ==================== */
     .form-card {
         background: white;
         border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        box-shadow: 0 20px 50px rgba(127, 29, 29, 0.1);
         margin-bottom: 30px;
+        border: 1px solid var(--crimson-100);
+        animation: fadeInUp 0.7s cubic-bezier(.2,.7,.2,1);
     }
-    
-    .form-body {
+
+    .form-header {
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
         padding: 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
     }
-    
-    .form-group {
-        margin-bottom: 25px;
+
+    .form-header::before {
+        content: '';
+        position: absolute;
+        top: -50%; right: -25%;
+        width: 340px; height: 340px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
     }
-    
+
+    .form-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50%; left: -15%;
+        width: 280px; height: 280px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 10s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .form-header > * { position: relative; z-index: 1; }
+
+    .form-header h3 {
+        margin: 0;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .form-header h3 i {
+        color: #fbbf24;
+        animation: float 3.5s ease-in-out infinite;
+        filter: drop-shadow(0 4px 10px rgba(251, 191, 36, 0.4));
+    }
+
+    .form-header p { margin: 8px 0 0; opacity: 0.92; font-size: 0.95rem; }
+
+    .course-badge {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 7px 16px;
+        border-radius: 30px;
+        display: inline-flex;
+        align-items: center;
+        margin-top: 12px;
+        font-size: 13px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .course-badge i { color: #fbbf24; }
+
+    .course-badge:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .form-body { padding: 30px; }
+    .form-group { margin-bottom: 26px; }
+
     .form-label {
         font-weight: 600;
         margin-bottom: 8px;
-        color: #2c3e50;
+        color: var(--crimson-900);
         display: flex;
         align-items: center;
         gap: 8px;
+        font-size: 0.9rem;
     }
-    
+
     .form-label i {
-        color: #f6d365;
+        color: var(--crimson-600);
+        transition: transform 0.3s ease;
     }
-    
+
+    .form-group:hover .form-label i { transform: scale(1.15); }
+
     .required-field::after {
         content: '*';
-        color: #eb3349;
-        margin-left: 4px;
+        color: var(--crimson-600);
+        margin-left: 2px;
+        font-weight: 700;
     }
-    
+
+    /* ==================== INPUTS ==================== */
     .form-control, .form-select {
-        border: 2px solid #e9ecef;
+        border: 2px solid #e2e8f0;
         border-radius: 12px;
-        padding: 12px 15px;
-        transition: all 0.3s ease;
+        padding: 12px 16px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
         font-size: 14px;
+        color: var(--crimson-900);
+        background: #fafafa;
     }
-    
+
+    .form-control::placeholder { color: #94a3b8; }
+
+    .form-control:hover, .form-select:hover {
+        border-color: var(--crimson-200);
+        background: white;
+    }
+
     .form-control:focus, .form-select:focus {
-        border-color: #f6d365;
-        box-shadow: 0 0 0 3px rgba(246, 211, 101, 0.1);
+        border-color: var(--crimson-500);
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
         outline: none;
+        background: white;
+        transform: translateY(-1px);
     }
-    
+
     textarea.form-control {
         resize: vertical;
-        min-height: 120px;
+        min-height: 130px;
+        line-height: 1.6;
     }
-    
-    /* Image Preview Section */
+
+    /* ==================== IMAGE PREVIEW ==================== */
     .image-preview-container {
-        background: #f8f9fa;
+        background: linear-gradient(135deg, #fef2f2 0%, #fafafa 100%);
+        border: 2px dashed var(--crimson-200);
         border-radius: 16px;
-        padding: 20px;
+        padding: 22px;
         margin-top: 15px;
         text-align: center;
+        animation: scaleIn 0.4s cubic-bezier(.2,.7,.2,1);
     }
-    
+
     .preview-image {
         max-width: 100%;
         max-height: 250px;
         border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 12px 32px rgba(127, 29, 29, 0.15);
+        transition: transform 0.4s cubic-bezier(.2,.7,.2,1);
     }
-    
+
+    .preview-image:hover {
+        transform: scale(1.03);
+    }
+
     .current-image {
-        border: 3px solid #f6d365;
+        border: 3px solid var(--crimson-500);
         padding: 5px;
+        background: white;
     }
-    
-    /* Alert Styles */
-    .alert-custom {
-        border-radius: 12px;
-        border-left: 4px solid;
-        padding: 15px;
-    }
-    
-    .alert-warning-custom {
-        background: linear-gradient(135deg, #f6d36510, #fda08510);
-        border-left-color: #f6d365;
-    }
-    
-    /* Button Styles */
-    .btn-update {
-        background: var(--warning-gradient);
-        border: none;
-        padding: 14px;
-        font-size: 16px;
-        font-weight: 600;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        color: white;
-    }
-    
-    .btn-update:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(246, 211, 101, 0.3);
-        color: white;
-    }
-    
-    .btn-cancel {
-        background: #6c757d;
-        border: none;
-        padding: 14px;
-        font-size: 16px;
-        font-weight: 600;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        color: white;
-        text-decoration: none;
-    }
-    
-    .btn-cancel:hover {
-        background: #5a6268;
-        transform: translateY(-2px);
-        color: white;
-    }
-    
-    .btn-outline-danger {
-        background: transparent;
-        color: #eb3349;
-        border: 2px solid #eb3349;
-        padding: 5px 15px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        cursor: pointer;
-    }
-    
-    .btn-outline-danger:hover {
-        background: #eb3349;
-        color: white;
-    }
-    
-    /* Toggle Switch for Price */
+
+    /* ==================== PRICE TOGGLE ==================== */
     .price-toggle {
         display: flex;
-        gap: 15px;
+        gap: 12px;
         align-items: center;
         margin-bottom: 15px;
+        flex-wrap: wrap;
     }
-    
+
     .toggle-btn {
-        padding: 8px 20px;
+        padding: 9px 22px;
         border-radius: 25px;
-        border: 2px solid #e9ecef;
+        border: 2px solid #e2e8f0;
         background: white;
         cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: 500;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        font-weight: 600;
+        font-size: 0.88rem;
+        color: #475569;
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    .toggle-btn::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .toggle-btn:hover::before { left: 100%; }
+
+    .toggle-btn:hover {
+        border-color: var(--crimson-400);
+        color: var(--crimson-700);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(185, 28, 28, 0.12);
+    }
+
     .toggle-btn.active {
         background: var(--success-gradient);
-        border-color: #11998e;
+        border-color: #059669;
         color: white;
+        box-shadow: 0 6px 20px rgba(5, 150, 105, 0.3);
+        transform: translateY(-2px);
     }
-    
-    /* Character counter */
+
+    /* ==================== CHARACTER COUNTER ==================== */
     .char-counter {
         text-align: right;
         font-size: 12px;
-        color: #6c757d;
-        margin-top: 5px;
+        color: #94a3b8;
+        margin-top: 6px;
+        font-weight: 500;
+        transition: color 0.3s ease;
     }
-    
-    .char-counter.warning {
-        color: #f6d365;
+
+    .char-counter.warning { color: #d97706; font-weight: 600; }
+    .char-counter.danger { color: var(--crimson-600); font-weight: 700; }
+
+    /* ==================== ALERTS ==================== */
+    .alert {
+        border-radius: 14px;
+        border: none;
+        padding: 16px 20px;
+        font-size: 0.9rem;
     }
-    
-    .char-counter.danger {
-        color: #eb3349;
+
+    .alert-custom {
+        border-left: 4px solid;
     }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-        .form-body {
-            padding: 20px;
-        }
-        
-        .form-header {
-            padding: 20px;
-        }
+
+    .alert-warning-custom {
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border-left-color: #d97706;
+        color: #92400e;
     }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+
+    .alert-warning-custom i.fa-circle-info,
+    .alert-warning-custom i.fa-lightbulb {
+        color: #d97706;
     }
-    
-    .fade-in {
-        animation: fadeIn 0.5s ease forwards;
+
+    .alert-warning-custom strong { color: #78350f; }
+
+    .alert-warning-custom ul {
+        padding-left: 20px;
+        margin-bottom: 0;
     }
-    
-    /* Loading state */
+
+    .alert-warning-custom li { margin: 5px 0; }
+
+    .alert-info {
+        background: linear-gradient(135deg, #e0f2fe 0%, #ecfeff 100%);
+        color: #155e75;
+        border: 1px solid #a5f3fc;
+    }
+
+    .alert-info strong {
+        color: var(--crimson-800);
+        font-size: 1.15rem;
+    }
+
+    .alert-info small {
+        color: #0e7490;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-size: 0.72rem;
+        font-weight: 600;
+    }
+
+    /* ==================== DANGER ZONE ==================== */
+    .alert-danger {
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        border: 1px solid #fecaca;
+        border-left: 4px solid var(--crimson-500);
+        color: #991b1b;
+    }
+
+    .alert-danger h6 {
+        color: var(--crimson-800);
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .alert-danger h6 i { color: var(--crimson-600); }
+
+    .alert-danger .btn-danger {
+        background: var(--primary-gradient);
+        border: none;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        padding: 8px 18px;
+        border-radius: 10px;
+    }
+
+    .alert-danger .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(127, 29, 29, 0.3);
+        color: white;
+    }
+
+    /* ==================== BUTTONS ==================== */
+    .btn-update {
+        background: linear-gradient(180deg, var(--crimson-600) 0%, var(--crimson-700) 100%);
+        border: 1px solid var(--crimson-800);
+        padding: 15px;
+        font-size: 1rem;
+        font-weight: 700;
+        border-radius: 12px;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        color: white;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 4px 16px rgba(127, 29, 29, 0.25);
+        position: relative;
+        overflow: hidden;
+        letter-spacing: -0.01em;
+    }
+
+    .btn-update::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-update:hover::before { left: 100%; }
+
+    .btn-update:hover {
+        transform: translateY(-3px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 12px 28px rgba(127, 29, 29, 0.4);
+        color: white;
+        background: linear-gradient(180deg, var(--crimson-700) 0%, var(--crimson-800) 100%);
+    }
+
+    .btn-update:active { transform: translateY(-1px); }
+
+    .btn-cancel {
+        background: #f1f5f9;
+        border: 2px solid #e2e8f0;
+        padding: 14px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        color: #475569;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-cancel:hover {
+        background: #e2e8f0;
+        border-color: #cbd5e1;
+        color: var(--crimson-800);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+    }
+
+    .btn-cancel i { transition: transform 0.3s ease; }
+    .btn-cancel:hover i { transform: translateX(-4px); }
+
+    .btn-outline-danger {
+        background: transparent;
+        color: var(--crimson-600);
+        border: 2px solid var(--crimson-600);
+        padding: 7px 18px;
+        border-radius: 10px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-outline-danger:hover {
+        background: var(--primary-gradient);
+        border-color: transparent;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.25);
+    }
+
+    .badge.bg-secondary {
+        background: #f1f5f9 !important;
+        color: var(--crimson-700) !important;
+        font-weight: 700;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        padding: 6px 14px;
+        border-radius: 20px;
+        border: 1px solid var(--crimson-200);
+    }
+
+    /* ==================== LOADING ==================== */
     .btn-loading {
         position: relative;
         pointer-events: none;
-        opacity: 0.7;
+        opacity: 0.85;
     }
-    
+
     .btn-loading::after {
         content: '';
         position: absolute;
-        width: 18px;
-        height: 18px;
-        top: 50%;
-        right: 15px;
+        width: 18px; height: 18px;
+        top: 50%; right: 18px;
         margin-top: -9px;
-        border: 2px solid white;
-        border-top-color: transparent;
+        border: 2px solid rgba(255,255,255,0.4);
+        border-top-color: white;
         border-radius: 50%;
         animation: spin 0.6s linear infinite;
     }
-    
-    @keyframes spin {
-        to { transform: rotate(360deg); }
+
+    /* ==================== TOAST ==================== */
+    .toast-notification {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: linear-gradient(135deg, #059669, #10b981);
+        color: white;
+        padding: 14px 24px;
+        border-radius: 12px;
+        z-index: 9999;
+        animation: slideInRight 0.35s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 12px 32px rgba(5, 150, 105, 0.35);
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        font-size: 0.9rem;
     }
-    
-    .course-badge {
-        background: rgba(255,255,255,0.2);
-        backdrop-filter: blur(10px);
-        padding: 5px 12px;
-        border-radius: 20px;
-        display: inline-block;
-        margin-top: 10px;
-        font-size: 13px;
+
+    .toast-error {
+        background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+        box-shadow: 0 12px 32px rgba(127, 29, 29, 0.4);
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+        .form-body { padding: 22px; }
+        .form-header { padding: 22px; }
+        .form-header h3 { font-size: 1.3rem; }
+        .toggle-btn { padding: 8px 16px; font-size: 0.82rem; }
+        .toast-notification { left: 16px; right: 16px; bottom: 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        .reveal { opacity: 1; transform: none; }
     }
 </style>
 
-<div class="row justify-content-center fade-in">
-    <div class="col-md-8 col-lg-7">
+<div class="row justify-content-center">
+    <div class="col-md-9 col-lg-8">
         <div class="form-card">
+            <!-- ==================== HEADER ==================== -->
             <div class="form-header">
-                <h3><i class="fas fa-edit me-2"></i>Edit Course</h3>
+                <h3><i class="fas fa-pen-to-square me-2"></i>Edit Course</h3>
                 <p>Update your course details and content</p>
                 <div class="course-badge">
-                    <i class="fas fa-book me-1"></i> {{ course.title }}
+                    <i class="fas fa-book me-2"></i> {{ course.title }}
                 </div>
             </div>
-            
+
+            <!-- ==================== BODY ==================== -->
             <div class="form-body">
                 <!-- Info Alert -->
                 <div class="alert alert-custom alert-warning-custom">
-                    <i class="fas fa-info-circle me-2"></i>
+                    <i class="fas fa-circle-info me-2"></i>
                     <strong>Editing Course:</strong> Your changes will be immediately visible to students.
                 </div>
-                
+
                 <form method="POST" enctype="multipart/form-data" id="courseForm" action="{{ url_for('edit_course', course_id=course.id) }}">
                     {{ form.hidden_tag() }}
-                    
-                    <!-- Course Title -->
-                    <div class="form-group">
+
+                    <!-- Title -->
+                    <div class="form-group reveal">
                         {{ form.title.label(class="form-label required-field") }}
                         {{ form.title(class="form-control", placeholder="e.g., Python Programming Masterclass: From Zero to Hero", id="courseTitle") }}
                         <div class="char-counter" id="titleCounter">0/100 characters</div>
                         {% for error in form.title.errors %}
-                            <span class="text-danger small">{{ error }}</span>
+                            <span class="text-danger small d-block mt-1">{{ error }}</span>
                         {% endfor %}
                     </div>
-                    
-                    <!-- Course Description -->
-                    <div class="form-group">
+
+                    <!-- Description -->
+                    <div class="form-group reveal">
                         {{ form.description.label(class="form-label required-field") }}
                         {{ form.description(class="form-control", rows="6", placeholder="Describe what students will learn in this course.", id="courseDescription") }}
                         <div class="char-counter" id="descCounter">0/2000 characters</div>
                         {% for error in form.description.errors %}
-                            <span class="text-danger small">{{ error }}</span>
+                            <span class="text-danger small d-block mt-1">{{ error }}</span>
                         {% endfor %}
                     </div>
-                    
-                    <!-- Course Category -->
-                    <div class="form-group">
-                        {{ form.category.label(class="form-label required-field") }}
-                        {{ form.category(class="form-select", id="courseCategory") }}
-                        {% for error in form.category.errors %}
-                            <span class="text-danger small">{{ error }}</span>
-                        {% endfor %}
+
+                    <!-- Category + Level -->
+                    <div class="row reveal">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form.category.label(class="form-label required-field") }}
+                                {{ form.category(class="form-select", id="courseCategory") }}
+                                {% for error in form.category.errors %}
+                                    <span class="text-danger small d-block mt-1">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form.level.label(class="form-label required-field") }}
+                                {{ form.level(class="form-select", id="courseLevel") }}
+                                {% for error in form.level.errors %}
+                                    <span class="text-danger small d-block mt-1">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
-                    
-                    <!-- Course Level -->
-                    <div class="form-group">
-                        {{ form.level.label(class="form-label required-field") }}
-                        {{ form.level(class="form-select", id="courseLevel") }}
-                        {% for error in form.level.errors %}
-                            <span class="text-danger small">{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    
-                    <!-- Course Price with Toggle -->
-                    <div class="form-group">
+
+                    <!-- Price -->
+                    <div class="form-group reveal">
                         <label class="form-label">
                             <i class="fas fa-dollar-sign"></i> Course Price
                         </label>
                         <div class="price-toggle">
-                            <button type="button" class="toggle-btn {% if course.price == 0 %}active{% endif %}" data-price="paid">💰 Paid Course</button>
-                            <button type="button" class="toggle-btn {% if course.price == 0 %}active{% endif %}" data-price="free">🎁 Free Course</button>
+                            <button type="button" class="toggle-btn" data-price="paid">
+                                <i class="fas fa-sack-dollar me-1"></i>Paid Course
+                            </button>
+                            <button type="button" class="toggle-btn" data-price="free">
+                                <i class="fas fa-gift me-1"></i>Free Course
+                            </button>
                         </div>
                         <div id="priceInputContainer">
                             {{ form.price(class="form-control", placeholder="Enter price in USD (e.g., 49.99)", id="coursePrice") }}
                         </div>
-                        <small class="text-muted">
-                            <i class="fas fa-info-circle"></i> 
+                        <small class="text-muted d-block mt-2">
+                            <i class="fas fa-circle-info"></i>
                             Free courses attract more students!
                         </small>
                         {% for error in form.price.errors %}
-                            <span class="text-danger small">{{ error }}</span>
+                            <span class="text-danger small d-block mt-1">{{ error }}</span>
                         {% endfor %}
                     </div>
-                    
-                    <!-- Image Upload Section -->
-                    <div class="form-group">
+
+                    <!-- Image Upload -->
+                    <div class="form-group reveal">
                         <label class="form-label">
                             <i class="fas fa-image"></i> Course Image
                         </label>
-                        
+
                         <!-- Current Image -->
                         {% if course.image_url %}
                         <div class="mb-3">
@@ -368,52 +649,52 @@
                             </div>
                         </div>
                         {% endif %}
-                        
-                        <!-- Option 1: Upload from computer -->
+
+                        <!-- Upload from Computer -->
                         <div class="mb-3">
                             {{ form.image.label(class="form-label") }}
                             {{ form.image(class="form-control", accept="image/*", id="imageUpload") }}
-                            <small class="text-muted">
+                            <small class="text-muted d-block mt-1">
                                 <i class="fas fa-upload"></i> Upload new image from your computer (JPG, PNG, GIF - Max 16MB)
                             </small>
                             {% for error in form.image.errors %}
-                                <span class="text-danger small">{{ error }}</span>
+                                <span class="text-danger small d-block mt-1">{{ error }}</span>
                             {% endfor %}
                         </div>
-                        
+
                         <!-- OR Divider -->
                         <div class="text-center my-3">
                             <span class="badge bg-secondary">OR</span>
                         </div>
-                        
-                        <!-- Option 2: Image URL -->
+
+                        <!-- Image URL -->
                         <div class="mb-3">
                             {{ form.image_url.label(class="form-label") }}
                             {{ form.image_url(class="form-control", placeholder="https://example.com/course-image.jpg", id="imageUrl") }}
-                            <small class="text-muted">
+                            <small class="text-muted d-block mt-1">
                                 <i class="fas fa-link"></i> Paste a new image URL from the web
                             </small>
                             {% for error in form.image_url.errors %}
-                                <span class="text-danger small">{{ error }}</span>
+                                <span class="text-danger small d-block mt-1">{{ error }}</span>
                             {% endfor %}
                         </div>
-                        
-                        <!-- Image Preview -->
+
+                        <!-- Preview -->
                         <div id="imagePreviewContainer" style="display: none;">
                             <div class="image-preview-container">
                                 <label class="form-label">New Image Preview</label>
                                 <div>
                                     <img id="previewImage" src="" alt="Course preview" class="preview-image">
                                 </div>
-                                <button type="button" class="btn btn-outline-danger mt-2" id="clearImage">
+                                <button type="button" class="btn btn-outline-danger mt-3" id="clearImage">
                                     <i class="fas fa-times"></i> Clear New Image
                                 </button>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Course Stats -->
-                    <div class="alert alert-info">
+                    <div class="alert alert-info reveal">
                         <div class="row text-center">
                             <div class="col-4">
                                 <strong>{{ course.lessons.count() }}</strong>
@@ -432,33 +713,33 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Pro Tips Alert -->
-                    <div class="alert alert-custom alert-warning-custom mt-3">
+
+                    <!-- Pro Tips -->
+                    <div class="alert alert-custom alert-warning-custom mt-3 reveal">
                         <i class="fas fa-lightbulb me-2"></i>
                         <strong>Pro Tips:</strong>
-                        <ul class="mb-0 mt-2">
+                        <ul class="mt-2">
                             <li>Keep your course description updated with new content</li>
                             <li>Consider adjusting price based on student feedback</li>
                             <li>Update your course image to attract more students</li>
                             <li>Add new lessons regularly to keep content fresh</li>
                         </ul>
                     </div>
-                    
+
                     <!-- Danger Zone -->
-                    <div class="alert alert-danger mt-4">
-                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Danger Zone</h6>
-                        <p class="small">Deleting this course will remove all lessons, enrollments, and student progress. This action cannot be undone.</p>
+                    <div class="alert alert-danger mt-4 reveal">
+                        <h6><i class="fas fa-triangle-exclamation me-2"></i>Danger Zone</h6>
+                        <p class="small mb-3">Deleting this course will remove all lessons, enrollments, and student progress. This action cannot be undone.</p>
                         <a href="{{ url_for('delete_course', course_id=course.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this course? All data will be permanently lost!')">
                             <i class="fas fa-trash me-1"></i>Delete Course
                         </a>
                     </div>
-                    
-                    <!-- Form Actions -->
-                    <div class="d-grid gap-3 mt-4">
-                        {{ form.submit(class="btn btn-update text-white", value="💾 Update Course") }}
-                        <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-cancel text-white text-center">
-                            <i class="fas fa-arrow-left me-2"></i>Cancel
+
+                    <!-- Actions -->
+                    <div class="d-grid gap-3 mt-4 reveal">
+                        {{ form.submit(class="btn btn-update", value="Update Course") }}
+                        <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-cancel">
+                            <i class="fas fa-arrow-left"></i>Cancel
                         </a>
                     </div>
                 </form>
@@ -468,11 +749,25 @@
 </div>
 
 <script>
-    // Character counter for title
+    // ==================== SCROLL REVEAL ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal');
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => obs.observe(el));
+    });
+
+    // ==================== CHARACTER COUNTERS ====================
     const titleInput = document.getElementById('courseTitle');
     const titleCounter = document.getElementById('titleCounter');
-    
-    if (titleInput) {
+
+    if (titleInput && titleCounter) {
         titleInput.addEventListener('input', function() {
             const length = this.value.length;
             titleCounter.textContent = `${length}/100 characters`;
@@ -488,12 +783,11 @@
         });
         titleInput.dispatchEvent(new Event('input'));
     }
-    
-    // Character counter for description
+
     const descInput = document.getElementById('courseDescription');
     const descCounter = document.getElementById('descCounter');
-    
-    if (descInput) {
+
+    if (descInput && descCounter) {
         descInput.addEventListener('input', function() {
             const length = this.value.length;
             descCounter.textContent = `${length}/2000 characters`;
@@ -509,130 +803,159 @@
         });
         descInput.dispatchEvent(new Event('input'));
     }
-    
-    // Price Toggle Functionality
+
+    // ==================== PRICE TOGGLE (FIXED) ====================
     const toggleBtns = document.querySelectorAll('.toggle-btn');
     const priceInput = document.getElementById('coursePrice');
-    
-    toggleBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            toggleBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            if (this.dataset.price === 'free') {
-                priceInput.value = '0.00';
-                priceInput.disabled = true;
-                priceInput.style.opacity = '0.6';
-            } else {
-                priceInput.disabled = false;
-                priceInput.style.opacity = '1';
-                if (priceInput.value === '0.00') {
-                    priceInput.value = '';
+
+    if (priceInput) {
+        priceInput.removeAttribute('required');
+
+        function setFreeMode() {
+            priceInput.value = '0.00';
+            priceInput.readOnly = true;
+            priceInput.style.opacity = '0.7';
+            priceInput.style.cursor = 'not-allowed';
+            priceInput.style.background = '#f1f5f9';
+        }
+
+        function setPaidMode() {
+            priceInput.readOnly = false;
+            priceInput.style.opacity = '1';
+            priceInput.style.cursor = '';
+            priceInput.style.background = '';
+        }
+
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                toggleBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                if (this.dataset.price === 'free') {
+                    setFreeMode();
+                } else {
+                    setPaidMode();
+                    priceInput.focus();
                 }
-            }
+            });
         });
-    });
-    
-    // Image Preview Function
+
+        // FIXED: Set initial state based on current price
+        const currentPrice = parseFloat(priceInput.value);
+        if (!isNaN(currentPrice) && currentPrice === 0) {
+            const freeBtn = document.querySelector('.toggle-btn[data-price="free"]');
+            if (freeBtn) freeBtn.click();
+        } else {
+            const paidBtn = document.querySelector('.toggle-btn[data-price="paid"]');
+            if (paidBtn) paidBtn.classList.add('active');
+        }
+    }
+
+    // ==================== IMAGE PREVIEW ====================
     const imageUpload = document.getElementById('imageUpload');
     const imageUrl = document.getElementById('imageUrl');
     const previewContainer = document.getElementById('imagePreviewContainer');
     const previewImage = document.getElementById('previewImage');
     const clearBtn = document.getElementById('clearImage');
-    
+
     function showPreview(src) {
-        if (src) {
+        if (src && previewContainer && previewImage) {
             previewImage.src = src;
             previewContainer.style.display = 'block';
             previewImage.onerror = function() {
                 previewImage.src = 'https://via.placeholder.com/800x400?text=Invalid+Image+URL';
             };
-        } else {
+        } else if (previewContainer) {
             previewContainer.style.display = 'none';
         }
     }
-    
-    // Handle file upload preview
+
     if (imageUpload) {
         imageUpload.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    showPreview(e.target.result);
-                    imageUrl.value = '';
+                reader.onload = function(ev) {
+                    showPreview(ev.target.result);
+                    if (imageUrl) imageUrl.value = '';
                 };
                 reader.readAsDataURL(file);
-            } else {
-                if (!imageUrl.value) {
-                    previewContainer.style.display = 'none';
-                }
             }
         });
     }
-    
-    // Handle URL input preview
+
     if (imageUrl) {
         imageUrl.addEventListener('input', function() {
-            const url = this.value;
-            if (url) {
-                showPreview(url);
-                imageUpload.value = '';
-            } else if (!imageUpload.files.length) {
-                previewContainer.style.display = 'none';
+            if (this.value) {
+                showPreview(this.value);
+                if (imageUpload) imageUpload.value = '';
             }
         });
     }
-    
-    // Clear image
+
     if (clearBtn) {
         clearBtn.addEventListener('click', function() {
             if (imageUpload) imageUpload.value = '';
             if (imageUrl) imageUrl.value = '';
-            previewContainer.style.display = 'none';
+            if (previewContainer) previewContainer.style.display = 'none';
         });
     }
-    
-    // Form validation before submit
+
+    // ==================== FORM VALIDATION ====================
     const form = document.getElementById('courseForm');
+
+    function showToast(msg, type = 'error') {
+        let toast = document.querySelector('.toast-notification');
+        if (toast) toast.remove();
+
+        toast = document.createElement('div');
+        toast.className = 'toast-notification' + (type === 'error' ? ' toast-error' : '');
+        toast.innerHTML = `<i class="fas fa-${type === 'error' ? 'circle-exclamation' : 'circle-check'} me-2"></i>${msg}`;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.animation = 'slideOutRight 0.3s ease forwards';
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
+    }
+
     if (form) {
         form.addEventListener('submit', function(e) {
             const title = titleInput?.value.trim();
             const description = descInput?.value.trim();
-            
-            if (!title || title.length === 0) {
+
+            if (!title) {
                 e.preventDefault();
-                alert('Please enter a course title');
+                showToast('Please enter a course title');
                 titleInput?.focus();
                 return false;
             }
-            
             if (title.length > 100) {
                 e.preventDefault();
-                alert('Course title must be less than 100 characters');
+                showToast('Title must be less than 100 characters');
                 return false;
             }
-            
-            if (!description || description.length === 0) {
+            if (!description) {
                 e.preventDefault();
-                alert('Please enter a course description');
+                showToast('Please enter a course description');
                 descInput?.focus();
                 return false;
             }
-            
             if (description.length > 2000) {
                 e.preventDefault();
-                alert('Course description must be less than 2000 characters');
+                showToast('Description must be less than 2000 characters');
                 return false;
             }
-            
-            // Show loading state
+
+            if (priceInput && !priceInput.value) {
+                priceInput.value = '0.00';
+            }
+
             const submitBtn = document.querySelector('.btn-update');
             if (submitBtn) {
                 submitBtn.classList.add('btn-loading');
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating Course...';
             }
-            
             return true;
         });
     }

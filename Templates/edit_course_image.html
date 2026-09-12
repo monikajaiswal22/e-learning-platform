@@ -2,387 +2,646 @@
 
 {% block content %}
 <style>
-    /* Modern Edit Image Styles */
+    /* ============================================================
+       EDIT COURSE IMAGE — CRIMSON RED + ANIMATIONS
+       ============================================================ */
     :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --primary-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --danger-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+
+        --crimson-900: #450a0a;
+        --crimson-800: #7f1d1d;
+        --crimson-700: #991b1b;
+        --crimson-600: #b91c1c;
+        --crimson-500: #dc2626;
+        --crimson-400: #ef4444;
+        --crimson-300: #f87171;
+        --crimson-200: #fecaca;
+        --crimson-100: #fee2e2;
+        --crimson-50:  #fef2f2;
     }
-    
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
+    }
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-14px) rotate(3deg); }
+    }
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
+    }
+    @keyframes shimmer {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes slideInRight {
+        from { transform: translateX(120%); opacity: 0; }
+        to   { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to   { transform: translateX(120%); opacity: 0; }
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.6s cubic-bezier(.2,.7,.2,1),
+                    transform 0.6s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    /* ==================== PAGE HEADER ==================== */
     .page-header {
-        background: var(--primary-gradient);
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
         border-radius: 20px;
-        padding: 25px 30px;
+        padding: 28px 30px;
         margin-bottom: 30px;
         color: white;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.28);
     }
-    
+
     .page-header::before {
-        content: '🖼️';
+        content: '';
         position: absolute;
-        bottom: -20px;
-        right: 20px;
-        font-size: 80px;
-        opacity: 0.1;
+        top: -50%; right: -25%;
+        width: 340px; height: 340px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.45) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
     }
-    
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50%; left: -15%;
+        width: 280px; height: 280px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 10s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .page-header > * { position: relative; z-index: 1; }
+
     .page-header h3 {
         margin: 0;
-        font-weight: 700;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    
-    .page-header p {
-        margin: 5px 0 0;
-        opacity: 0.9;
+
+    .page-header h3 i {
+        color: #fbbf24;
+        animation: float 3.5s ease-in-out infinite;
+        filter: drop-shadow(0 4px 10px rgba(251, 191, 36, 0.4));
     }
-    
+
+    .page-header p { margin: 6px 0 0; opacity: 0.92; }
+
     .course-badge {
-        background: rgba(255,255,255,0.2);
+        background: rgba(255, 255, 255, 0.15);
         backdrop-filter: blur(10px);
-        padding: 5px 12px;
-        border-radius: 20px;
-        display: inline-block;
-        margin-top: 10px;
+        padding: 7px 16px;
+        border-radius: 30px;
+        display: inline-flex;
+        align-items: center;
+        margin-top: 12px;
         font-size: 13px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
     }
-    
+
+    .course-badge i { color: #fbbf24; }
+
+    .course-badge:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .page-header .btn-light {
+        background: rgba(255, 255, 255, 0.95);
+        color: var(--crimson-800);
+        border: none;
+        padding: 9px 20px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.88rem;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+    }
+
+    .page-header .btn-light:hover {
+        background: #fff;
+        color: var(--crimson-900);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ==================== FORM CARD ==================== */
     .form-card {
         background: white;
         border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        box-shadow: 0 20px 50px rgba(127, 29, 29, 0.1);
         margin-bottom: 30px;
+        border: 1px solid var(--crimson-100);
+        animation: fadeInUp 0.7s cubic-bezier(.2,.7,.2,1);
     }
-    
-    .form-body {
-        padding: 30px;
-    }
-    
-    /* Image Preview Section */
+
+    .form-body { padding: 30px; }
+
+    /* ==================== IMAGE PREVIEW ==================== */
     .preview-container {
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        background: linear-gradient(135deg, #fef2f2 0%, #fafafa 100%);
+        border: 2px dashed var(--crimson-200);
         border-radius: 16px;
         padding: 30px;
         text-align: center;
         margin-bottom: 25px;
+        transition: all 0.3s ease;
     }
-    
+
+    .preview-container:hover {
+        border-color: var(--crimson-300);
+        box-shadow: 0 8px 24px rgba(127, 29, 29, 0.08);
+    }
+
     .preview-wrapper {
         position: relative;
         display: inline-block;
         max-width: 100%;
     }
-    
+
     .preview-image {
         max-width: 100%;
         max-height: 300px;
         border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(127, 29, 29, 0.15);
+        transition: all 0.4s cubic-bezier(.2,.7,.2,1);
+        background: white;
     }
-    
+
     .preview-image:hover {
-        transform: scale(1.02);
+        transform: scale(1.03);
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.25);
     }
-    
+
     .image-badge {
         position: absolute;
-        bottom: 10px;
-        right: 10px;
-        background: rgba(0,0,0,0.7);
-        color: white;
-        padding: 4px 10px;
+        bottom: 12px;
+        right: 12px;
+        background: rgba(69, 10, 10, 0.85);
+        backdrop-filter: blur(10px);
+        color: #fbbf24;
+        padding: 6px 14px;
         border-radius: 20px;
         font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
     }
-    
-    /* URL Input Section */
+
+    .preview-image:hover + .image-badge,
+    .preview-wrapper:hover .image-badge {
+        transform: scale(1.08);
+    }
+
+    /* ==================== URL INPUT ==================== */
     .url-input-wrapper {
         position: relative;
-        margin-bottom: 25px;
+        margin-bottom: 20px;
     }
-    
-    .url-input-wrapper i {
+
+    .url-input-wrapper > i {
         position: absolute;
-        left: 15px;
+        left: 18px;
         top: 50%;
         transform: translateY(-50%);
-        color: #6c757d;
+        color: #94a3b8;
+        transition: color 0.3s ease;
+        pointer-events: none;
+        z-index: 1;
     }
-    
+
     .url-input {
         width: 100%;
-        padding: 12px 15px 12px 45px;
-        border: 2px solid #e9ecef;
+        padding: 13px 16px 13px 48px;
+        border: 2px solid #e2e8f0;
         border-radius: 12px;
         font-size: 14px;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        background: #fafafa;
+        color: var(--crimson-900);
     }
-    
+
+    .url-input::placeholder { color: #94a3b8; }
+
+    .url-input:hover {
+        border-color: var(--crimson-200);
+        background: white;
+    }
+
     .url-input:focus {
-        border-color: #667eea;
+        border-color: var(--crimson-500);
         outline: none;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+        background: white;
+        transform: translateY(-1px);
     }
-    
-    /* File Upload Section */
+
+    .url-input:focus ~ i,
+    .url-input-wrapper:focus-within > i {
+        color: var(--crimson-600);
+    }
+
+    /* ==================== UPLOAD SECTION ==================== */
     .upload-section {
-        background: #f8f9fa;
+        background: linear-gradient(135deg, #fef2f2 0%, #fafafa 100%);
+        border: 2px dashed var(--crimson-200);
         border-radius: 16px;
-        padding: 25px;
+        padding: 30px 25px;
         text-align: center;
         margin-bottom: 25px;
-        border: 2px dashed #dee2e6;
-        transition: all 0.3s ease;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
         cursor: pointer;
+        position: relative;
+        overflow: hidden;
     }
-    
-    .upload-section:hover {
-        border-color: #667eea;
-        background: linear-gradient(135deg, #667eea05, #764ba205);
+
+    .upload-section::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 50%, rgba(220, 38, 38, 0.05), transparent 70%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
     }
-    
+
+    .upload-section:hover::before,
+    .upload-section.dragover::before {
+        opacity: 1;
+    }
+
+    .upload-section:hover,
+    .upload-section.dragover {
+        border-color: var(--crimson-500);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(127, 29, 29, 0.15);
+    }
+
+    .upload-section.dragover {
+        border-style: solid;
+    }
+
     .upload-icon {
-        font-size: 48px;
-        color: #667eea;
+        font-size: 52px;
+        color: var(--crimson-500);
         margin-bottom: 15px;
+        display: inline-block;
+        transition: all 0.4s cubic-bezier(.2,.7,.2,1);
+        animation: float 3.5s ease-in-out infinite;
     }
-    
+
+    .upload-section:hover .upload-icon,
+    .upload-section.dragover .upload-icon {
+        transform: scale(1.15) translateY(-4px);
+        color: var(--crimson-600);
+        filter: drop-shadow(0 8px 20px rgba(185, 28, 28, 0.35));
+    }
+
     .upload-title {
-        font-weight: 600;
+        font-weight: 700;
         margin-bottom: 5px;
+        color: var(--crimson-900);
+        font-size: 1.05rem;
     }
-    
+
     .upload-subtitle {
         font-size: 12px;
-        color: #6c757d;
+        color: #64748b;
     }
-    
-    .file-input {
-        display: none;
-    }
-    
-    /* Suggested Images Grid */
-    .suggested-title {
+
+    .file-input { display: none; }
+
+    #fileName {
+        color: var(--crimson-700) !important;
         font-weight: 600;
+        background: #fef2f2;
+        padding: 6px 14px;
+        border-radius: 20px;
+        display: inline-block !important;
+        margin-top: 12px;
+        border: 1px solid var(--crimson-200);
+    }
+
+    /* ==================== SUGGESTED IMAGES ==================== */
+    .suggested-title {
+        font-weight: 700;
         margin-bottom: 15px;
         display: flex;
         align-items: center;
         gap: 10px;
+        color: var(--crimson-900);
     }
-    
+
+    .suggested-title i { color: var(--crimson-600); }
+
     .suggested-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 15px;
+        gap: 14px;
         margin-bottom: 25px;
     }
-    
+
     .suggested-card {
         background: white;
         border-radius: 12px;
         overflow: hidden;
-        transition: all 0.3s ease;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
         cursor: pointer;
-        border: 2px solid #e9ecef;
+        border: 2px solid #e2e8f0;
+        position: relative;
     }
-    
+
+    .suggested-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 12px;
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+
     .suggested-card:hover {
-        transform: translateY(-5px);
-        border-color: #667eea;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        transform: translateY(-6px);
+        border-color: var(--crimson-400);
+        box-shadow: 0 12px 28px rgba(127, 29, 29, 0.2);
     }
-    
+
+    .suggested-card:hover::after {
+        opacity: 1;
+    }
+
     .suggested-image {
         width: 100%;
         height: 80px;
         object-fit: cover;
+        transition: transform 0.5s cubic-bezier(.2,.7,.2,1);
     }
-    
+
+    .suggested-card:hover .suggested-image {
+        transform: scale(1.08);
+    }
+
     .suggested-name {
         padding: 8px;
         font-size: 12px;
         text-align: center;
-        font-weight: 500;
+        font-weight: 600;
         background: white;
+        color: var(--crimson-900);
+        transition: all 0.3s ease;
     }
-    
-    /* Action Buttons */
-    .btn-update {
+
+    .suggested-card:hover .suggested-name {
+        background: var(--crimson-50);
+        color: var(--crimson-700);
+    }
+
+    .suggested-card.selected {
+        border-color: var(--crimson-500);
+        box-shadow: 0 8px 20px rgba(127, 29, 29, 0.2);
+    }
+
+    .suggested-card.selected .suggested-name {
         background: var(--primary-gradient);
-        border: none;
-        padding: 14px;
-        font-size: 16px;
-        font-weight: 600;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        width: 100%;
         color: white;
     }
-    
-    .btn-update:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-        color: white;
-    }
-    
-    .btn-cancel {
-        background: #6c757d;
-        border: none;
-        padding: 12px;
-        font-size: 14px;
-        font-weight: 600;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        color: white;
-        text-decoration: none;
-    }
-    
-    .btn-cancel:hover {
-        background: #5a6268;
-        color: white;
-    }
-    
-    .btn-light {
-        background: rgba(255,255,255,0.2);
-        border: none;
-        color: white;
-        padding: 8px 20px;
-        border-radius: 25px;
-        transition: all 0.3s ease;
-        text-decoration: none;
-    }
-    
-    .btn-light:hover {
-        background: rgba(255,255,255,0.3);
-        color: white;
-    }
-    
-    /* Alert */
+
+    /* ==================== ALERTS ==================== */
     .alert-custom {
-        border-radius: 12px;
+        border-radius: 14px;
+        border: none;
         border-left: 4px solid;
         margin-top: 20px;
-        padding: 15px 20px;
+        padding: 18px 20px;
+        font-size: 0.9rem;
+        animation: fadeInUp 0.5s ease;
     }
-    
+
     .alert-info {
-        background: linear-gradient(135deg, #4facfe20, #00f2fe20);
-        border-left-color: #4facfe;
-        color: #4facfe;
+        background: linear-gradient(135deg, #e0f2fe 0%, #ecfeff 100%);
+        border-left-color: #0891b2;
+        color: #155e75;
     }
-    
+
+    .alert-info i.fa-lightbulb {
+        color: #d97706;
+        animation: float 2.5s ease-in-out infinite;
+    }
+
+    .alert-info strong { color: #0e7490; }
+
+    .alert-info ul {
+        padding-left: 20px;
+        margin-bottom: 0;
+    }
+
+    .alert-info li { margin: 5px 0; }
+
     .alert-info a {
-        color: #4facfe;
-        text-decoration: underline;
+        color: #0891b2;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border-bottom: 1px dashed #0891b2;
     }
-    
+
     .alert-info a:hover {
-        color: #2a7fbf;
+        color: #155e75;
+        border-bottom-style: solid;
     }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-        .form-body {
-            padding: 20px;
-        }
-        
-        .preview-container {
-            padding: 20px;
-        }
-        
-        .suggested-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
+
+    /* ==================== BUTTONS ==================== */
+    .btn-update {
+        background: linear-gradient(180deg, var(--crimson-600) 0%, var(--crimson-700) 100%);
+        border: 1px solid var(--crimson-800);
+        padding: 15px;
+        font-size: 1rem;
+        font-weight: 700;
+        border-radius: 12px;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        width: 100%;
+        color: white;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 4px 16px rgba(127, 29, 29, 0.25);
+        position: relative;
+        overflow: hidden;
+        letter-spacing: -0.01em;
     }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+
+    .btn-update::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.6s ease;
     }
-    
-    .fade-in {
-        animation: fadeIn 0.5s ease forwards;
+
+    .btn-update:hover::before { left: 100%; }
+
+    .btn-update:hover {
+        transform: translateY(-3px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 12px 28px rgba(127, 29, 29, 0.4);
+        color: white;
+        background: linear-gradient(180deg, var(--crimson-700) 0%, var(--crimson-800) 100%);
     }
-    
-    /* Loading Spinner */
+
+    .btn-update:active { transform: translateY(-1px); }
+
+    .btn-cancel {
+        background: #f1f5f9;
+        border: 2px solid #e2e8f0;
+        padding: 14px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        color: #475569;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-cancel:hover {
+        background: #e2e8f0;
+        border-color: #cbd5e1;
+        color: var(--crimson-800);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+    }
+
+    .btn-cancel i { transition: transform 0.3s ease; }
+    .btn-cancel:hover i { transform: translateX(-4px); }
+
+    /* ==================== OR BADGE ==================== */
+    .badge.bg-secondary {
+        background: #f1f5f9 !important;
+        color: var(--crimson-700) !important;
+        font-weight: 700;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        padding: 6px 14px;
+        border-radius: 20px;
+        border: 1px solid var(--crimson-200);
+    }
+
+    /* ==================== LOADING ==================== */
     .btn-loading {
         position: relative;
         pointer-events: none;
-        opacity: 0.7;
+        opacity: 0.85;
     }
-    
+
     .btn-loading::after {
         content: '';
         position: absolute;
-        width: 18px;
-        height: 18px;
-        top: 50%;
-        right: 15px;
+        width: 18px; height: 18px;
+        top: 50%; right: 18px;
         margin-top: -9px;
-        border: 2px solid white;
-        border-top-color: transparent;
+        border: 2px solid rgba(255,255,255,0.4);
+        border-top-color: white;
         border-radius: 50%;
         animation: spin 0.6s linear infinite;
     }
-    
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-    
-    /* Toast Notification */
+
+    /* ==================== TOAST ==================== */
     .toast-notification {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #28a745;
+        bottom: 24px;
+        right: 24px;
+        background: linear-gradient(135deg, #059669, #10b981);
         color: white;
-        padding: 12px 24px;
-        border-radius: 10px;
-        z-index: 1000;
-        animation: slideInRight 0.3s ease;
+        padding: 14px 24px;
+        border-radius: 12px;
+        z-index: 9999;
+        animation: slideInRight 0.35s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 12px 32px rgba(5, 150, 105, 0.35);
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        font-size: 0.9rem;
     }
-    
+
     .toast-error {
-        background: #eb3349;
+        background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+        box-shadow: 0 12px 32px rgba(127, 29, 29, 0.4);
     }
-    
-    @keyframes slideInRight {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+        .form-body { padding: 22px; }
+        .page-header { padding: 22px 20px; }
+        .preview-container { padding: 20px; }
+        .upload-section { padding: 22px 18px; }
+        .suggested-grid { grid-template-columns: repeat(2, 1fr); }
+        .toast-notification { left: 16px; right: 16px; bottom: 16px; }
     }
-    
-    @keyframes slideOutRight {
-        from {
-            transform: translateX(0);
-            opacity: 1;
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
         }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
+        .reveal { opacity: 1; transform: none; }
     }
 </style>
 
-<div class="container fade-in">
-    <!-- Page Header -->
+<div class="container">
+    <!-- ==================== PAGE HEADER ==================== -->
     <div class="page-header">
-        <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
-                <h3><i class="fas fa-edit me-2"></i>Edit Course Image</h3>
+                <h3><i class="fas fa-pen-to-square me-2"></i>Edit Course Image</h3>
                 <p>Update the course thumbnail image</p>
                 <div class="course-badge">
-                    <i class="fas fa-book me-1"></i> {{ course.title }}
+                    <i class="fas fa-book me-2"></i> {{ course.title }}
                 </div>
             </div>
             <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-light">
@@ -390,18 +649,17 @@
             </a>
         </div>
     </div>
-    
+
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="form-card">
+            <div class="form-card reveal">
                 <div class="form-body">
-                    <!-- FIXED: Added action -->
                     <form method="POST" id="imageForm" enctype="multipart/form-data" action="{{ url_for('edit_course_image', course_id=course.id) }}">
                         <!-- Current Image Preview -->
                         <div class="preview-container">
                             <div class="preview-wrapper">
-                                <img id="preview" class="preview-image" 
-                                     src="{{ course.image_url or 'https://via.placeholder.com/800x400?text=No+Image+Selected' }}" 
+                                <img id="preview" class="preview-image"
+                                     src="{{ course.image_url or 'https://via.placeholder.com/800x400?text=No+Image+Selected' }}"
                                      alt="Course preview"
                                      onerror="this.src='https://via.placeholder.com/800x400?text=Invalid+Image+URL'">
                                 <div class="image-badge">
@@ -409,39 +667,40 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Option 1: Image URL -->
+
+                        <!-- URL Input -->
                         <div class="url-input-wrapper">
+                            <input type="text" class="url-input" id="image_url" name="image_url"
+                                   value="{{ course.image_url or '' }}"
+                                   placeholder="Paste image URL here (e.g., https://example.com/image.jpg)">
                             <i class="fas fa-link"></i>
-                            <input type="text" class="url-input" id="image_url" name="image_url" 
-                                   value="{{ course.image_url or '' }}" 
-                                   placeholder="Enter image URL (e.g., https://example.com/image.jpg)">
                         </div>
-                        
+
                         <div class="text-center my-3">
                             <span class="badge bg-secondary">OR</span>
                         </div>
-                        
-                        <!-- Option 2: File Upload -->
-                        <div class="upload-section" onclick="document.getElementById('fileUpload').click()">
+
+                        <!-- File Upload -->
+                        <div class="upload-section" id="uploadSection" onclick="document.getElementById('fileUpload').click()">
                             <div class="upload-icon">
-                                <i class="fas fa-cloud-upload-alt"></i>
+                                <i class="fas fa-cloud-arrow-up"></i>
                             </div>
                             <div class="upload-title">Upload from Computer</div>
-                            <div class="upload-subtitle">Click or drag & drop image file</div>
+                            <div class="upload-subtitle">Click or drag & drop image file here</div>
                             <input type="file" id="fileUpload" class="file-input" name="image" accept="image/jpeg,image/png,image/gif,image/webp">
-                            <div id="fileName" class="mt-2 small text-muted" style="display: none;"></div>
+                            <div id="fileName" style="display: none;"></div>
                         </div>
-                        
+
                         <!-- Suggested Images -->
                         <div class="suggested-title">
                             <i class="fas fa-images"></i>
                             <span>Suggested Images (Click to use)</span>
                         </div>
-                        <div class="suggested-grid">
+                        <div class="suggested-grid" id="suggestedGrid">
                             {% for img in suggested_images %}
-                            <div class="suggested-card" onclick="useSuggestedImage('{{ img.url }}', '{{ img.name }}')">
-                                <img src="{{ img.url }}" class="suggested-image" alt="{{ img.name }}" 
+                            <div class="suggested-card" data-url="{{ img.url }}" onclick="useSuggestedImage(this, '{{ img.url }}', '{{ img.name }}')">
+                                <img src="{{ img.url }}" class="suggested-image" alt="{{ img.name }}"
+                                     loading="lazy"
                                      onerror="this.src='https://via.placeholder.com/120x80?text={{ img.name }}'">
                                 <div class="suggested-name">
                                     <i class="fas fa-{{ 'code' if img.name == 'Programming' else 'globe' if img.name == 'Web Development' else 'chart-line' if img.name == 'Business' else 'paint-brush' if img.name == 'Design' else 'camera' }} me-1"></i>
@@ -450,30 +709,31 @@
                             </div>
                             {% endfor %}
                         </div>
-                        
-                        <!-- Image Tips -->
+
+                        <!-- Tips -->
                         <div class="alert alert-info alert-custom">
                             <i class="fas fa-lightbulb me-2"></i>
                             <strong>Image Tips:</strong>
-                            <ul class="mb-0 mt-2">
-                                <li>Recommended size: <strong>800x400 pixels</strong> (16:9 aspect ratio)</li>
+                            <ul class="mt-2">
+                                <li>Recommended size: <strong>800×400 pixels</strong> (16:9 aspect ratio)</li>
                                 <li>Supported formats: JPG, PNG, GIF, WebP</li>
-                                <li>Maximum file size: <strong>16MB</strong></li>
+                                <li>Maximum file size: <strong>16 MB</strong></li>
                                 <li>Use high-quality, relevant images for better engagement</li>
-                                <li>Free stock photos: <a href="https://unsplash.com" target="_blank">Unsplash</a> | 
-                                    <a href="https://pixabay.com" target="_blank">Pixabay</a> | 
-                                    <a href="https://pexels.com" target="_blank">Pexels</a>
+                                <li>Free stock photos:
+                                    <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a> ·
+                                    <a href="https://pixabay.com" target="_blank" rel="noopener">Pixabay</a> ·
+                                    <a href="https://pexels.com" target="_blank" rel="noopener">Pexels</a>
                                 </li>
                             </ul>
                         </div>
-                        
-                        <!-- Action Buttons -->
+
+                        <!-- Actions -->
                         <div class="d-grid gap-3 mt-4">
-                            <button type="submit" class="btn btn-update text-white" id="submitBtn">
-                                <i class="fas fa-save me-2"></i>Update Course Image
+                            <button type="submit" class="btn btn-update" id="submitBtn">
+                                <i class="fas fa-floppy-disk me-2"></i>Update Course Image
                             </button>
-                            <a href="{{ url_for('manage_lessons', course_id=course.id) }}" class="btn btn-cancel text-white text-center">
-                                <i class="fas fa-arrow-left me-2"></i>Cancel
+                            <a href="{{ url_for('manage_lessons', course_id=course.id) }}" class="btn btn-cancel">
+                                <i class="fas fa-arrow-left"></i>Cancel
                             </a>
                         </div>
                     </form>
@@ -484,15 +744,30 @@
 </div>
 
 <script>
-    // DOM Elements
+    // ==================== SCROLL REVEAL ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal');
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => obs.observe(el));
+    });
+
+    // ==================== ELEMENTS ====================
     const imageUrlInput = document.getElementById('image_url');
     const preview = document.getElementById('preview');
     const fileUpload = document.getElementById('fileUpload');
     const fileName = document.getElementById('fileName');
     const form = document.getElementById('imageForm');
     const submitBtn = document.getElementById('submitBtn');
-    
-    // Update preview from URL input
+    const uploadSection = document.getElementById('uploadSection');
+
+    // ==================== PREVIEW FROM URL ====================
     function updatePreviewFromUrl() {
         if (!imageUrlInput) return;
         const url = imageUrlInput.value.trim();
@@ -506,154 +781,135 @@
             preview.src = 'https://via.placeholder.com/800x400?text=No+Image+Selected';
         }
     }
-    
+
     if (imageUrlInput) {
         imageUrlInput.addEventListener('input', updatePreviewFromUrl);
     }
-    
-    // Handle file upload
+
+    // ==================== FILE UPLOAD ====================
     if (fileUpload) {
         fileUpload.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                // Validate file type
                 const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
                 if (!validTypes.includes(file.type)) {
                     showToast('Invalid file type. Please upload JPG, PNG, GIF, or WebP.', 'error');
                     fileUpload.value = '';
                     return;
                 }
-                
-                // Validate file size (max 16MB)
+
                 if (file.size > 16 * 1024 * 1024) {
                     showToast('File too large. Maximum size is 16MB.', 'error');
                     fileUpload.value = '';
                     return;
                 }
-                
-                // Show file name
+
                 if (fileName) {
-                    fileName.textContent = 'Selected: ' + file.name;
-                    fileName.style.display = 'block';
+                    fileName.textContent = '✓ ' + file.name;
+                    fileName.style.display = 'inline-block';
                 }
-                
-                // Preview the uploaded image
+
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    // Clear URL input when using file upload
+                reader.onload = function(ev) {
+                    preview.src = ev.target.result;
                     if (imageUrlInput) imageUrlInput.value = '';
                 };
                 reader.readAsDataURL(file);
-                
-                showToast('Image loaded successfully! Click "Update Course Image" to save.', 'success');
+
+                showToast('Image loaded! Click "Update Course Image" to save.', 'success');
             }
         });
     }
-    
-    // Use suggested image
-    function useSuggestedImage(url, name) {
+
+    // ==================== SUGGESTED IMAGE ====================
+    function useSuggestedImage(cardEl, url, name) {
         if (imageUrlInput) {
             imageUrlInput.value = url;
             updatePreviewFromUrl();
         }
-        if (fileUpload) {
-            fileUpload.value = '';
-        }
-        if (fileName) {
-            fileName.style.display = 'none';
-        }
+        if (fileUpload) fileUpload.value = '';
+        if (fileName) fileName.style.display = 'none';
+
+        // Highlight selection
+        document.querySelectorAll('.suggested-card').forEach(c => c.classList.remove('selected'));
+        if (cardEl) cardEl.classList.add('selected');
+
         showToast('Using suggested image: ' + name, 'success');
-        
-        // Highlight the selected suggestion
-        document.querySelectorAll('.suggested-card').forEach(card => {
-            card.style.borderColor = '#e9ecef';
-        });
-        if (event && event.currentTarget) {
-            event.currentTarget.style.borderColor = '#667eea';
-        }
     }
-    
-    // Form validation and submission
+    window.useSuggestedImage = useSuggestedImage;
+
+    // ==================== VALIDATION ====================
     function validateForm() {
-        if (!imageUrlInput || !fileUpload) return false;
-        const url = imageUrlInput.value.trim();
-        const file = fileUpload.files[0];
-        
+        const url = imageUrlInput ? imageUrlInput.value.trim() : '';
+        const file = fileUpload ? fileUpload.files[0] : null;
+
         if (!url && !file) {
             showToast('Please provide an image URL or upload a file.', 'error');
             return false;
         }
-        
         return true;
     }
-    
+
     if (form) {
         form.addEventListener('submit', function(e) {
             if (!validateForm()) {
                 e.preventDefault();
                 return false;
             }
-            
-            // Show loading state
+
             if (submitBtn) {
                 submitBtn.classList.add('btn-loading');
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating Image...';
             }
         });
     }
-    
-    // Show toast notification
+
+    // ==================== TOAST ====================
     function showToast(message, type = 'success') {
         let toast = document.querySelector('.toast-notification');
         if (toast) toast.remove();
-        
+
         toast = document.createElement('div');
         toast.className = 'toast-notification' + (type === 'error' ? ' toast-error' : '');
-        toast.innerHTML = `<i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'} me-2"></i>${message}`;
+        toast.innerHTML = `<i class="fas fa-${type === 'error' ? 'circle-exclamation' : 'circle-check'} me-2"></i>${message}`;
         document.body.appendChild(toast);
-        
+
         setTimeout(() => {
-            toast.style.animation = 'slideOutRight 0.3s ease';
+            toast.style.animation = 'slideOutRight 0.3s ease forwards';
             setTimeout(() => toast.remove(), 300);
-        }, 3000);
+        }, 3200);
     }
-    
-    // Drag and drop functionality
-    const uploadSection = document.querySelector('.upload-section');
-    
+
+    // ==================== DRAG & DROP ====================
     if (uploadSection) {
-        uploadSection.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.style.borderColor = '#667eea';
-            this.style.background = 'linear-gradient(135deg, #667eea10, #764ba210)';
+        ['dragenter', 'dragover'].forEach(evt => {
+            uploadSection.addEventListener(evt, function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
         });
-        
-        uploadSection.addEventListener('dragleave', function(e) {
-            e.preventDefault();
-            this.style.borderColor = '#dee2e6';
-            this.style.background = '#f8f9fa';
+
+        ['dragleave', 'drop'].forEach(evt => {
+            uploadSection.addEventListener(evt, function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
         });
-        
+
         uploadSection.addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.style.borderColor = '#dee2e6';
-            this.style.background = '#f8f9fa';
-            
             const file = e.dataTransfer.files[0];
             if (file && file.type.startsWith('image/')) {
                 if (fileUpload) {
                     fileUpload.files = e.dataTransfer.files;
-                    const changeEvent = new Event('change');
-                    fileUpload.dispatchEvent(changeEvent);
+                    fileUpload.dispatchEvent(new Event('change'));
                 }
             } else {
                 showToast('Please drop an image file.', 'error');
             }
         });
     }
-    
-    // Add keyboard shortcut (Ctrl/Cmd + Enter to submit)
+
+    // ==================== KEYBOARD SHORTCUT ====================
     document.addEventListener('keydown', function(e) {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
             if (form) {

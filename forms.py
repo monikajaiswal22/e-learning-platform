@@ -1,74 +1,101 @@
 # forms.py
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, PasswordField, TextAreaField, FloatField, IntegerField, BooleanField, SubmitField, SelectField, HiddenField
-from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional, URL, NumberRange, ValidationError
+from wtforms import (
+    StringField, PasswordField, TextAreaField, FloatField, IntegerField,
+    BooleanField, SubmitField, SelectField, HiddenField
+)
+from wtforms.validators import (
+    DataRequired, Email, Length, EqualTo, Optional, URL, NumberRange, ValidationError
+)
 import re
 
-# Custom validators
+
+# ==================== CUSTOM VALIDATORS ====================
+
 def validate_username(form, field):
-    """Custom validator for username (alphanumeric + underscore only)"""
+    """Custom validator for username (alphanumeric + underscore only)."""
     username = field.data
     if not re.match(r'^[a-zA-Z0-9_]{3,20}$', username):
-        raise ValidationError('Username must be 3-20 characters and can only contain letters, numbers, and underscores.')
+        raise ValidationError(
+            'Username must be 3-20 characters and can only contain letters, numbers, and underscores.'
+        )
+
 
 def validate_video_url(form, field):
-    """Custom validator for video URLs (YouTube, Vimeo, or direct MP4)"""
+    """Custom validator for video URLs (YouTube, Vimeo, or direct MP4)."""
     url = field.data
     if url:
         youtube_pattern = r'(youtube\.com/watch\?v=|youtu\.be/|youtube\.com/embed/)'
         vimeo_pattern = r'vimeo\.com/'
         mp4_pattern = r'\.mp4$|\.webm$'
-        
-        if not (re.search(youtube_pattern, url) or re.search(vimeo_pattern, url) or re.search(mp4_pattern, url)):
+
+        if not (
+            re.search(youtube_pattern, url)
+            or re.search(vimeo_pattern, url)
+            or re.search(mp4_pattern, url)
+        ):
             raise ValidationError('Please enter a valid YouTube, Vimeo, or direct video URL.')
 
+
 def validate_image_url(form, field):
-    """Custom validator for image URLs"""
+    """Custom validator for image URLs."""
     url = field.data
     if url:
         image_pattern = r'\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$'
         if not re.search(image_pattern, url, re.IGNORECASE):
-            raise ValidationError('Please enter a valid image URL (JPG, PNG, GIF, WEBP, SVG).')
+            raise ValidationError(
+                'Please enter a valid image URL (JPG, PNG, GIF, WEBP, SVG).'
+            )
 
-# FIXED: File size validation function
+
 def validate_file_size(form, field):
-    """Validate file size"""
+    """Validate file size (max 16MB by default)."""
     if field.data:
         try:
-            # Check if file is present and has size attribute
             if hasattr(field.data, 'seek') and hasattr(field.data, 'tell'):
-                field.data.seek(0, 2)  # Seek to end of file
-                size = field.data.tell()  # Get file size
-                field.data.seek(0)  # Reset position
-                max_size = 16 * 1024 * 1024  # 16MB default
+                field.data.seek(0, 2)
+                size = field.data.tell()
+                field.data.seek(0)
+                max_size = 16 * 1024 * 1024
                 if size > max_size:
-                    raise ValidationError(f'File size must be less than 16MB.')
+                    raise ValidationError('File size must be less than 16MB.')
             elif hasattr(field.data, 'content_length'):
-                # For Flask's FileStorage, check content_length
                 size = field.data.content_length
                 max_size = 16 * 1024 * 1024
                 if size > max_size:
-                    raise ValidationError(f'File size must be less than 16MB.')
-        except Exception as e:
-            # If any error occurs during size validation, skip it
-            # The file will be validated by other means
+                    raise ValidationError('File size must be less than 16MB.')
+        except ValidationError:
+            raise
+        except Exception:
+            # Ignore validation errors from non-file objects
             pass
     return True
 
-# FIXED: Custom FileField with size validation
+
+def validate_terms(form, field):
+    """Custom validator for terms checkbox (DataRequired doesn't work well with checkboxes)."""
+    if not field.data:
+        raise ValidationError('You must agree to the terms and conditions to register.')
+
+
+# ==================== CUSTOM FILE FIELD ====================
+
 class ValidatedFileField(FileField):
-    """File field with size validation"""
+    """File field with size validation."""
+
     def __init__(self, label=None, validators=None, max_size_mb=16, **kwargs):
         super().__init__(label, validators, **kwargs)
         self.max_size_mb = max_size_mb
-    
+
     def pre_validate(self, form):
         super().pre_validate(form)
         if self.data:
-            # FIXED: Check if data is a file object before validating
             if hasattr(self.data, 'seek') or hasattr(self.data, 'content_length'):
                 validate_file_size(form, self)
+
+
+# ==================== AUTH FORMS ====================
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[
@@ -89,10 +116,12 @@ class RegistrationForm(FlaskForm):
         EqualTo('password', message='Passwords must match.')
     ])
     is_instructor = BooleanField('Register as Instructor')
-    terms_agreed = BooleanField('I agree to the Terms and Conditions', validators=[
-        DataRequired(message='You must agree to the terms and conditions to register.')
-    ])
+    terms_agreed = BooleanField(
+        'I agree to the Terms and Conditions',
+        validators=[validate_terms]
+    )
     submit = SubmitField('Create Account')
+
 
 class LoginForm(FlaskForm):
     email = StringField('Email Address', validators=[
@@ -105,6 +134,47 @@ class LoginForm(FlaskForm):
     remember = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
 
+
+class PasswordChangeForm(FlaskForm):
+    """Change password form for authenticated users."""
+    current_password = PasswordField('Current Password', validators=[
+        DataRequired(message='Current password is required.')
+    ])
+    new_password = PasswordField('New Password', validators=[
+        DataRequired(message='New password is required.'),
+        Length(min=6, message='Password must be at least 6 characters long.')
+    ])
+    confirm_password = PasswordField('Confirm New Password', validators=[
+        DataRequired(message='Please confirm your new password.'),
+        EqualTo('new_password', message='Passwords must match.')
+    ])
+    submit = SubmitField('Change Password')
+
+
+class PasswordResetRequestForm(FlaskForm):
+    """Password reset request form."""
+    email = StringField('Email Address', validators=[
+        DataRequired(message='Please enter your email address.'),
+        Email(message='Please enter a valid email address.')
+    ])
+    submit = SubmitField('Send Reset Link')
+
+
+class PasswordResetForm(FlaskForm):
+    """Password reset form (after clicking reset link)."""
+    password = PasswordField('New Password', validators=[
+        DataRequired(message='Please enter a new password.'),
+        Length(min=6, message='Password must be at least 6 characters long.')
+    ])
+    confirm_password = PasswordField('Confirm Password', validators=[
+        DataRequired(message='Please confirm your password.'),
+        EqualTo('password', message='Passwords must match.')
+    ])
+    submit = SubmitField('Reset Password')
+
+
+# ==================== COURSE & LESSON FORMS ====================
+
 class CourseForm(FlaskForm):
     title = StringField('Course Title', validators=[
         DataRequired(message='Course title is required.'),
@@ -115,11 +185,12 @@ class CourseForm(FlaskForm):
         Length(min=20, max=5000, message='Description must be between 20 and 5000 characters.')
     ])
     price = FloatField('Price ($)', validators=[
-        DataRequired(message='Price is required.'),
+        Optional(),                                    # ✅ DataRequired hata diya
         NumberRange(min=0, max=9999, message='Price must be between $0 and $9,999.')
     ], default=0.0)
     image = ValidatedFileField('Course Image (Upload from computer)', validators=[
-        FileAllowed(['jpg', 'png', 'jpeg', 'gif', 'webp'], 'Only JPG, PNG, GIF, and WEBP images are allowed.')
+        FileAllowed(['jpg', 'png', 'jpeg', 'gif', 'webp'],
+                    'Only JPG, PNG, GIF, and WEBP images are allowed.')
     ], max_size_mb=16)
     image_url = StringField('Image URL (Optional)', validators=[
         Optional(),
@@ -146,6 +217,7 @@ class CourseForm(FlaskForm):
     ], validators=[DataRequired(message='Please select a level.')], default='beginner')
     submit = SubmitField('Create Course')
 
+
 class LessonForm(FlaskForm):
     title = StringField('Lesson Title', validators=[
         DataRequired(message='Lesson title is required.'),
@@ -168,6 +240,9 @@ class LessonForm(FlaskForm):
         NumberRange(min=1, max=300, message='Duration must be between 1 and 300 minutes.')
     ], default=10)
     submit = SubmitField('Add Lesson')
+
+
+# ==================== PROFILE FORMS ====================
 
 class ProfileForm(FlaskForm):
     full_name = StringField('Full Name', validators=[
@@ -216,12 +291,17 @@ class ProfileForm(FlaskForm):
     ])
     submit = SubmitField('Save Changes')
 
+
 class AvatarForm(FlaskForm):
     avatar = ValidatedFileField('Profile Picture', validators=[
         FileRequired(message='Please select an image file.'),
-        FileAllowed(['jpg', 'png', 'jpeg', 'gif', 'webp'], 'Only JPG, PNG, GIF, and WEBP images are allowed.')
+        FileAllowed(['jpg', 'png', 'jpeg', 'gif', 'webp'],
+                    'Only JPG, PNG, GIF, and WEBP images are allowed.')
     ], max_size_mb=5)
     submit = SubmitField('Upload Avatar')
+
+
+# ==================== REVIEW / SEARCH / CONTACT ====================
 
 class ReviewForm(FlaskForm):
     rating = SelectField('Rating', choices=[
@@ -237,8 +317,9 @@ class ReviewForm(FlaskForm):
     ])
     submit = SubmitField('Submit Review')
 
+
 class SearchForm(FlaskForm):
-    """Search form for courses"""
+    """Search form for courses."""
     query = StringField('Search', validators=[
         Optional(),
         Length(min=2, max=100, message='Search term must be between 2 and 100 characters.')
@@ -279,8 +360,9 @@ class SearchForm(FlaskForm):
     ])
     submit = SubmitField('Search')
 
+
 class ContactForm(FlaskForm):
-    """Contact form for user inquiries"""
+    """Contact form for user inquiries."""
     name = StringField('Your Name', validators=[
         DataRequired(message='Please enter your name.'),
         Length(max=100)
@@ -299,51 +381,20 @@ class ContactForm(FlaskForm):
     ])
     submit = SubmitField('Send Message')
 
+
 class NewsletterForm(FlaskForm):
-    """Newsletter subscription form"""
+    """Newsletter subscription form."""
     email = StringField('Email Address', validators=[
         DataRequired(message='Please enter your email address.'),
         Email(message='Please enter a valid email address.')
     ])
     submit = SubmitField('Subscribe')
 
-class PasswordChangeForm(FlaskForm):
-    """Change password form for authenticated users"""
-    current_password = PasswordField('Current Password', validators=[
-        DataRequired(message='Current password is required.')
-    ])
-    new_password = PasswordField('New Password', validators=[
-        DataRequired(message='New password is required.'),
-        Length(min=6, message='Password must be at least 6 characters long.')
-    ])
-    confirm_password = PasswordField('Confirm New Password', validators=[
-        DataRequired(message='Please confirm your new password.'),
-        EqualTo('new_password', message='Passwords must match.')
-    ])
-    submit = SubmitField('Change Password')
 
-class PasswordResetRequestForm(FlaskForm):
-    """Password reset request form"""
-    email = StringField('Email Address', validators=[
-        DataRequired(message='Please enter your email address.'),
-        Email(message='Please enter a valid email address.')
-    ])
-    submit = SubmitField('Send Reset Link')
-
-class PasswordResetForm(FlaskForm):
-    """Password reset form (after clicking reset link)"""
-    password = PasswordField('New Password', validators=[
-        DataRequired(message='Please enter a new password.'),
-        Length(min=6, message='Password must be at least 6 characters long.')
-    ])
-    confirm_password = PasswordField('Confirm Password', validators=[
-        DataRequired(message='Please confirm your password.'),
-        EqualTo('password', message='Passwords must match.')
-    ])
-    submit = SubmitField('Reset Password')
+# ==================== QUIZ FORMS ====================
 
 class QuizForm(FlaskForm):
-    """Form for creating/editing quiz questions"""
+    """Form for creating/editing quiz questions."""
     question = TextAreaField('Question', validators=[
         DataRequired(message='Question is required.'),
         Length(min=5, max=500, message='Question must be between 5 and 500 characters.')
@@ -380,8 +431,11 @@ class QuizForm(FlaskForm):
     ])
     submit = SubmitField('Save Question')
 
+
+# ==================== FILTER FORMS ====================
+
 class CourseFilterForm(FlaskForm):
-    """Advanced course filtering form"""
+    """Advanced course filtering form."""
     category = SelectField('Category', choices=[
         ('all', 'All Categories'),
         ('programming', 'Programming'),
@@ -419,8 +473,11 @@ class CourseFilterForm(FlaskForm):
     ], default='newest')
     submit = SubmitField('Apply Filters')
 
+
+# ==================== ADMIN FORMS ====================
+
 class AdminUserForm(FlaskForm):
-    """Admin form for creating/editing users"""
+    """Admin form for creating/editing users."""
     username = StringField('Username', validators=[
         DataRequired(message='Username is required.'),
         Length(min=3, max=80),
@@ -439,8 +496,9 @@ class AdminUserForm(FlaskForm):
     full_name = StringField('Full Name', validators=[Optional(), Length(max=120)])
     submit = SubmitField('Save User')
 
+
 class CertificateForm(FlaskForm):
-    """Form for generating certificates"""
+    """Form for generating certificates."""
     certificate_id = HiddenField()
     download_format = SelectField('Download Format', choices=[
         ('pdf', 'PDF Document'),
@@ -449,9 +507,11 @@ class CertificateForm(FlaskForm):
     include_signature = BooleanField('Include Digital Signature', default=True)
     submit = SubmitField('Generate Certificate')
 
-# Helper function to get category choices
+
+# ==================== HELPER FUNCTIONS ====================
+
 def get_category_choices():
-    """Return list of category choices"""
+    """Return list of category choices."""
     return [
         ('programming', 'Programming'),
         ('webdev', 'Web Development'),
@@ -465,9 +525,9 @@ def get_category_choices():
         ('other', 'Other')
     ]
 
-# Helper function to get level choices
+
 def get_level_choices():
-    """Return list of level choices"""
+    """Return list of level choices."""
     return [
         ('beginner', 'Beginner'),
         ('intermediate', 'Intermediate'),

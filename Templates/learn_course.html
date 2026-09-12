@@ -2,473 +2,811 @@
 
 {% block content %}
 <style>
-    /* Modern Learning Page Styles */
+    /* ============================================================
+       LEARN COURSE — CRIMSON RED + ANIMATIONS
+       ============================================================ */
     :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --primary-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --danger-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+
+        --crimson-900: #450a0a;
+        --crimson-800: #7f1d1d;
+        --crimson-700: #991b1b;
+        --crimson-600: #b91c1c;
+        --crimson-500: #dc2626;
+        --crimson-400: #ef4444;
+        --crimson-300: #f87171;
+        --crimson-200: #fecaca;
+        --crimson-100: #fee2e2;
+        --crimson-50:  #fef2f2;
     }
-    
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
+    }
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-14px) rotate(3deg); }
+    }
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
+    }
+    @keyframes shimmer {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    @keyframes slideInRight {
+        from { transform: translateX(120%); opacity: 0; }
+        to   { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+        50%      { box-shadow: 0 0 0 12px rgba(220, 38, 38, 0); }
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.6s cubic-bezier(.2,.7,.2,1),
+                    transform 0.6s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    /* ==================== COURSE HEADER ==================== */
     .course-header {
-        background: var(--primary-gradient);
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
         border-radius: 20px;
         padding: 30px;
         margin-bottom: 30px;
         color: white;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.28);
     }
-    
+
     .course-header::before {
-        content: '📚';
+        content: '';
         position: absolute;
-        bottom: -20px;
-        right: 20px;
-        font-size: 120px;
-        opacity: 0.1;
+        top: -50%; right: -25%;
+        width: 380px; height: 380px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
     }
-    
+
+    .course-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50%; left: -15%;
+        width: 300px; height: 300px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 10s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .course-header > * { position: relative; z-index: 1; }
+
     .course-title {
         font-size: 1.8rem;
-        font-weight: 700;
+        font-weight: 800;
         margin-bottom: 10px;
+        letter-spacing: -0.03em;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    
+
+    .course-title i {
+        color: #fbbf24;
+        animation: float 3.5s ease-in-out infinite;
+        filter: drop-shadow(0 4px 10px rgba(251, 191, 36, 0.4));
+    }
+
     .progress-stats {
         display: flex;
-        gap: 20px;
+        gap: 12px;
         flex-wrap: wrap;
         margin-top: 15px;
     }
-    
+
     .stat-badge {
-        background: rgba(255,255,255,0.2);
+        background: rgba(255, 255, 255, 0.15);
         backdrop-filter: blur(10px);
         padding: 8px 16px;
         border-radius: 30px;
-        font-size: 0.9rem;
+        font-size: 0.88rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
     }
-    
-    /* Sidebar Styles */
+
+    .stat-badge i { color: #fbbf24; }
+
+    .stat-badge:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .course-header .btn-light {
+        background: rgba(255, 255, 255, 0.95);
+        color: var(--crimson-800);
+        border: none;
+        padding: 8px 18px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        text-decoration: none;
+    }
+
+    .course-header .btn-light:hover {
+        background: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        color: var(--crimson-900);
+    }
+
+    /* Global Progress Bar */
+    .course-header .bg-light {
+        background: rgba(255, 255, 255, 0.2) !important;
+        border-radius: 50px !important;
+    }
+
+    .course-header .bg-white {
+        background: linear-gradient(90deg, #fbbf24, #f59e0b) !important;
+        box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .course-header .bg-white::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        animation: shimmer 2s infinite;
+    }
+
+    /* ==================== SIDEBAR ==================== */
     .sidebar-card {
         background: white;
         border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
         position: sticky;
         top: 20px;
+        border: 1px solid var(--crimson-100);
     }
-    
+
     .sidebar-header {
-        background: var(--primary-gradient);
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%);
         color: white;
-        padding: 20px;
-        font-weight: 600;
+        padding: 18px 20px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
-    
+
+    .sidebar-header i { color: #fbbf24; }
+
+    .sidebar-header .badge {
+        background: rgba(255, 255, 255, 0.2) !important;
+        color: white !important;
+        font-weight: 600;
+        padding: 5px 12px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
     .lesson-list {
-        max-height: 500px;
+        max-height: 550px;
         overflow-y: auto;
     }
-    
+
+    .lesson-list::-webkit-scrollbar { width: 6px; }
+    .lesson-list::-webkit-scrollbar-track { background: #f1f5f9; }
+    .lesson-list::-webkit-scrollbar-thumb {
+        background: var(--primary-gradient);
+        border-radius: 6px;
+    }
+
     .lesson-item {
         display: flex;
         align-items: center;
-        padding: 15px;
-        border-bottom: 1px solid #e9ecef;
-        transition: all 0.3s ease;
+        padding: 14px 16px;
+        border-bottom: 1px solid #f1f5f9;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
         cursor: pointer;
         text-decoration: none;
         color: inherit;
+        position: relative;
     }
-    
+
+    .lesson-item::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 3px;
+        background: var(--primary-gradient);
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: transform 0.35s ease;
+    }
+
     .lesson-item:hover {
-        background: #f8f9fa;
-        transform: translateX(5px);
+        background: var(--crimson-50);
+        transform: translateX(4px);
     }
-    
+
+    .lesson-item:hover::before { transform: scaleY(1); }
+
     .lesson-item.active {
-        background: linear-gradient(135deg, #667eea10, #764ba210);
-        border-left: 3px solid #667eea;
+        background: linear-gradient(135deg, #fee2e2, #fef2f2);
+        border-left: 3px solid var(--crimson-500);
     }
-    
+
+    .lesson-item.active::before { transform: scaleY(1); }
+
     .lesson-number {
-        width: 35px;
-        height: 35px;
-        background: linear-gradient(135deg, #667eea20, #764ba220);
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: 600;
+        font-weight: 700;
         font-size: 0.9rem;
         margin-right: 12px;
-        color: #667eea;
+        color: var(--crimson-700);
         flex-shrink: 0;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
     }
-    
-    .lesson-info {
-        flex: 1;
+
+    .lesson-item:hover .lesson-number {
+        background: var(--primary-gradient);
+        color: white;
+        transform: scale(1.1) rotate(-6deg);
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.3);
     }
-    
+
+    .lesson-info { flex: 1; min-width: 0; }
+
     .lesson-title {
-        font-weight: 500;
+        font-weight: 600;
         margin-bottom: 3px;
-        font-size: 0.95rem;
+        font-size: 0.92rem;
+        color: var(--crimson-900);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
-    
-    .lesson-status {
-        font-size: 0.8rem;
-    }
-    
+
+    .lesson-status { font-size: 0.78rem; }
+
     .status-icon {
-        width: 25px;
+        width: 24px;
         text-align: center;
         flex-shrink: 0;
     }
-    
-    /* Main Content Styles */
+
+    .status-icon .text-success { color: #059669 !important; }
+
+    /* ==================== LESSON CONTAINER ==================== */
     .lesson-container {
         background: white;
         border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
         margin-bottom: 25px;
+        border: 1px solid #e2e8f0;
+        animation: fadeInUp 0.6s cubic-bezier(.2,.7,.2,1);
+        scroll-margin-top: 80px;
+        transition: box-shadow 0.3s ease, border-color 0.3s ease;
     }
-    
+
+    .lesson-container:hover {
+        box-shadow: 0 12px 32px rgba(127, 29, 29, 0.1);
+        border-color: var(--crimson-200);
+    }
+
     .lesson-header {
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        background: linear-gradient(135deg, #fef2f2 0%, #fafafa 100%);
         padding: 20px 25px;
-        border-bottom: 1px solid #dee2e6;
+        border-bottom: 2px solid var(--crimson-100);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
     }
-    
+
     .lesson-header h3 {
         margin: 0;
-        font-size: 1.5rem;
-        font-weight: 600;
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--crimson-900);
+        letter-spacing: -0.02em;
     }
-    
+
+    .lesson-header .badge.bg-secondary {
+        background: var(--primary-gradient) !important;
+        color: white !important;
+        font-weight: 700;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        box-shadow: 0 2px 6px rgba(127, 29, 29, 0.25);
+    }
+
     .lesson-actions {
         display: flex;
-        gap: 10px;
+        gap: 8px;
+        flex-wrap: wrap;
     }
-    
+
+    .lesson-actions .btn {
+        font-size: 0.78rem;
+        padding: 7px 14px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.25s cubic-bezier(.2,.7,.2,1);
+        border-width: 1.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .lesson-actions .btn:hover { transform: translateY(-2px); }
+
+    .btn-info {
+        background: var(--info-gradient);
+        border: none;
+        color: white;
+    }
+    .btn-info:hover {
+        box-shadow: 0 6px 16px rgba(8, 145, 178, 0.4);
+        color: white;
+    }
+
+    .btn-warning {
+        background: var(--warning-gradient);
+        border: none;
+        color: white;
+    }
+    .btn-warning:hover {
+        box-shadow: 0 6px 16px rgba(217, 119, 6, 0.4);
+        color: white;
+    }
+
+    .btn-danger {
+        background: var(--primary-gradient);
+        border: none;
+        color: white;
+    }
+    .btn-danger:hover {
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.4);
+        color: white;
+    }
+
+    /* ==================== VIDEO ==================== */
     .video-wrapper {
         position: relative;
         background: #000;
         border-radius: 12px;
         overflow: hidden;
         margin: 20px;
+        box-shadow: 0 8px 24px rgba(127, 29, 29, 0.15);
     }
-    
+
     .video-placeholder {
-        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        background: linear-gradient(135deg, #7f1d1d, #450a0a);
         padding: 60px 20px;
         text-align: center;
         color: white;
         border-radius: 12px;
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    .video-placeholder::before {
+        content: '';
+        position: absolute;
+        top: -50%; right: -20%;
+        width: 300px; height: 300px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
+    }
+
     .video-placeholder i {
         font-size: 64px;
         margin-bottom: 20px;
-        opacity: 0.5;
+        color: #fbbf24;
+        animation: float 3.5s ease-in-out infinite;
+        filter: drop-shadow(0 6px 16px rgba(251, 191, 36, 0.4));
     }
-    
-    .lesson-content {
-        padding: 0 25px 25px 25px;
+
+    .video-placeholder h5,
+    .video-placeholder p {
+        position: relative;
+        z-index: 1;
     }
-    
+
+    /* ==================== LESSON CONTENT ==================== */
+    .lesson-content { padding: 0 25px 25px 25px; }
+
     .content-text {
-        background: #f8f9fa;
+        background: linear-gradient(135deg, #fef2f2 0%, #fafafa 100%);
         padding: 20px;
         border-radius: 12px;
         line-height: 1.8;
         margin-top: 15px;
+        color: #475569;
+        border-left: 4px solid var(--crimson-500);
+        font-size: 0.92rem;
     }
-    
-    /* Quiz Alert Styles */
+
+    .content-text i { color: var(--crimson-600) !important; }
+
+    /* ==================== QUIZ ALERTS ==================== */
     .quiz-alert {
-        border-radius: 12px;
+        border-radius: 14px;
         padding: 20px;
         margin-top: 20px;
         border-left: 4px solid;
-    }
-    
-    .quiz-alert-success {
-        background: linear-gradient(135deg, #11998e10, #38ef7d10);
-        border-left-color: #11998e;
-    }
-    
-    .quiz-alert-info {
-        background: linear-gradient(135deg, #4facfe10, #00f2fe10);
-        border-left-color: #4facfe;
-    }
-    
-    .quiz-alert-warning {
-        background: linear-gradient(135deg, #f6d36510, #fda08510);
-        border-left-color: #f6d365;
-    }
-    
-    .btn-complete {
-        background: var(--success-gradient);
-        border: none;
-        padding: 12px 25px;
-        border-radius: 12px;
-        font-weight: 600;
         transition: all 0.3s ease;
-        color: white;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
     }
-    
-    .btn-complete:hover {
+
+    .quiz-alert:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(17, 153, 142, 0.3);
+        box-shadow: 0 8px 20px rgba(127, 29, 29, 0.08);
+    }
+
+    .quiz-alert-success {
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        border-left-color: #059669;
+        color: #065f46;
+    }
+
+    .quiz-alert-success i.fa-trophy { color: #d97706 !important; }
+
+    .quiz-alert-info {
+        background: linear-gradient(135deg, #e0f2fe 0%, #ecfeff 100%);
+        border-left-color: #0891b2;
+        color: #155e75;
+    }
+
+    .quiz-alert-info i.fa-puzzle-piece { color: #0891b2; }
+
+    .quiz-alert-warning {
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border-left-color: #d97706;
+        color: #92400e;
+    }
+
+    .quiz-alert-warning i.fa-exclamation-triangle { color: #d97706; }
+
+    .quiz-alert strong { display: block; margin-bottom: 2px; }
+
+    .quiz-alert .btn { font-size: 0.85rem; padding: 9px 18px; }
+
+    /* ==================== BUTTONS ==================== */
+    .btn-complete {
+        background: linear-gradient(180deg, var(--crimson-600) 0%, var(--crimson-700) 100%);
+        border: 1px solid var(--crimson-800);
+        padding: 13px 28px;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        color: white;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 4px 16px rgba(127, 29, 29, 0.25);
+        position: relative;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
+    }
+
+    .btn-complete::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-complete:hover::before { left: 100%; }
+
+    .btn-complete:hover {
+        transform: translateY(-3px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 12px 28px rgba(127, 29, 29, 0.4);
         color: white;
     }
-    
+
     .btn-outline-complete {
         background: transparent;
-        border: 2px solid #11998e;
-        color: #11998e;
-        padding: 12px 25px;
+        border: 2px solid var(--crimson-600);
+        color: var(--crimson-700);
+        padding: 12px 26px;
         border-radius: 12px;
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
     }
-    
+
     .btn-outline-complete:hover {
-        background: var(--success-gradient);
+        background: var(--primary-gradient);
         color: white;
         border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(127, 29, 29, 0.3);
     }
-    
+
     .btn-primary {
-        background: var(--primary-gradient);
+        background: linear-gradient(180deg, var(--crimson-600) 0%, var(--crimson-700) 100%);
         border: none;
         color: white;
-        padding: 12px 25px;
-        border-radius: 12px;
+        padding: 10px 22px;
+        border-radius: 10px;
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 4px 12px rgba(127, 29, 29, 0.2);
     }
-    
+
     .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 10px 24px rgba(127, 29, 29, 0.35);
         color: white;
     }
-    
-    .btn-warning {
-        background: var(--warning-gradient);
-        border: none;
-        color: white;
-        padding: 5px 12px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-warning:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(246, 211, 101, 0.4);
-        color: white;
-    }
-    
-    .btn-info {
-        background: var(--info-gradient);
-        border: none;
-        color: white;
-        padding: 5px 12px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-info:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
-        color: white;
-    }
-    
-    .btn-danger {
-        background: var(--danger-gradient);
-        border: none;
-        color: white;
-        padding: 5px 12px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-danger:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(235, 51, 73, 0.4);
-        color: white;
-    }
-    
-    .btn-light {
-        background: rgba(255,255,255,0.2);
-        border: none;
-        color: white;
-        padding: 8px 16px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-light:hover {
-        background: rgba(255,255,255,0.3);
-        color: white;
-    }
-    
-    .btn-secondary {
-        background: #6c757d;
-        border: none;
-        color: white;
-        padding: 12px 25px;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-    }
-    
+
     .btn-success {
         background: var(--success-gradient);
         border: none;
         color: white;
-        padding: 12px 25px;
+        padding: 14px 32px;
         border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 6px 20px rgba(5, 150, 105, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(5, 150, 105, 0.4);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        color: #475569;
+        padding: 10px 20px;
+        border-radius: 10px;
         font-weight: 600;
         transition: all 0.3s ease;
     }
-    
-    .btn-success:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(17, 153, 142, 0.4);
-        color: white;
+
+    .btn-secondary:hover {
+        background: #e2e8f0;
+        color: var(--crimson-800);
     }
-    
+
     .btn-outline-primary {
         background: transparent;
-        border: 2px solid #667eea;
-        color: #667eea;
-        padding: 5px 12px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
+        border: 2px solid var(--crimson-600);
+        color: var(--crimson-700);
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        font-size: 0.85rem;
     }
-    
+
     .btn-outline-primary:hover {
         background: var(--primary-gradient);
         border-color: transparent;
         color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.3);
     }
-    
+
     .disabled-btn {
-        background: #6c757d;
-        opacity: 0.6;
+        background: #f1f5f9;
+        color: #94a3b8;
+        border: 2px dashed #cbd5e1;
+        padding: 12px 26px;
+        border-radius: 12px;
+        font-weight: 600;
         cursor: not-allowed;
-        color: white;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
     }
-    
-    .disabled-btn:hover {
-        background: #6c757d;
-        color: white;
-    }
-    
+
+    .disabled-btn:hover { color: #94a3b8; }
+
+    /* ==================== ALERTS ==================== */
     .alert {
         border-radius: 12px;
         padding: 15px 20px;
         border: none;
+        font-weight: 500;
     }
-    
+
     .alert-success {
-        background: linear-gradient(135deg, #11998e20, #38ef7d20);
-        color: #11998e;
+        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        color: #065f46;
+        border-left: 4px solid #059669;
     }
-    
+
+    .alert-success i { color: #059669; }
+
     .alert-danger {
-        background: linear-gradient(135deg, #eb334920, #f45c4320);
-        color: #eb3349;
+        background: linear-gradient(135deg, #fef2f2, #fee2e2);
+        color: #991b1b;
+        border-left: 4px solid var(--crimson-500);
     }
-    
-    /* Modal Styles */
+
+    /* ==================== MODAL ==================== */
     .modal-content {
         border: none;
-        border-radius: 20px;
+        border-radius: 16px;
         overflow: hidden;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
     }
-    
+
     .modal-header {
-        padding: 15px 20px;
+        padding: 18px 22px;
         border-bottom: none;
+        background: var(--primary-gradient);
+        color: white;
     }
-    
-    .modal-footer {
-        border-top: none;
-        padding: 15px 20px;
+
+    .modal-header .modal-title {
+        font-weight: 700;
+        display: flex;
+        align-items: center;
     }
-    
+
+    .modal-body { padding: 22px; }
+    .modal-footer { border-top: none; padding: 16px 22px 22px; }
+
     .btn-close-white {
         filter: brightness(0) invert(1);
     }
-    
-    /* Scrollbar */
-    .lesson-list::-webkit-scrollbar {
-        width: 5px;
+
+    /* ==================== CERTIFICATE ==================== */
+    .certificate-section {
+        text-align: center;
+        padding: 40px 30px;
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border: 2px solid #fde68a;
+        border-radius: 20px;
+        margin-top: 30px;
+        position: relative;
+        overflow: hidden;
     }
-    
-    .lesson-list::-webkit-scrollbar-track {
-        background: #f1f1f1;
+
+    .certificate-section::before {
+        content: '';
+        position: absolute;
+        top: -50%; right: -20%;
+        width: 300px; height: 300px;
+        background: radial-gradient(circle, rgba(251, 191, 36, 0.2) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
     }
-    
-    .lesson-list::-webkit-scrollbar-thumb {
-        background: var(--primary-gradient);
-        border-radius: 5px;
+
+    .certificate-section > * { position: relative; z-index: 1; }
+
+    .certificate-section i.fa-certificate {
+        color: #d97706;
+        animation: float 3.5s ease-in-out infinite;
+        filter: drop-shadow(0 6px 16px rgba(217, 119, 6, 0.3));
     }
-    
-    /* Responsive */
+
+    .certificate-section h4 {
+        color: #78350f;
+        font-weight: 800;
+        margin: 16px 0 8px;
+        letter-spacing: -0.02em;
+    }
+
+    .certificate-section p {
+        color: #92400e;
+        font-weight: 500;
+    }
+
+    /* ==================== TOAST ==================== */
+    .toast-notification {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: linear-gradient(135deg, #059669, #10b981);
+        color: white;
+        padding: 14px 24px;
+        border-radius: 12px;
+        z-index: 9999;
+        animation: slideInRight 0.35s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 12px 32px rgba(5, 150, 105, 0.35);
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
     @media (max-width: 768px) {
-        .course-header {
-            padding: 20px;
-        }
-        
-        .course-title {
-            font-size: 1.3rem;
-        }
-        
+        .course-header { padding: 22px 20px; }
+        .course-title { font-size: 1.35rem; }
         .lesson-header {
             flex-direction: column;
-            gap: 15px;
+            align-items: flex-start;
+            gap: 12px;
         }
-        
-        .lesson-actions {
-            justify-content: flex-start;
-        }
-        
-        .video-wrapper {
-            margin: 15px;
-        }
-        
-        .lesson-content {
-            padding: 0 15px 20px 15px;
-        }
+        .lesson-actions { width: 100%; }
+        .lesson-actions .btn { flex: 1; justify-content: center; }
+        .video-wrapper { margin: 15px; }
+        .lesson-content { padding: 0 15px 20px 15px; }
+        .toast-notification { left: 16px; right: 16px; bottom: 16px; }
     }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .lesson-container {
-        animation: fadeIn 0.4s ease;
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        .reveal { opacity: 1; transform: none; }
     }
 </style>
 
-<!-- Course Header -->
+<!-- ==================== COURSE HEADER ==================== -->
 <div class="course-header">
-    <div class="d-flex justify-content-between align-items-start flex-wrap">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
         <div>
             <div class="course-title">
                 <i class="fas fa-graduation-cap me-2"></i>{{ course.title }}
             </div>
             <p class="mb-0 opacity-90">
-                <i class="fas fa-user me-1"></i>{{ course.instructor.username }}
+                <i class="fas fa-user me-2"></i>{{ course.instructor.username }}
             </p>
         </div>
         <div>
@@ -477,8 +815,7 @@
             </a>
         </div>
     </div>
-    
-    <!-- Progress Stats -->
+
     {% set total_lessons = lessons|length %}
     {% set ns = namespace(completed_count=0) %}
     {% for lesson in lessons %}
@@ -489,50 +826,49 @@
         {% endfor %}
     {% endfor %}
     {% set progress_percentage = (ns.completed_count / total_lessons * 100) if total_lessons > 0 else 0 %}
-    
+
     <div class="progress-stats">
         <div class="stat-badge">
-            <i class="fas fa-book me-1"></i>{{ total_lessons }} Lessons
+            <i class="fas fa-book"></i>{{ total_lessons }} Lessons
         </div>
         <div class="stat-badge">
-            <i class="fas fa-check-circle me-1"></i>{{ ns.completed_count }} Completed
+            <i class="fas fa-circle-check"></i>{{ ns.completed_count }} Completed
         </div>
         <div class="stat-badge">
-            <i class="fas fa-chart-line me-1"></i>{{ progress_percentage|int }}% Progress
+            <i class="fas fa-chart-line"></i>{{ progress_percentage|int }}% Progress
         </div>
     </div>
-    
-    <!-- Global Progress Bar -->
+
     <div class="mt-3">
-        <div class="bg-light rounded-pill overflow-hidden" style="height: 8px;">
-            <div class="bg-white rounded-pill" style="width: {{ progress_percentage }}%; height: 100%; transition: width 0.5s ease;"></div>
+        <div class="bg-light rounded-pill overflow-hidden" style="height: 10px;">
+            <div class="bg-white rounded-pill" style="width: {{ progress_percentage }}%; height: 100%; transition: width 1s cubic-bezier(.2,.7,.2,1);"></div>
         </div>
     </div>
 </div>
 
 <div class="row">
-    <!-- Sidebar - Course Content -->
+    <!-- ==================== SIDEBAR ==================== -->
     <div class="col-lg-4 mb-4">
-        <div class="sidebar-card">
+        <div class="sidebar-card reveal">
             <div class="sidebar-header">
-                <i class="fas fa-list me-2"></i>Course Content
-                <span class="badge bg-light text-dark ms-2">{{ total_lessons }} lessons</span>
+                <span><i class="fas fa-list me-2"></i>Course Content</span>
+                <span class="badge">{{ total_lessons }} lessons</span>
             </div>
             <div class="lesson-list">
                 {% for lesson in lessons %}
+                {% set is_comp = false %}
+                {% for prog in current_user.lesson_progress %}
+                    {% if prog.lesson_id == lesson.id and prog.completed %}
+                        {% set is_comp = true %}
+                    {% endif %}
+                {% endfor %}
                 <a href="#lesson-{{ lesson.id }}" class="lesson-item" data-lesson-id="{{ lesson.id }}">
                     <div class="lesson-number">{{ loop.index }}</div>
                     <div class="lesson-info">
                         <div class="lesson-title">{{ lesson.title }}</div>
-                        <div class="lesson-status text-muted">
-                            {% set is_comp = false %}
-                            {% for prog in current_user.lesson_progress %}
-                                {% if prog.lesson_id == lesson.id and prog.completed %}
-                                    {% set is_comp = true %}
-                                {% endif %}
-                            {% endfor %}
+                        <div class="lesson-status">
                             {% if is_comp %}
-                                <span class="text-success"><i class="fas fa-check-circle"></i> Completed</span>
+                                <span class="text-success"><i class="fas fa-circle-check"></i> Completed</span>
                             {% else %}
                                 <span class="text-muted"><i class="far fa-circle"></i> Not started</span>
                             {% endif %}
@@ -540,7 +876,7 @@
                     </div>
                     <div class="status-icon">
                         {% if is_comp %}
-                            <i class="fas fa-check-circle text-success"></i>
+                            <i class="fas fa-circle-check text-success"></i>
                         {% else %}
                             <i class="far fa-circle text-muted"></i>
                         {% endif %}
@@ -550,35 +886,34 @@
             </div>
         </div>
     </div>
-    
-    <!-- Main Content - Lessons -->
+
+    <!-- ==================== MAIN CONTENT ==================== -->
     <div class="col-lg-8">
         {% for lesson in lessons %}
-        <div id="lesson-{{ lesson.id }}" class="lesson-container">
+        <div id="lesson-{{ lesson.id }}" class="lesson-container reveal">
             <!-- Lesson Header -->
-            <div class="lesson-header d-flex justify-content-between align-items-center flex-wrap">
+            <div class="lesson-header">
                 <div>
                     <span class="badge bg-secondary mb-2">Lesson {{ loop.index }}</span>
                     <h3 class="mb-0">{{ lesson.title }}</h3>
                 </div>
-                
-                <!-- Instructor Actions -->
+
                 {% if course.instructor_id == current_user.id %}
                 <div class="lesson-actions">
-                    <a href="{{ url_for('add_quiz', lesson_id=lesson.id) }}" class="btn btn-info btn-sm">
+                    <a href="{{ url_for('add_quiz', lesson_id=lesson.id) }}" class="btn btn-info">
                         <i class="fas fa-puzzle-piece"></i> Add Quiz
                     </a>
-                    <a href="{{ url_for('edit_lesson', lesson_id=lesson.id) }}" class="btn btn-warning btn-sm">
-                        <i class="fas fa-edit"></i> Edit
+                    <a href="{{ url_for('edit_lesson', lesson_id=lesson.id) }}" class="btn btn-warning">
+                        <i class="fas fa-pen"></i> Edit
                     </a>
-                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ lesson.id }}">
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ lesson.id }}">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
                 {% endif %}
             </div>
-            
-            <!-- Video Section -->
+
+            <!-- Video -->
             <div class="video-wrapper">
                 {% if lesson.video_url %}
                     <div class="ratio ratio-16x9">
@@ -606,16 +941,16 @@
                     </div>
                 {% endif %}
             </div>
-            
+
             <!-- Lesson Content -->
             <div class="lesson-content">
                 {% if lesson.content %}
                 <div class="content-text">
-                    <i class="fas fa-align-left me-2 text-primary"></i>
+                    <i class="fas fa-align-left me-2"></i>
                     {{ lesson.content }}
                 </div>
                 {% endif %}
-                
+
                 <!-- Quiz Section -->
                 {% set is_completed = false %}
                 {% for prog in current_user.lesson_progress %}
@@ -623,7 +958,7 @@
                         {% set is_completed = true %}
                     {% endif %}
                 {% endfor %}
-                
+
                 {% if lesson.quizzes.count() > 0 %}
                     {% set qz_attempt = namespace(found=false, passed=false, score=0, total=0, percentage=0) %}
                     {% for attempt in current_user.quiz_attempts %}
@@ -635,114 +970,106 @@
                             {% set qz_attempt.percentage = attempt.percentage %}
                         {% endif %}
                     {% endfor %}
-                    
+
                     {% if qz_attempt.found and qz_attempt.passed %}
                         <div class="quiz-alert quiz-alert-success">
-                            <div class="d-flex align-items-center gap-3 flex-wrap">
-                                <i class="fas fa-trophy fa-2x"></i>
-                                <div>
-                                    <strong class="d-block">Quiz Completed Successfully! 🎉</strong>
-                                    <small>You scored {{ qz_attempt.score }}/{{ qz_attempt.total }} ({{ "%.1f"|format(qz_attempt.percentage) }}%)</small>
-                                </div>
+                            <i class="fas fa-trophy fa-2x"></i>
+                            <div class="flex-grow-1">
+                                <strong>Quiz Completed Successfully! 🎉</strong>
+                                <small>You scored {{ qz_attempt.score }}/{{ qz_attempt.total }} ({{ "%.1f"|format(qz_attempt.percentage) }}%)</small>
                             </div>
                         </div>
                     {% elif qz_attempt.found and not qz_attempt.passed %}
                         <div class="quiz-alert quiz-alert-warning">
-                            <div class="d-flex align-items-center gap-3 flex-wrap">
-                                <i class="fas fa-exclamation-triangle fa-2x"></i>
-                                <div class="flex-grow-1">
-                                    <strong class="d-block">Quiz Attempted - Need to Retake</strong>
-                                    <small>You scored {{ qz_attempt.score }}/{{ qz_attempt.total }} ({{ "%.1f"|format(qz_attempt.percentage) }}%). Need 70% to pass.</small>
-                                </div>
-                                <a href="{{ url_for('take_quiz', lesson_id=lesson.id) }}" class="btn btn-warning">
-                                    <i class="fas fa-redo"></i> Retake Quiz
-                                </a>
+                            <i class="fas fa-triangle-exclamation fa-2x"></i>
+                            <div class="flex-grow-1">
+                                <strong>Quiz Attempted - Need to Retake</strong>
+                                <small>You scored {{ qz_attempt.score }}/{{ qz_attempt.total }} ({{ "%.1f"|format(qz_attempt.percentage) }}%). Need 70% to pass.</small>
                             </div>
+                            <a href="{{ url_for('take_quiz', lesson_id=lesson.id) }}" class="btn btn-warning">
+                                <i class="fas fa-redo"></i> Retake Quiz
+                            </a>
                         </div>
                     {% else %}
                         <div class="quiz-alert quiz-alert-info">
-                            <div class="d-flex align-items-center gap-3 flex-wrap">
-                                <i class="fas fa-puzzle-piece fa-2x"></i>
-                                <div class="flex-grow-1">
-                                    <strong class="d-block">Ready to Test Your Knowledge?</strong>
-                                    <small>Complete the quiz to earn your completion certificate.</small>
-                                </div>
-                                <a href="{{ url_for('take_quiz', lesson_id=lesson.id) }}" class="btn btn-primary">
-                                    <i class="fas fa-play"></i> Take Quiz
-                                </a>
+                            <i class="fas fa-puzzle-piece fa-2x"></i>
+                            <div class="flex-grow-1">
+                                <strong>Ready to Test Your Knowledge?</strong>
+                                <small>Complete the quiz to earn your completion certificate.</small>
                             </div>
+                            <a href="{{ url_for('take_quiz', lesson_id=lesson.id) }}" class="btn btn-primary">
+                                <i class="fas fa-play"></i> Take Quiz
+                            </a>
                         </div>
                     {% endif %}
                 {% else %}
                     {% if course.instructor_id == current_user.id %}
-                        <div class="quiz-alert" style="background: #f8f9fa; border-left-color: #6c757d;">
-                            <div class="d-flex align-items-center gap-3">
-                                <i class="fas fa-plus-circle fa-2x text-muted"></i>
-                                <div>
-                                    <strong>No Quiz Yet</strong>
-                                    <p class="mb-0 small">Add a quiz to help students test their knowledge.</p>
-                                </div>
-                                <a href="{{ url_for('add_quiz', lesson_id=lesson.id) }}" class="btn btn-outline-primary btn-sm ms-auto">
-                                    <i class="fas fa-plus"></i> Add Quiz
-                                </a>
+                        <div class="quiz-alert" style="background: #f8fafc; border-left-color: #94a3b8;">
+                            <i class="fas fa-circle-plus fa-2x" style="color: #94a3b8;"></i>
+                            <div class="flex-grow-1">
+                                <strong style="color: #475569;">No Quiz Yet</strong>
+                                <small style="color: #64748b;">Add a quiz to help students test their knowledge.</small>
                             </div>
+                            <a href="{{ url_for('add_quiz', lesson_id=lesson.id) }}" class="btn btn-outline-primary">
+                                <i class="fas fa-plus"></i> Add Quiz
+                            </a>
                         </div>
                     {% endif %}
                 {% endif %}
-                
-                <!-- Mark as Complete Button -->
+
+                <!-- Mark as Complete -->
                 <div class="mt-4 text-center">
                     {% if is_completed %}
                         <div class="alert alert-success mb-0">
-                            <i class="fas fa-check-circle"></i> 
+                            <i class="fas fa-circle-check me-2"></i>
                             <strong>Lesson Completed!</strong> Great job! Keep going! 🎯
                         </div>
                     {% else %}
                         {% if lesson.quizzes.count() > 0 %}
                             {% if qz_attempt.found and qz_attempt.passed %}
-                                <a href="{{ url_for('complete_lesson', lesson_id=lesson.id) }}" class="btn-complete btn text-white">
-                                    <i class="fas fa-check-circle"></i> Mark Lesson as Complete
+                                <a href="{{ url_for('complete_lesson', lesson_id=lesson.id) }}" class="btn-complete">
+                                    <i class="fas fa-circle-check"></i> Mark Lesson as Complete
                                 </a>
                             {% elif qz_attempt.found and not qz_attempt.passed %}
-                                <button class="btn disabled-btn" disabled>
+                                <button class="disabled-btn" disabled>
                                     <i class="fas fa-lock"></i> Pass Quiz First
                                 </button>
                                 <div class="text-muted small mt-2">
-                                    <i class="fas fa-info-circle"></i> You need to score 70% or higher on the quiz
+                                    <i class="fas fa-circle-info"></i> You need to score 70% or higher on the quiz
                                 </div>
                             {% else %}
-                                <button class="btn disabled-btn" disabled>
+                                <button class="disabled-btn" disabled>
                                     <i class="fas fa-lock"></i> Complete Quiz First
                                 </button>
                                 <div class="text-muted small mt-2">
-                                    <i class="fas fa-info-circle"></i> Take the quiz before marking as complete
+                                    <i class="fas fa-circle-info"></i> Take the quiz before marking as complete
                                 </div>
                             {% endif %}
                         {% else %}
-                            <a href="{{ url_for('complete_lesson', lesson_id=lesson.id) }}" class="btn-outline-complete btn">
-                                <i class="fas fa-circle"></i> Mark as Complete
+                            <a href="{{ url_for('complete_lesson', lesson_id=lesson.id) }}" class="btn-outline-complete">
+                                <i class="far fa-circle"></i> Mark as Complete
                             </a>
                         {% endif %}
                     {% endif %}
                 </div>
             </div>
         </div>
-        
-        <!-- Delete Confirmation Modal -->
+
+        <!-- Delete Modal -->
         {% if course.instructor_id == current_user.id %}
         <div class="modal fade" id="deleteModal{{ lesson.id }}" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header" style="background: var(--danger-gradient); color: white;">
+                    <div class="modal-header">
                         <h5 class="modal-title">
-                            <i class="fas fa-exclamation-triangle me-2"></i>Delete Lesson
+                            <i class="fas fa-triangle-exclamation me-2"></i>Delete Lesson
                         </h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <p>Are you sure you want to delete <strong class="text-danger">"{{ lesson.title }}"</strong>?</p>
                         <div class="alert alert-danger mb-0">
-                            <i class="fas fa-info-circle me-2"></i>
+                            <i class="fas fa-circle-info me-2"></i>
                             This will also delete all quizzes and student progress for this lesson!
                         </div>
                     </div>
@@ -757,11 +1084,11 @@
         </div>
         {% endif %}
         {% endfor %}
-        
-        <!-- Certificate Section (if all lessons completed) -->
+
+        <!-- Certificate Section -->
         {% if ns.completed_count == total_lessons and total_lessons > 0 %}
-        <div class="text-center p-4 bg-light rounded-4 mt-3">
-            <i class="fas fa-certificate fa-3x text-warning mb-3"></i>
+        <div class="certificate-section">
+            <i class="fas fa-certificate fa-3x"></i>
             <h4>Congratulations! 🎉</h4>
             <p>You have completed all lessons in this course!</p>
             <a href="{{ url_for('generate_certificate', course_id=course.id) }}" class="btn btn-success btn-lg" target="_blank">
@@ -773,57 +1100,63 @@
 </div>
 
 <script>
-// Smooth scrolling for lesson links
-document.querySelectorAll('.lesson-item').forEach(function(link) {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-        var targetId = this.getAttribute('href');
-        var targetElement = document.querySelector(targetId);
-        
-        if (targetElement) {
-            targetElement.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+    // ==================== SCROLL REVEAL ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal');
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    obs.unobserve(entry.target);
+                }
             });
-            
-            // Highlight active lesson
-            document.querySelectorAll('.lesson-item').forEach(function(item) {
-                item.classList.remove('active');
-            });
-            this.classList.add('active');
-        }
+        }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => obs.observe(el));
     });
-});
 
-// Highlight current lesson on scroll
-window.addEventListener('scroll', function() {
-    var lessons = document.querySelectorAll('.lesson-container');
-    var currentLesson = null;
-    
-    lessons.forEach(function(lesson) {
-        var rect = lesson.getBoundingClientRect();
-        if (rect.top <= 100 && rect.bottom >= 100) {
-            currentLesson = lesson.id;
-        }
-    });
-    
-    if (currentLesson) {
-        document.querySelectorAll('.lesson-item').forEach(function(item) {
-            item.classList.remove('active');
-            if (item.getAttribute('href') === '#' + currentLesson) {
-                item.classList.add('active');
+    // ==================== SMOOTH SCROLL ====================
+    document.querySelectorAll('.lesson-item').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                document.querySelectorAll('.lesson-item').forEach(item => item.classList.remove('active'));
+                this.classList.add('active');
             }
         });
-    }
-});
-
-// Video progress tracking (optional)
-document.querySelectorAll('video').forEach(function(video) {
-    video.addEventListener('timeupdate', function() {
-        try {
-            localStorage.setItem('video_progress_' + this.src, this.currentTime);
-        } catch(e) {}
     });
-});
+
+    // ==================== SCROLL HIGHLIGHT ====================
+    window.addEventListener('scroll', function() {
+        const lessons = document.querySelectorAll('.lesson-container');
+        let currentLesson = null;
+
+        lessons.forEach(lesson => {
+            const rect = lesson.getBoundingClientRect();
+            if (rect.top <= 100 && rect.bottom >= 100) {
+                currentLesson = lesson.id;
+            }
+        });
+
+        if (currentLesson) {
+            document.querySelectorAll('.lesson-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === '#' + currentLesson) {
+                    item.classList.add('active');
+                }
+            });
+        }
+    });
+
+    // ==================== VIDEO PROGRESS ====================
+    document.querySelectorAll('video').forEach(video => {
+        video.addEventListener('timeupdate', function() {
+            try { localStorage.setItem('video_progress_' + this.src, this.currentTime); } catch(e) {}
+        });
+    });
 </script>
 {% endblock %}

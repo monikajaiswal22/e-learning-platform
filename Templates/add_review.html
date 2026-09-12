@@ -2,186 +2,338 @@
 
 {% block content %}
 <style>
-    /* Modern Review Form Styles */
+    /* ============================================================
+       ADD REVIEW — CRIMSON RED + ANIMATIONS
+       ============================================================ */
     :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --primary-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --danger-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+
+        --crimson-900: #450a0a;
+        --crimson-800: #7f1d1d;
+        --crimson-700: #991b1b;
+        --crimson-600: #b91c1c;
+        --crimson-500: #dc2626;
+        --crimson-400: #ef4444;
+        --crimson-300: #f87171;
+        --crimson-200: #fecaca;
+        --crimson-100: #fee2e2;
+        --crimson-50:  #fef2f2;
     }
-    
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
+    }
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-14px) rotate(3deg); }
+    }
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
+    }
+    @keyframes shimmer {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+        50%      { box-shadow: 0 0 0 14px rgba(220, 38, 38, 0); }
+    }
+    @keyframes starPop {
+        0%   { transform: scale(1); }
+        50%  { transform: scale(1.4) rotate(-10deg); }
+        100% { transform: scale(1); }
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.6s cubic-bezier(.2,.7,.2,1),
+                    transform 0.6s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    /* ==================== PAGE HEADER ==================== */
     .page-header {
-        background: var(--primary-gradient);
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
         border-radius: 20px;
-        padding: 25px 30px;
+        padding: 28px 30px;
         margin-bottom: 30px;
         color: white;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.28);
     }
-    
+
     .page-header::before {
-        content: '⭐';
+        content: '';
         position: absolute;
-        bottom: -20px;
-        right: 20px;
-        font-size: 80px;
-        opacity: 0.1;
+        top: -50%; right: -25%;
+        width: 340px; height: 340px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.45) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
     }
-    
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50%; left: -15%;
+        width: 280px; height: 280px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 10s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .page-header > * { position: relative; z-index: 1; }
+
     .page-header h3 {
         margin: 0;
-        font-weight: 700;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    
-    .page-header p {
-        margin: 5px 0 0;
-        opacity: 0.9;
+
+    .page-header h3 i {
+        color: #fbbf24;
+        animation: float 3.5s ease-in-out infinite;
+        filter: drop-shadow(0 4px 10px rgba(251, 191, 36, 0.4));
     }
-    
+
+    .page-header p { margin: 6px 0 0; opacity: 0.92; }
+
     .course-badge {
-        background: rgba(255,255,255,0.2);
+        background: rgba(255, 255, 255, 0.15);
         backdrop-filter: blur(10px);
-        padding: 5px 12px;
-        border-radius: 20px;
-        display: inline-block;
-        margin-top: 10px;
+        padding: 7px 16px;
+        border-radius: 30px;
+        display: inline-flex;
+        align-items: center;
+        margin-top: 12px;
         font-size: 13px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
     }
-    
+
+    .course-badge i { color: #fbbf24; }
+
+    .course-badge:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .page-header .btn-light {
+        background: rgba(255, 255, 255, 0.95);
+        color: var(--crimson-800);
+        border: none;
+        padding: 9px 20px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.88rem;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .page-header .btn-light:hover {
+        background: #fff;
+        color: var(--crimson-900);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ==================== FORM CARD ==================== */
     .form-card {
         background: white;
         border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        box-shadow: 0 20px 50px rgba(127, 29, 29, 0.1);
         margin-bottom: 30px;
+        border: 1px solid var(--crimson-100);
+        animation: fadeInUp 0.7s cubic-bezier(.2,.7,.2,1);
     }
-    
-    .form-body {
-        padding: 30px;
-    }
-    
-    .form-group {
-        margin-bottom: 25px;
-    }
-    
+
+    .form-body { padding: 30px; }
+    .form-group { margin-bottom: 25px; }
+
     .form-label {
         font-weight: 600;
         margin-bottom: 8px;
-        color: #2c3e50;
+        color: var(--crimson-900);
         display: flex;
         align-items: center;
         gap: 8px;
+        font-size: 0.9rem;
     }
-    
+
     .form-label i {
-        color: #667eea;
+        color: var(--crimson-600);
         width: 18px;
+        transition: transform 0.3s ease;
     }
-    
+
+    .form-group:hover .form-label i { transform: scale(1.15); }
+
     .required-field::after {
         content: '*';
-        color: #eb3349;
-        margin-left: 4px;
+        color: var(--crimson-600);
+        margin-left: 2px;
+        font-weight: 700;
     }
-    
+
     .form-control {
-        border: 2px solid #e9ecef;
+        border: 2px solid #e2e8f0;
         border-radius: 12px;
-        padding: 12px 15px;
-        transition: all 0.3s ease;
+        padding: 12px 16px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
         font-size: 14px;
+        color: var(--crimson-900);
+        background: #fafafa;
     }
-    
+
+    .form-control::placeholder { color: #94a3b8; }
+
+    .form-control:hover {
+        border-color: var(--crimson-200);
+        background: white;
+    }
+
     .form-control:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        border-color: var(--crimson-500);
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
         outline: none;
+        background: white;
+        transform: translateY(-1px);
     }
-    
-    /* Star Rating Styles */
+
+    .form-control.is-invalid {
+        border-color: var(--crimson-500);
+        background: #fef2f2;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 140px;
+        line-height: 1.6;
+    }
+
+    /* ==================== STAR RATING ==================== */
     .rating-container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 20px;
-        background: #f8f9fa;
-        border-radius: 16px;
+        padding: 26px 22px;
+        background: linear-gradient(135deg, #fef2f2 0%, #fafafa 100%);
+        border: 2px dashed var(--crimson-200);
+        border-radius: 18px;
         margin-top: 10px;
+        transition: all 0.3s ease;
     }
-    
+
+    .rating-container:hover {
+        border-color: var(--crimson-300);
+        box-shadow: 0 8px 24px rgba(127, 29, 29, 0.08);
+    }
+
     .stars-wrapper {
         display: flex;
         gap: 15px;
         margin-bottom: 15px;
         direction: rtl;
     }
-    
-    .star-input {
-        display: none;
-    }
-    
+
+    .star-input { display: none; }
+
     .star-label {
-        font-size: 45px;
-        color: #dee2e6;
+        font-size: 48px;
+        color: #cbd5e1;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.25s cubic-bezier(.2,.7,.2,1);
+        filter: grayscale(0.6);
+        display: inline-block;
     }
-    
+
     .star-label:hover,
     .star-label:hover ~ .star-label,
     .star-input:checked ~ .star-label {
-        color: #ffc107;
-        transform: scale(1.1);
+        color: #fbbf24;
+        transform: scale(1.15);
+        filter: grayscale(0) drop-shadow(0 4px 12px rgba(251, 191, 36, 0.4));
     }
-    
+
     .star-label:hover {
-        transform: scale(1.2);
+        animation: starPop 0.4s ease;
     }
-    
+
+    .star-input:checked ~ .star-label {
+        animation: starPop 0.35s ease;
+    }
+
     .rating-text {
-        font-size: 16px;
-        font-weight: 600;
-        color: #2c3e50;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--crimson-900);
         margin-top: 5px;
+        transition: all 0.3s ease;
+        letter-spacing: -0.02em;
     }
-    
+
     .rating-subtext {
         font-size: 13px;
-        color: #6c757d;
-        margin-top: 5px;
+        color: #64748b;
+        margin-top: 4px;
+        transition: all 0.3s ease;
     }
-    
-    .rating-emoji {
-        font-size: 28px;
-        margin-left: 8px;
-    }
-    
-    /* Review Preview */
+
+    /* ==================== REVIEW PREVIEW ==================== */
     .review-preview {
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        border-radius: 16px;
-        padding: 20px;
+        background: linear-gradient(135deg, #fef2f2 0%, #fafafa 100%);
+        border: 2px dashed var(--crimson-200);
+        border-radius: 18px;
+        padding: 22px;
         margin-top: 20px;
         display: none;
     }
-    
+
     .review-preview.show {
         display: block;
-        animation: fadeIn 0.3s ease;
+        animation: fadeIn 0.4s cubic-bezier(.2,.7,.2,1);
     }
-    
+
     .review-preview-header {
         display: flex;
         align-items: center;
         gap: 15px;
         margin-bottom: 15px;
     }
-    
+
     .review-avatar {
-        width: 50px;
-        height: 50px;
+        width: 52px;
+        height: 52px;
         border-radius: 50%;
         background: var(--primary-gradient);
         color: white;
@@ -189,153 +341,188 @@
         align-items: center;
         justify-content: center;
         font-size: 20px;
-        font-weight: bold;
+        font-weight: 700;
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.3);
+        transition: all 0.3s ease;
     }
-    
+
+    .review-avatar:hover {
+        transform: scale(1.08) rotate(-6deg);
+    }
+
     .review-preview-stars {
-        color: #ffc107;
+        color: #fbbf24;
         font-size: 18px;
+        transition: all 0.3s ease;
     }
-    
+
     .review-preview-text {
         font-style: italic;
-        color: #2c3e50;
-        padding: 10px 15px;
+        color: var(--crimson-900);
+        padding: 14px 18px;
         background: white;
         border-radius: 12px;
-        border-left: 3px solid #667eea;
+        border-left: 4px solid var(--crimson-500);
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+        line-height: 1.65;
+        transition: all 0.3s ease;
     }
-    
-    /* Character Counter */
+
+    /* ==================== CHARACTER COUNTER ==================== */
     .char-counter {
         text-align: right;
         font-size: 12px;
-        color: #6c757d;
-        margin-top: 5px;
+        color: #94a3b8;
+        margin-top: 6px;
+        font-weight: 500;
+        transition: color 0.3s ease;
     }
-    
-    .char-counter.warning {
-        color: #f6d365;
+
+    .char-counter.warning { color: #d97706; font-weight: 600; }
+    .char-counter.danger { color: var(--crimson-600); font-weight: 700; }
+
+    /* ==================== INVALID FEEDBACK ==================== */
+    .invalid-feedback {
+        color: var(--crimson-600);
+        font-size: 12px;
+        margin-top: 6px;
+        display: block;
+        font-weight: 500;
     }
-    
-    .char-counter.danger {
-        color: #eb3349;
-    }
-    
-    /* Alert */
+
+    /* ==================== ALERTS ==================== */
     .alert-custom {
-        border-radius: 12px;
+        border-radius: 14px;
+        border: none;
         border-left: 4px solid;
-        padding: 15px;
+        padding: 18px 20px;
+        animation: fadeInUp 0.5s ease;
+        font-size: 0.9rem;
     }
-    
+
     .alert-info-custom {
-        background: linear-gradient(135deg, #4facfe10, #00f2fe10);
-        border-left-color: #4facfe;
+        background: linear-gradient(135deg, #e0f2fe 0%, #ecfeff 100%);
+        border-left-color: #0891b2;
+        color: #155e75;
     }
-    
-    /* Button Styles */
+
+    .alert-info-custom i {
+        color: #0891b2;
+        animation: float 2.5s ease-in-out infinite;
+    }
+
+    .alert-info-custom strong { color: #0e7490; }
+
+    /* ==================== BUTTONS ==================== */
     .btn-submit {
-        background: var(--success-gradient);
-        border: none;
-        padding: 14px;
-        font-size: 16px;
-        font-weight: 600;
+        background: linear-gradient(180deg, var(--crimson-600) 0%, var(--crimson-700) 100%);
+        border: 1px solid var(--crimson-800);
+        padding: 15px;
+        font-size: 1rem;
+        font-weight: 700;
         border-radius: 12px;
-        transition: all 0.3s ease;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
         color: white;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 4px 16px rgba(127, 29, 29, 0.25);
+        position: relative;
+        overflow: hidden;
+        letter-spacing: -0.01em;
     }
-    
+
+    .btn-submit::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-submit:hover::before { left: 100%; }
+
     .btn-submit:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(17, 153, 142, 0.3);
+        transform: translateY(-3px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 12px 28px rgba(127, 29, 29, 0.4);
         color: white;
+        background: linear-gradient(180deg, var(--crimson-700) 0%, var(--crimson-800) 100%);
     }
-    
+
+    .btn-submit:active { transform: translateY(-1px); }
+
     .btn-cancel {
-        background: #6c757d;
-        border: none;
+        background: #f1f5f9;
+        border: 2px solid #e2e8f0;
         padding: 14px;
-        font-size: 16px;
+        font-size: 1rem;
         font-weight: 600;
         border-radius: 12px;
-        transition: all 0.3s ease;
-        color: white;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        color: #475569;
         text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
     }
-    
+
     .btn-cancel:hover {
-        background: #5a6268;
+        background: #e2e8f0;
+        border-color: #cbd5e1;
+        color: var(--crimson-800);
         transform: translateY(-2px);
-        color: white;
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
     }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-        .form-body {
-            padding: 20px;
-        }
-        
-        .page-header {
-            padding: 20px;
-        }
-        
-        .star-label {
-            font-size: 32px;
-        }
-        
-        .stars-wrapper {
-            gap: 10px;
-        }
-        
-        .rating-container {
-            padding: 15px;
-        }
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .fade-in {
-        animation: fadeIn 0.5s ease forwards;
-    }
-    
+
+    .btn-cancel i { transition: transform 0.3s ease; }
+    .btn-cancel:hover i { transform: translateX(-4px); }
+
+    /* ==================== LOADING ==================== */
     .btn-loading {
         position: relative;
         pointer-events: none;
-        opacity: 0.7;
+        opacity: 0.85;
     }
-    
+
     .btn-loading::after {
         content: '';
         position: absolute;
-        width: 18px;
-        height: 18px;
-        top: 50%;
-        right: 15px;
+        width: 18px; height: 18px;
+        top: 50%; right: 18px;
         margin-top: -9px;
-        border: 2px solid white;
-        border-top-color: transparent;
+        border: 2px solid rgba(255,255,255,0.4);
+        border-top-color: white;
         border-radius: 50%;
         animation: spin 0.6s linear infinite;
     }
-    
-    @keyframes spin {
-        to { transform: rotate(360deg); }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+        .form-body { padding: 22px; }
+        .page-header { padding: 22px 20px; }
+        .star-label { font-size: 38px; }
+        .stars-wrapper { gap: 10px; }
+        .rating-container { padding: 20px 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        .reveal { opacity: 1; transform: none; }
     }
 </style>
 
-<div class="container fade-in">
-    <!-- Page Header -->
+<div class="container">
+    <!-- ==================== PAGE HEADER ==================== -->
     <div class="page-header">
-        <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
                 <h3><i class="fas fa-star me-2"></i>Write a Review</h3>
                 <p>Share your learning experience with others</p>
                 <div class="course-badge">
-                    <i class="fas fa-book me-1"></i> {{ course.title }}
+                    <i class="fas fa-book me-2"></i> {{ course.title }}
                 </div>
             </div>
             <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-light">
@@ -343,21 +530,21 @@
             </a>
         </div>
     </div>
-    
+
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="form-card">
+            <div class="form-card reveal">
                 <div class="form-body">
                     <!-- Info Alert -->
                     <div class="alert alert-custom alert-info-custom">
-                        <i class="fas fa-info-circle me-2"></i>
+                        <i class="fas fa-circle-info me-2"></i>
                         <strong>Why review?</strong> Your feedback helps other students choose the right course and helps instructors improve their content.
                     </div>
-                    
+
                     <form method="POST" id="reviewForm" action="{{ url_for('add_review', course_id=course.id) }}">
                         {{ form.hidden_tag() }}
-                        
-                        <!-- Rating Section -->
+
+                        <!-- Rating -->
                         <div class="form-group">
                             <label class="form-label required-field">
                                 <i class="fas fa-star"></i> Your Rating
@@ -366,41 +553,41 @@
                                 <div class="stars-wrapper">
                                     <input type="radio" name="rating" id="star5" value="5" class="star-input">
                                     <label for="star5" class="star-label" title="Excellent">⭐</label>
-                                    
+
                                     <input type="radio" name="rating" id="star4" value="4" class="star-input">
                                     <label for="star4" class="star-label" title="Very Good">⭐</label>
-                                    
+
                                     <input type="radio" name="rating" id="star3" value="3" class="star-input">
                                     <label for="star3" class="star-label" title="Good">⭐</label>
-                                    
+
                                     <input type="radio" name="rating" id="star2" value="2" class="star-input">
                                     <label for="star2" class="star-label" title="Fair">⭐</label>
-                                    
+
                                     <input type="radio" name="rating" id="star1" value="1" class="star-input">
                                     <label for="star1" class="star-label" title="Poor">⭐</label>
                                 </div>
-                                
+
                                 <div class="rating-text" id="ratingText">Select a rating</div>
                                 <div class="rating-subtext" id="ratingSubtext">Tap a star to rate</div>
                             </div>
                             <div class="invalid-feedback" id="ratingError"></div>
                             {% for error in form.rating.errors %}
-                                <span class="text-danger small">{{ error }}</span>
+                                <span class="text-danger small d-block mt-1">{{ error }}</span>
                             {% endfor %}
                         </div>
-                        
-                        <!-- Review Comment -->
+
+                        <!-- Comment -->
                         <div class="form-group">
                             {{ form.comment.label(class="form-label") }}
-                            {{ form.comment(class="form-control", rows="5", placeholder="What did you like about this course? Any suggestions for improvement?", id="commentInput") }}
+                            {{ form.comment(class="form-control", rows="6", placeholder="What did you like about this course? Any suggestions for improvement?", id="commentInput") }}
                             <div class="char-counter" id="commentCounter">0/1000 characters</div>
                             <div class="invalid-feedback" id="commentError"></div>
                             {% for error in form.comment.errors %}
-                                <span class="text-danger small">{{ error }}</span>
+                                <span class="text-danger small d-block mt-1">{{ error }}</span>
                             {% endfor %}
                         </div>
-                        
-                        <!-- Review Preview -->
+
+                        <!-- Live Preview -->
                         <div class="review-preview" id="reviewPreview">
                             <div class="review-preview-header">
                                 <div class="review-avatar">{{ current_user.username[0].upper() }}</div>
@@ -419,12 +606,12 @@
                                 <em>Your review will appear here...</em>
                             </div>
                         </div>
-                        
-                        <!-- Action Buttons -->
+
+                        <!-- Actions -->
                         <div class="d-grid gap-3 mt-4">
-                            {{ form.submit(class="btn btn-submit text-white", id="submitBtn", value="Submit Review") }}
-                            <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-cancel text-white text-center">
-                                <i class="fas fa-arrow-left me-2"></i>Cancel
+                            {{ form.submit(class="btn btn-submit", id="submitBtn", value="Submit Review") }}
+                            <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-cancel">
+                                <i class="fas fa-arrow-left"></i>Cancel
                             </a>
                         </div>
                     </form>
@@ -435,7 +622,21 @@
 </div>
 
 <script>
-    // DOM Elements
+    // ==================== SCROLL REVEAL ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal');
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => obs.observe(el));
+    });
+
+    // ==================== ELEMENTS ====================
     const starInputs = document.querySelectorAll('input[name="rating"]');
     const ratingText = document.getElementById('ratingText');
     const ratingSubtext = document.getElementById('ratingSubtext');
@@ -448,8 +649,7 @@
     const submitBtn = document.getElementById('submitBtn');
     const ratingError = document.getElementById('ratingError');
     const commentError = document.getElementById('commentError');
-    
-    // Rating labels
+
     const ratingLabels = {
         1: { text: 'Poor', emoji: '😞', subtext: 'Needs significant improvement' },
         2: { text: 'Fair', emoji: '😐', subtext: 'Could be better' },
@@ -457,79 +657,56 @@
         4: { text: 'Very Good', emoji: '😊', subtext: 'Great learning experience' },
         5: { text: 'Excellent', emoji: '🤩', subtext: 'Exceptional course!' }
     };
-    
-    // Star rating function
+
+    // ==================== RATING ====================
     function updateRating(value) {
         const rating = parseInt(value);
         const label = ratingLabels[rating];
-        
-        // Update text
-        if (ratingText) {
-            ratingText.textContent = label.text + ' ' + label.emoji;
-        }
-        if (ratingSubtext) {
-            ratingSubtext.textContent = label.subtext;
-        }
-        
-        // Clear error
-        if (ratingError) {
-            ratingError.textContent = '';
-        }
-        
-        // Update preview
+        if (ratingText) ratingText.textContent = label.text + ' ' + label.emoji;
+        if (ratingSubtext) ratingSubtext.textContent = label.subtext;
+        if (ratingError) ratingError.textContent = '';
         updatePreview();
     }
-    
-    // Update preview
+
     function updatePreview() {
-        var selectedRating = document.querySelector('input[name="rating"]:checked');
-        var comment = commentInput ? commentInput.value : '';
-        
-        // Update stars preview
+        const selectedRating = document.querySelector('input[name="rating"]:checked');
+        const comment = commentInput ? commentInput.value : '';
+
         if (previewStars && selectedRating) {
-            var rating = parseInt(selectedRating.value);
-            var starsHtml = '';
-            for (var i = 1; i <= 5; i++) {
-                if (i <= rating) {
-                    starsHtml += '<i class="fas fa-star" style="color: #ffc107;"></i>';
-                } else {
-                    starsHtml += '<i class="far fa-star" style="color: #dee2e6;"></i>';
-                }
+            const rating = parseInt(selectedRating.value);
+            let html = '';
+            for (let i = 1; i <= 5; i++) {
+                html += i <= rating
+                    ? '<i class="fas fa-star" style="color: #fbbf24;"></i>'
+                    : '<i class="far fa-star" style="color: #cbd5e1;"></i>';
             }
-            previewStars.innerHTML = starsHtml;
+            previewStars.innerHTML = html;
         } else if (previewStars) {
-            previewStars.innerHTML = '<i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>';
+            previewStars.innerHTML = '<i class="far fa-star" style="color: #cbd5e1;"></i>'.repeat(5);
         }
-        
-        // Update text preview
+
         if (previewText) {
             previewText.textContent = comment.trim() ? comment : 'Your review will appear here...';
             previewText.style.fontStyle = comment.trim() ? 'normal' : 'italic';
         }
-        
-        // Show/hide preview
+
         if (reviewPreview) {
-            if (selectedRating || comment.trim()) {
-                reviewPreview.classList.add('show');
-            } else {
-                reviewPreview.classList.remove('show');
-            }
+            reviewPreview.classList.toggle('show', !!(selectedRating || comment.trim()));
         }
     }
-    
-    // Star click event
-    starInputs.forEach(function(input) {
+
+    starInputs.forEach(input => {
         input.addEventListener('change', function() {
             updateRating(this.value);
         });
     });
-    
-    // Character counter
+
+    // ==================== COMMENT COUNTER ====================
     function updateCommentCounter() {
         if (!commentInput || !commentCounter) return;
-        var length = commentInput.value.length;
+        const length = commentInput.value.length;
         commentCounter.textContent = length + '/1000 characters';
-        
+
         if (length > 1000) {
             commentCounter.classList.add('danger');
             commentCounter.classList.remove('warning');
@@ -551,67 +728,67 @@
                 commentInput.classList.remove('is-invalid');
             }
         }
-        
-        // Update preview on input
         updatePreview();
     }
-    
+
     if (commentInput) {
         commentInput.addEventListener('input', updateCommentCounter);
-        // Initial counter update
         updateCommentCounter();
     }
-    
-    // Form validation
+
+    // ==================== FORM VALIDATION ====================
     function validateForm() {
-        var isValid = true;
-        var selectedRating = document.querySelector('input[name="rating"]:checked');
-        
-        // Validate rating
+        let isValid = true;
+        const selectedRating = document.querySelector('input[name="rating"]:checked');
+
         if (!selectedRating) {
-            if (ratingError) {
-                ratingError.textContent = 'Please select a rating';
-            }
+            if (ratingError) ratingError.textContent = 'Please select a rating';
             isValid = false;
         } else {
-            if (ratingError) {
-                ratingError.textContent = '';
-            }
+            if (ratingError) ratingError.textContent = '';
         }
-        
-        // Validate comment length
+
         if (commentInput && commentInput.value.length > 1000) {
-            if (commentError) {
-                commentError.textContent = 'Comment must be less than 1000 characters';
-            }
+            if (commentError) commentError.textContent = 'Comment must be less than 1000 characters';
             isValid = false;
         }
-        
+
         return isValid;
     }
-    
+
+    function showToast(msg) {
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            position: fixed; bottom: 24px; right: 24px;
+            background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+            color: white; padding: 14px 24px; border-radius: 12px;
+            z-index: 9999; font-weight: 600; font-size: 0.9rem;
+            box-shadow: 0 12px 32px rgba(127, 29, 29, 0.35);
+            animation: fadeInUp 0.35s ease;
+        `;
+        toast.innerHTML = '<i class="fas fa-circle-exclamation me-2"></i>' + msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3500);
+    }
+
     if (form) {
         form.addEventListener('submit', function(e) {
             if (!validateForm()) {
                 e.preventDefault();
-                alert('Please select a rating and fix any errors.');
-                // Scroll to first error
-                var firstError = document.querySelector('.is-invalid, .invalid-feedback:not(:empty)');
-                if (firstError) {
-                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+                showToast('Please select a rating and fix any errors.');
+                const firstError = document.querySelector('.is-invalid, .invalid-feedback:not(:empty)');
+                if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 return false;
             }
-            
-            // Show loading state
+
             if (submitBtn) {
                 submitBtn.classList.add('btn-loading');
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting Review...';
             }
         });
     }
-    
-    // Keyboard shortcut (Ctrl/Cmd + Enter to submit)
+
+    // ==================== KEYBOARD SHORTCUT ====================
     document.addEventListener('keydown', function(e) {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
             if (form) {
@@ -620,10 +797,8 @@
             }
         }
     });
-    
-    // Initial preview update
+
+    // ==================== INIT ====================
     updatePreview();
-    
-    console.log('%c⭐ Review Editor Ready', 'color: #f6d365; font-size: 14px; font-weight: bold;');
 </script>
 {% endblock %}

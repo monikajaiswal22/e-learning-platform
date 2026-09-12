@@ -2,89 +2,253 @@
 
 {% block content %}
 <style>
-    /* Modern Courses Page Styles */
+    /* ============================================================
+       COURSES PAGE — CRIMSON RED + ANIMATIONS
+       ============================================================ */
     :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        --primary-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --danger-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+
+        --crimson-900: #450a0a;
+        --crimson-800: #7f1d1d;
+        --crimson-700: #991b1b;
+        --crimson-600: #b91c1c;
+        --crimson-500: #dc2626;
+        --crimson-400: #ef4444;
+        --crimson-300: #f87171;
+        --crimson-200: #fecaca;
+        --crimson-100: #fee2e2;
+        --crimson-50:  #fef2f2;
     }
-    
+
+    /* ==================== GLOBAL ANIMATIONS ==================== */
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
+    }
+
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-14px) rotate(3deg); }
+    }
+
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5); }
+        50%      { box-shadow: 0 0 0 14px rgba(220, 38, 38, 0); }
+    }
+
+    @keyframes shimmer {
+        0%   { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
+    }
+
+    @keyframes spinStar {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s cubic-bezier(.2,.7,.2,1),
+                    transform 0.6s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    .reveal-stagger > * {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.55s cubic-bezier(.2,.7,.2,1),
+                    transform 0.55s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal-stagger.revealed > * {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .reveal-stagger.revealed > *:nth-child(1) { transition-delay: 0.04s; }
+    .reveal-stagger.revealed > *:nth-child(2) { transition-delay: 0.10s; }
+    .reveal-stagger.revealed > *:nth-child(3) { transition-delay: 0.16s; }
+    .reveal-stagger.revealed > *:nth-child(4) { transition-delay: 0.22s; }
+    .reveal-stagger.revealed > *:nth-child(5) { transition-delay: 0.28s; }
+    .reveal-stagger.revealed > *:nth-child(6) { transition-delay: 0.34s; }
+
+    /* ==================== PAGE HEADER ==================== */
     .page-header {
-        background: var(--primary-gradient);
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
         border-radius: 20px;
-        padding: 30px;
+        padding: 32px 30px;
         margin-bottom: 30px;
         color: white;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.25);
     }
-    
+
     .page-header::before {
-        content: '📚';
+        content: '';
         position: absolute;
-        bottom: -20px;
-        right: 20px;
-        font-size: 80px;
-        opacity: 0.1;
+        top: -60%; right: -15%;
+        width: 420px; height: 420px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.45) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
     }
-    
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -60%; left: -10%;
+        width: 380px; height: 380px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 10s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .page-header > .d-flex {
+        position: relative;
+        z-index: 1;
+        animation: fadeInDown 0.7s cubic-bezier(.2,.7,.2,1);
+    }
+
     .page-header h2 {
         margin: 0;
-        font-weight: 700;
+        font-weight: 800;
+        letter-spacing: -0.03em;
     }
-    
+
+    .page-header h2 i {
+        color: #fbbf24;
+        animation: float 3.5s ease-in-out infinite;
+        filter: drop-shadow(0 4px 10px rgba(251, 191, 36, 0.4));
+    }
+
     .page-header p {
-        margin: 5px 0 0;
-        opacity: 0.9;
+        margin: 6px 0 0;
+        opacity: 0.92;
     }
-    
-    /* Filter Section */
+
+    .page-header .badge {
+        background: rgba(255, 255, 255, 0.15) !important;
+        color: #fff !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-weight: 600;
+        padding: 8px 16px !important;
+        animation: fadeIn 0.9s ease 0.3s backwards;
+    }
+
+    .page-header .badge i {
+        color: #fbbf24;
+    }
+
+    /* ==================== FILTER SECTION ==================== */
     .filter-section {
         background: white;
         border-radius: 16px;
-        padding: 20px;
+        padding: 22px;
         margin-bottom: 30px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        box-shadow: 0 5px 20px rgba(127, 29, 29, 0.06);
+        border: 1px solid var(--crimson-100);
+        animation: fadeInUp 0.6s cubic-bezier(.2,.7,.2,1) 0.15s backwards;
     }
-    
+
     .filter-title {
         font-weight: 600;
         margin-bottom: 15px;
         display: flex;
         align-items: center;
         gap: 10px;
+        color: var(--crimson-900);
     }
-    
+
+    .filter-title i { color: var(--crimson-600); }
+
     .filter-buttons {
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
         margin-bottom: 20px;
     }
-    
+
     .filter-chip {
         padding: 8px 20px;
         border-radius: 30px;
-        border: 2px solid #e9ecef;
+        border: 2px solid #e2e8f0;
         background: white;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
         cursor: pointer;
         font-size: 14px;
         font-weight: 500;
+        color: #475569;
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    .filter-chip::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .filter-chip:hover::before { left: 100%; }
+
     .filter-chip:hover {
-        border-color: #667eea;
+        border-color: var(--crimson-500);
+        color: var(--crimson-700);
         transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(185, 28, 28, 0.15);
     }
-    
+
     .filter-chip.active {
         background: var(--primary-gradient);
-        border-color: #667eea;
+        border-color: var(--crimson-600);
         color: white;
+        box-shadow: 0 6px 20px rgba(127, 29, 29, 0.3);
+        animation: pulseGlow 2.4s ease-out infinite;
     }
-    
+
+    .filter-chip.active:hover {
+        transform: translateY(-2px) scale(1.03);
+    }
+
+    .filter-chip i {
+        transition: transform 0.3s ease;
+    }
+
+    .filter-chip:hover i {
+        transform: scale(1.15);
+    }
+
     .sort-section {
         display: flex;
         justify-content: space-between;
@@ -92,373 +256,433 @@
         flex-wrap: wrap;
         gap: 15px;
         padding-top: 15px;
-        border-top: 1px solid #e9ecef;
+        border-top: 1px solid var(--crimson-100);
     }
-    
+
     .sort-select {
         padding: 8px 15px;
         border-radius: 12px;
-        border: 2px solid #e9ecef;
+        border: 2px solid #e2e8f0;
         background: white;
         cursor: pointer;
+        transition: all 0.25s ease;
+        font-size: 14px;
+        color: #334155;
     }
-    
+
+    .sort-select:focus {
+        border-color: var(--crimson-500);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+    }
+
     .results-count {
-        color: #6c757d;
+        color: #64748b;
         font-size: 14px;
     }
-    
-    /* Search Bar */
+
+    .results-count strong {
+        color: var(--crimson-700);
+        font-weight: 700;
+    }
+
+    /* ==================== SEARCH ==================== */
     .search-wrapper {
         position: relative;
         margin-bottom: 20px;
     }
-    
-    .search-wrapper i {
+
+    .search-wrapper > i {
         position: absolute;
-        left: 15px;
+        left: 18px;
         top: 50%;
         transform: translateY(-50%);
-        color: #6c757d;
+        color: #94a3b8;
+        transition: color 0.3s ease;
+        pointer-events: none;
     }
-    
+
     .search-input {
         width: 100%;
-        padding: 12px 15px 12px 45px;
-        border: 2px solid #e9ecef;
+        padding: 13px 50px 13px 48px;
+        border: 2px solid #e2e8f0;
         border-radius: 50px;
         font-size: 14px;
         transition: all 0.3s ease;
+        background: #fafafa;
+        color: #0f172a;
     }
-    
+
+    .search-input::placeholder { color: #94a3b8; }
+
     .search-input:focus {
-        border-color: #667eea;
+        border-color: var(--crimson-500);
+        background: white;
         outline: none;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
     }
-    
+
+    .search-input:focus ~ i,
+    .search-wrapper:focus-within > i {
+        color: var(--crimson-600);
+    }
+
     .clear-btn {
         position: absolute;
-        right: 15px;
+        right: 18px;
         top: 50%;
         transform: translateY(-50%);
         background: none;
         border: none;
-        color: #6c757d;
+        color: #94a3b8;
         cursor: pointer;
+        transition: all 0.2s ease;
+        padding: 4px;
     }
-    
-    /* Course Cards - Enhanced */
+
+    .clear-btn:hover {
+        color: var(--crimson-600);
+        transform: translateY(-50%) rotate(90deg);
+    }
+
+    /* ==================== COURSE CARDS ==================== */
     .course-card {
         background: white;
         border-radius: 16px;
         overflow: hidden;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        transition: all 0.4s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
         height: 100%;
-        border: none;
+        border: 1px solid #e2e8f0;
         position: relative;
+        display: flex;
+        flex-direction: column;
     }
-    
+
     .course-card:hover {
         transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        box-shadow: 0 24px 48px rgba(127, 29, 29, 0.18);
+        border-color: var(--crimson-300);
     }
-    
+
     .course-image-wrapper {
         position: relative;
         overflow: hidden;
         height: 200px;
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
     }
-    
+
     .course-image {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s ease;
+        transition: transform 0.7s cubic-bezier(.2,.7,.2,1);
     }
-    
+
     .course-card:hover .course-image {
-        transform: scale(1.05);
+        transform: scale(1.1);
     }
-    
+
     .course-badge {
         position: absolute;
-        top: 15px;
-        right: 15px;
-        background: rgba(0,0,0,0.7);
+        top: 14px;
+        right: 14px;
         backdrop-filter: blur(10px);
-        padding: 5px 12px;
-        border-radius: 20px;
+        padding: 6px 14px;
+        border-radius: 50px;
         color: white;
         font-size: 12px;
-        font-weight: 600;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
     }
-    
+
+    .course-card:hover .course-badge {
+        transform: scale(1.08) translateY(-2px);
+    }
+
+    .course-badge i {
+        transition: transform 0.4s ease;
+    }
+
+    .course-card:hover .course-badge i {
+        transform: rotate(360deg);
+    }
+
     .course-price-badge {
         position: absolute;
-        bottom: 15px;
-        right: 15px;
-        background: rgba(0,0,0,0.8);
-        padding: 5px 12px;
-        border-radius: 20px;
-        color: white;
+        bottom: 14px;
+        right: 14px;
+        background: rgba(69, 10, 10, 0.85);
+        backdrop-filter: blur(10px);
+        padding: 7px 14px;
+        border-radius: 50px;
+        color: #fbbf24;
         font-weight: 700;
         font-size: 14px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
     }
-    
+
+    .course-card:hover .course-price-badge {
+        transform: scale(1.06);
+        background: rgba(127, 29, 29, 0.95);
+    }
+
     .free-badge {
-        background: var(--success-gradient);
+        background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+        color: white !important;
     }
-    
+
     .course-body {
-        padding: 20px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
     }
-    
+
     .course-title {
-        font-size: 1.2rem;
+        font-size: 1.15rem;
         font-weight: 700;
-        margin-bottom: 10px;
-        color: #2c3e50;
+        margin-bottom: 12px;
+        color: var(--crimson-900);
+        letter-spacing: -0.02em;
+        line-height: 1.35;
     }
-    
+
     .course-title a {
         color: inherit;
         text-decoration: none;
         transition: color 0.3s ease;
     }
-    
+
     .course-title a:hover {
-        color: #667eea;
+        color: var(--crimson-600);
     }
-    
+
     .instructor-info {
         display: flex;
         align-items: center;
         gap: 8px;
         margin-bottom: 12px;
         font-size: 13px;
-        color: #6c757d;
+        color: #64748b;
     }
-    
+
     .instructor-avatar {
         width: 24px;
         height: 24px;
         border-radius: 50%;
         object-fit: cover;
+        border: 1px solid var(--crimson-200);
     }
-    
+
     .rating {
         display: flex;
         align-items: center;
         gap: 8px;
         margin-bottom: 12px;
     }
-    
+
     .stars {
-        color: #ffc107;
+        color: #f59e0b;
+        font-size: 13px;
+        display: inline-flex;
+        gap: 1px;
+    }
+
+    .rating-value {
+        font-weight: 700;
+        color: var(--crimson-900);
         font-size: 13px;
     }
-    
-    .rating-value {
-        font-weight: 600;
-        color: #2c3e50;
-    }
-    
+
     .review-count {
         font-size: 12px;
-        color: #6c757d;
+        color: #94a3b8;
     }
-    
+
     .course-meta {
         display: flex;
         gap: 15px;
         margin-bottom: 12px;
         font-size: 12px;
-        color: #6c757d;
+        color: #64748b;
+        flex-wrap: wrap;
     }
-    
+
     .course-meta i {
         margin-right: 4px;
+        color: var(--crimson-500);
     }
-    
+
     .course-description {
-        color: #6c757d;
+        color: #64748b;
         font-size: 13px;
-        line-height: 1.5;
-        margin-bottom: 15px;
+        line-height: 1.55;
+        margin-bottom: 16px;
+        flex: 1;
     }
-    
+
     .btn-view {
         background: var(--primary-gradient);
         border: none;
-        padding: 10px;
-        border-radius: 12px;
+        padding: 11px;
+        border-radius: 10px;
         font-weight: 600;
         width: 100%;
-        transition: all 0.3s ease;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
         color: white;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        box-shadow: 0 4px 12px rgba(127, 29, 29, 0.2);
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    .btn-view::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-view:hover::before { left: 100%; }
+
     .btn-view:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 24px rgba(127, 29, 29, 0.35);
         color: white;
+        background: linear-gradient(135deg, #991b1b 0%, #450a0a 100%);
     }
-    
-    /* Empty State */
+
+    .btn-view i {
+        transition: transform 0.3s ease;
+    }
+
+    .btn-view:hover i {
+        transform: scale(1.15);
+    }
+
+    /* ==================== EMPTY STATE ==================== */
     .empty-state {
         text-align: center;
-        padding: 60px 20px;
+        padding: 70px 20px;
         background: white;
         border-radius: 20px;
+        border: 1px solid var(--crimson-100);
+        animation: fadeInUp 0.5s ease;
     }
-    
+
     .empty-icon {
         font-size: 80px;
-        color: #dee2e6;
+        color: var(--crimson-200);
         margin-bottom: 20px;
+        animation: float 3.5s ease-in-out infinite;
     }
-    
-    /* Loading Skeleton */
-    .skeleton-card {
-        background: white;
-        border-radius: 16px;
-        overflow: hidden;
-        height: 400px;
-    }
-    
-    .skeleton-image {
-        height: 200px;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: loading 1.5s infinite;
-    }
-    
-    @keyframes loading {
-        0% { background-position: 200% 0; }
-        100% { background-position: -200% 0; }
-    }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-        .page-header {
-            padding: 20px;
-        }
-        
-        .filter-section {
-            padding: 15px;
-        }
-        
-        .filter-chip {
-            padding: 6px 15px;
-            font-size: 12px;
-        }
-        
-        .sort-section {
-            flex-direction: column;
-            align-items: stretch;
-        }
-        
-        .course-image-wrapper {
-            height: 180px;
-        }
-    }
-    
-    /* Animation */
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    .course-card {
-        animation: fadeIn 0.5s ease backwards;
-    }
-    
-    .course-card:nth-child(1) { animation-delay: 0.05s; }
-    .course-card:nth-child(2) { animation-delay: 0.1s; }
-    .course-card:nth-child(3) { animation-delay: 0.15s; }
-    .course-card:nth-child(4) { animation-delay: 0.2s; }
-    .course-card:nth-child(5) { animation-delay: 0.25s; }
-    .course-card:nth-child(6) { animation-delay: 0.3s; }
 
-    /* Toast Notification */
+    .empty-state h4 {
+        color: var(--crimson-900);
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    /* ==================== TOAST ==================== */
     .toast-notification {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #28a745;
+        bottom: 24px;
+        right: 24px;
+        background: linear-gradient(135deg, #059669 0%, #10b981 100%);
         color: white;
-        padding: 12px 24px;
-        border-radius: 10px;
-        z-index: 1000;
-        animation: slideInRight 0.3s ease;
+        padding: 14px 24px;
+        border-radius: 12px;
+        z-index: 9999;
+        animation: slideInRight 0.35s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 12px 32px rgba(5, 150, 105, 0.35);
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        font-size: 0.9rem;
     }
-    
+
     @keyframes slideInRight {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
+        from { transform: translateX(120%); opacity: 0; }
+        to   { transform: translateX(0); opacity: 1; }
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+        .page-header { padding: 22px 20px; }
+        .filter-section { padding: 16px; }
+        .filter-chip { padding: 7px 16px; font-size: 12px; }
+        .sort-section { flex-direction: column; align-items: stretch; }
+        .course-image-wrapper { height: 180px; }
+        .toast-notification { left: 16px; right: 16px; bottom: 16px; }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
         }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
+        .reveal { opacity: 1; transform: none; }
     }
 </style>
 
 <div class="container">
-    <!-- Page Header -->
+
+    <!-- ==================== PAGE HEADER ==================== -->
     <div class="page-header">
-        <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
                 <h2><i class="fas fa-book-open me-2"></i>All Courses</h2>
                 <p>Discover amazing courses from expert instructors</p>
             </div>
-            <div class="mt-2 mt-md-0">
-                <span class="badge bg-light text-dark px-3 py-2">
+            <div>
+                <span class="badge">
                     <i class="fas fa-graduation-cap me-1"></i> {{ courses|length }} Courses Available
                 </span>
             </div>
         </div>
     </div>
-    
-    <!-- Search & Filter Section -->
+
+    <!-- ==================== FILTER SECTION ==================== -->
     <div class="filter-section">
-        <!-- Search Bar -->
         <div class="search-wrapper">
-            <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" class="search-input" 
+            <input type="text" id="searchInput" class="search-input"
                    placeholder="Search courses by title, description, or instructor..."
                    value="{{ request.args.get('search', '') }}">
+            <i class="fas fa-search"></i>
             {% if request.args.get('search') %}
-                <button class="clear-btn" onclick="clearSearch()">
+                <button class="clear-btn" onclick="clearSearch()" aria-label="Clear search">
                     <i class="fas fa-times-circle"></i>
                 </button>
             {% endif %}
         </div>
-        
-        <!-- Filter Chips -->
+
         <div class="filter-title">
             <i class="fas fa-filter"></i> Filter by:
         </div>
         <div class="filter-buttons">
-            <button class="filter-chip active" data-filter="all">All Courses</button>
-            <button class="filter-chip" data-filter="free">Free Courses</button>
-            <button class="filter-chip" data-filter="paid">Paid Courses</button>
-            <button class="filter-chip" data-filter="popular">Most Popular</button>
-            <button class="filter-chip" data-filter="top-rated">Top Rated</button>
+            <button class="filter-chip active" data-filter="all"><i class="fas fa-th-large me-1"></i> All Courses</button>
+            <button class="filter-chip" data-filter="free"><i class="fas fa-gift me-1"></i> Free</button>
+            <button class="filter-chip" data-filter="paid"><i class="fas fa-crown me-1"></i> Premium</button>
+            <button class="filter-chip" data-filter="popular"><i class="fas fa-fire me-1"></i> Popular</button>
+            <button class="filter-chip" data-filter="top-rated"><i class="fas fa-star me-1"></i> Top Rated</button>
         </div>
-        
-        <!-- Sort Section -->
+
         <div class="sort-section">
-            <div class="results-count" id="resultsCount">
+            <div class="results-count">
                 Showing <strong id="visibleCount">{{ courses|length }}</strong> of <strong>{{ courses|length }}</strong> courses
             </div>
             <div>
@@ -474,9 +698,9 @@
             </div>
         </div>
     </div>
-    
-    <!-- Courses Grid -->
-    <div class="row" id="coursesGrid">
+
+    <!-- ==================== COURSES GRID ==================== -->
+    <div class="row reveal-stagger" id="coursesGrid">
         {% for course in courses %}
         <div class="col-lg-4 col-md-6 mb-4"
              data-course-id="{{ course.id }}"
@@ -490,23 +714,23 @@
             <div class="course-card">
                 <div class="course-image-wrapper">
                     {% if course.image_url %}
-                        <img src="{{ course.image_url }}" class="course-image" alt="{{ course.title }}" 
+                        <img src="{{ course.image_url }}" class="course-image" alt="{{ course.title }}"
+                             loading="lazy"
                              onerror="this.src='https://via.placeholder.com/400x200?text=' + encodeURIComponent('{{ course.title }}')">
                     {% else %}
-                        <img src="https://via.placeholder.com/400x200?text={{ course.title|replace(' ', '+') }}" class="course-image" alt="{{ course.title }}">
+                        <img src="https://via.placeholder.com/400x200?text={{ course.title|replace(' ', '+') }}" class="course-image" alt="{{ course.title }}" loading="lazy">
                     {% endif %}
-                    
-                    <!-- Badges -->
+
                     {% if course.price == 0 %}
-                        <div class="course-badge" style="background: var(--success-gradient);">
-                            <i class="fas fa-gift me-1"></i> FREE
+                        <div class="course-badge free-badge">
+                            <i class="fas fa-gift"></i> FREE
                         </div>
                     {% else %}
-                        <div class="course-badge" style="background: var(--primary-gradient);">
-                            <i class="fas fa-certificate me-1"></i> Premium
+                        <div class="course-badge" style="background: linear-gradient(135deg, #b91c1c, #7f1d1d);">
+                            <i class="fas fa-certificate"></i> Premium
                         </div>
                     {% endif %}
-                    
+
                     <div class="course-price-badge {% if course.price == 0 %}free-badge{% endif %}">
                         {% if course.price > 0 %}
                             ${{ "%.2f"|format(course.price) }}
@@ -515,24 +739,23 @@
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <div class="course-body">
                     <h5 class="course-title">
                         <a href="{{ url_for('course_detail', course_id=course.id) }}">{{ course.title }}</a>
                     </h5>
-                    
+
                     <div class="instructor-info">
                         {% if course.instructor.avatar %}
                             <img src="{{ course.instructor.avatar }}" class="instructor-avatar" alt="{{ course.instructor.username }}">
                         {% else %}
-                            <div class="instructor-avatar bg-primary text-white d-inline-flex align-items-center justify-content-center" style="font-size: 12px; width: 24px; height: 24px; border-radius: 50%;">
+                            <span class="instructor-avatar" style="background: linear-gradient(135deg,#dc2626,#7f1d1d); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">
                                 {{ course.instructor.username[0].upper() }}
-                            </div>
+                            </span>
                         {% endif %}
                         <span>{{ course.instructor.username }}</span>
                     </div>
-                    
-                    <!-- Rating -->
+
                     <div class="rating">
                         <div class="stars">
                             {% set rating = course.avg_rating or 0 %}
@@ -547,21 +770,20 @@
                             {% endfor %}
                         </div>
                         <span class="rating-value">{{ "%.1f"|format(rating) }}</span>
-                        <span class="review-count">({{ course.total_reviews or 0 }} reviews)</span>
+                        <span class="review-count">({{ course.total_reviews or 0 }})</span>
                     </div>
-                    
-                    <!-- Course Meta -->
+
                     <div class="course-meta">
                         <span><i class="fas fa-video"></i> {{ course.lessons.count() }} lessons</span>
                         <span><i class="fas fa-users"></i> {{ course.enrollments.count() }} students</span>
                     </div>
-                    
+
                     <p class="course-description">
                         {{ course.description[:100] }}{% if course.description|length > 100 %}...{% endif %}
                     </p>
-                    
+
                     <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-view">
-                        <i class="fas fa-eye me-2"></i>View Course Details
+                        <i class="fas fa-eye"></i> View Course
                     </a>
                 </div>
             </div>
@@ -569,9 +791,7 @@
         {% else %}
         <div class="col-12">
             <div class="empty-state">
-                <div class="empty-icon">
-                    <i class="fas fa-book-open"></i>
-                </div>
+                <div class="empty-icon"><i class="fas fa-book-open"></i></div>
                 <h4>No Courses Found</h4>
                 <p class="text-muted">
                     {% if request.args.get('search') %}
@@ -581,7 +801,7 @@
                     {% endif %}
                 </p>
                 {% if request.args.get('search') %}
-                    <a href="{{ url_for('courses') }}" class="btn btn-primary">
+                    <a href="{{ url_for('courses') }}" class="btn btn-primary mt-2">
                         <i class="fas fa-times me-2"></i>Clear Search
                     </a>
                 {% endif %}
@@ -592,129 +812,110 @@
 </div>
 
 <script>
-    // DOM Elements
+    // ==================== ELEMENTS ====================
     const searchInput = document.getElementById('searchInput');
     const filterChips = document.querySelectorAll('.filter-chip');
     const sortSelect = document.getElementById('sortSelect');
     const coursesGrid = document.getElementById('coursesGrid');
     const visibleCountSpan = document.getElementById('visibleCount');
     const totalCount = {{ courses|length }};
-    
+
     let currentFilter = 'all';
     let currentSearchTerm = '';
-    
-    // Get all course cards
+
     function getAllCourses() {
         return Array.from(document.querySelectorAll('#coursesGrid > div[data-course-id]'));
     }
-    
-    // Filter courses
+
+    // ==================== FILTER ====================
     function filterCourses() {
         const courses = getAllCourses();
         let visibleCount = 0;
-        
+
         courses.forEach(course => {
             let show = true;
-            
-            // Filter by price/free/popular/top-rated
+
             if (currentFilter !== 'all') {
                 const price = parseFloat(course.dataset.price);
                 const rating = parseFloat(course.dataset.rating);
                 const students = parseInt(course.dataset.students);
-                
+
                 switch(currentFilter) {
-                    case 'free':
-                        show = price === 0;
-                        break;
-                    case 'paid':
-                        show = price > 0;
-                        break;
-                    case 'popular':
-                        show = students >= 10;
-                        break;
-                    case 'top-rated':
-                        show = rating >= 4.0;
-                        break;
+                    case 'free':       show = price === 0; break;
+                    case 'paid':       show = price > 0;   break;
+                    case 'popular':    show = students >= 10; break;
+                    case 'top-rated':  show = rating >= 4.0; break;
                 }
             }
-            
-            // Search filter
+
             if (show && currentSearchTerm) {
                 const title = course.dataset.title;
                 const description = course.dataset.description;
                 const instructor = course.dataset.instructor;
-                show = title.includes(currentSearchTerm) || 
+                show = title.includes(currentSearchTerm) ||
                        description.includes(currentSearchTerm) ||
                        instructor.includes(currentSearchTerm);
             }
-            
-            course.style.display = show ? '' : 'none';
-            if (show) visibleCount++;
-        });
-        
-        if (visibleCountSpan) {
-            visibleCountSpan.textContent = visibleCount;
-        }
-        return visibleCount;
-    }
-    
-    // Sort courses
-    function sortCourses() {
-        const courses = getAllCourses();
-        const visibleCourses = courses.filter(c => c.style.display !== 'none');
-        const sortBy = sortSelect.value;
-        
-        visibleCourses.sort((a, b) => {
-            switch(sortBy) {
-                case 'price-low':
-                    return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
-                case 'price-high':
-                    return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
-                case 'rating':
-                    return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
-                case 'popular':
-                    return parseInt(b.dataset.students) - parseInt(a.dataset.students);
-                case 'newest':
-                    return b.dataset.created.localeCompare(a.dataset.created);
-                default:
-                    return 0;
+
+            if (show) {
+                course.style.display = '';
+                // Replay enter animation
+                course.style.animation = 'none';
+                void course.offsetWidth;
+                course.style.animation = '';
+                visibleCount++;
+            } else {
+                course.style.display = 'none';
             }
         });
-        
-        // Reorder DOM elements
-        visibleCourses.forEach(course => {
-            coursesGrid.appendChild(course);
-        });
+
+        if (visibleCountSpan) visibleCountSpan.textContent = visibleCount;
+        return visibleCount;
     }
-    
-    // Update UI after filter/sort
+
+    // ==================== SORT ====================
+    function sortCourses() {
+        const courses = getAllCourses();
+        const visible = courses.filter(c => c.style.display !== 'none');
+        const sortBy = sortSelect.value;
+
+        visible.sort((a, b) => {
+            switch(sortBy) {
+                case 'price-low':  return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+                case 'price-high': return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+                case 'rating':     return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+                case 'popular':    return parseInt(b.dataset.students) - parseInt(a.dataset.students);
+                case 'newest':     return b.dataset.created.localeCompare(a.dataset.created);
+                default:           return 0;
+            }
+        });
+
+        visible.forEach(course => coursesGrid.appendChild(course));
+    }
+
     function updateUI() {
         filterCourses();
         sortCourses();
     }
-    
-    // Search input handler
+
+    // ==================== SEARCH ====================
     function handleSearch() {
         currentSearchTerm = searchInput.value.toLowerCase().trim();
         updateUI();
-        
-        // Update URL without reload
+
         const url = new URL(window.location.href);
-        if (currentSearchTerm) {
-            url.searchParams.set('search', currentSearchTerm);
-        } else {
-            url.searchParams.delete('search');
-        }
-        window.history.pushState({}, '', url);
+        if (currentSearchTerm) url.searchParams.set('search', currentSearchTerm);
+        else url.searchParams.delete('search');
+        window.history.replaceState({}, '', url);
     }
-    
-    // Clear search
+
     function clearSearch() {
         searchInput.value = '';
         handleSearch();
+        searchInput.focus();
     }
-    
-    // Filter chip handler
+
+    // ==================== EVENTS ====================
     filterChips.forEach(chip => {
         chip.addEventListener('click', function() {
             filterChips.forEach(c => c.classList.remove('active'));
@@ -723,47 +924,62 @@
             updateUI();
         });
     });
-    
-    // Sort handler
+
     sortSelect.addEventListener('change', updateUI);
-    
-    // Search with debounce
+
     let searchTimeout;
     searchInput.addEventListener('input', function() {
         clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(handleSearch, 300);
+        searchTimeout = setTimeout(handleSearch, 250);
     });
-    
-    // Initialize
-    updateUI();
-    
-    // Add loading skeleton effect (optional)
-    function showSkeleton() {
-        const skeletonHTML = `
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="skeleton-card">
-                    <div class="skeleton-image"></div>
-                </div>
-            </div>
-        `.repeat(6);
-        coursesGrid.innerHTML = skeletonHTML;
+
+    // ==================== INIT ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        updateUI();
+
+        // Scroll reveal
+        const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+        const revealObs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    revealObs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        revealEls.forEach(el => revealObs.observe(el));
+    });
+
+    // ==================== TOAST ====================
+    function showToast(message, type = 'success') {
+        let toast = document.querySelector('.toast-notification');
+        if (toast) toast.remove();
+
+        toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        if (type === 'error') {
+            toast.style.background = 'linear-gradient(135deg, #dc2626, #7f1d1d)';
+        }
+        toast.innerHTML = `<i class="fas fa-check-circle me-2"></i>${message}`;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.animation = 'slideInRight 0.35s reverse';
+            setTimeout(() => toast.remove(), 350);
+        }, 3000);
     }
-    
-    // Export functionality (optional)
+
+    // ==================== EXPORT CSV ====================
     function exportCourses() {
         const visibleCourses = getAllCourses().filter(c => c.style.display !== 'none');
-        let csvContent = "Title,Instructor,Price,Rating,Students\n";
-        
+        let csv = "Title,Instructor,Price,Rating,Students\n";
+
         visibleCourses.forEach(course => {
             const title = course.querySelector('.course-title a')?.innerText || '';
-            const instructor = course.dataset.instructor;
-            const price = course.dataset.price;
-            const rating = course.dataset.rating;
-            const students = course.dataset.students;
-            csvContent += `"${title}","${instructor}",${price},${rating},${students}\n`;
+            csv += `"${title}","${course.dataset.instructor}",${course.dataset.price},${course.dataset.rating},${course.dataset.students}\n`;
         });
-        
-        const blob = new Blob([csvContent], { type: 'text/csv' });
+
+        const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -772,36 +988,23 @@
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        
+
         showToast('Courses exported successfully!');
     }
-    
-    function showToast(message) {
-        let toast = document.querySelector('.toast-notification');
-        if (toast) toast.remove();
-        
-        toast = document.createElement('div');
-        toast.className = 'toast-notification';
-        toast.innerHTML = `<i class="fas fa-check-circle me-2"></i>${message}`;
-        document.body.appendChild(toast);
-        
-        setTimeout(() => toast.remove(), 3000);
-    }
-    
-    // Add export button to filter section
-    const sortSection = document.querySelector('.sort-section');
-    if (sortSection && {{ courses|length }} > 0) {
-        const exportBtn = document.createElement('button');
-        exportBtn.className = 'filter-chip';
-        exportBtn.innerHTML = '<i class="fas fa-download me-1"></i>Export';
-        exportBtn.style.background = '#28a745';
-        exportBtn.style.color = 'white';
-        exportBtn.style.border = 'none';
-        exportBtn.onclick = exportCourses;
+
+    // Add Export button
+    document.addEventListener('DOMContentLoaded', function() {
         const filterButtons = document.querySelector('.filter-buttons');
-        if (filterButtons) {
+        if (filterButtons && {{ courses|length }} > 0) {
+            const exportBtn = document.createElement('button');
+            exportBtn.className = 'filter-chip';
+            exportBtn.innerHTML = '<i class="fas fa-download me-1"></i> Export';
+            exportBtn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
+            exportBtn.style.color = 'white';
+            exportBtn.style.border = 'none';
+            exportBtn.onclick = exportCourses;
             filterButtons.appendChild(exportBtn);
         }
-    }
+    });
 </script>
 {% endblock %}

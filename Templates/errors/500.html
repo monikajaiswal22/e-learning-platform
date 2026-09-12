@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .error-container { min-height: 70vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; }
+    .error-card { background: white; border-radius: 24px; padding: 60px 40px; max-width: 600px; box-shadow: 0 20px 50px rgba(127, 29, 29, 0.12); border: 1px solid #fee2e2; animation: fadeInUp 0.7s ease; }
+    .error-code { font-size: 8rem; font-weight: 900; background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1; margin-bottom: 20px; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .error-icon { font-size: 4rem; color: #b91c1c; margin-bottom: 20px; animation: float 3s ease-in-out infinite; }
+    .error-title { font-size: 1.8rem; font-weight: 800; color: #450a0a; margin-bottom: 12px; }
+    .error-message { color: #64748b; font-size: 1rem; margin-bottom: 30px; line-height: 1.6; }
+    .btn-error-primary { background: linear-gradient(180deg, #b91c1c 0%, #7f1d1d 100%); color: white; padding: 13px 30px; border-radius: 25px; font-weight: 700; text-decoration: none; transition: all 0.35s ease; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #7f1d1d; box-shadow: 0 4px 16px rgba(127, 29, 29, 0.25); }
+    .btn-error-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(127, 29, 29, 0.4); color: white; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @media (max-width: 768px) { .error-code { font-size: 5rem; } .error-title { font-size: 1.4rem; } }
+</style>
+
+<div class="error-container">
+    <div class="error-card">
+        <div class="error-code">500</div>
+        <div class="error-icon"><i class="fas fa-triangle-exclamation"></i></div>
+        <h1 class="error-title">Something Went Wrong</h1>
+        <p class="error-message">Our server encountered an unexpected error. We've been notified and are working on it.</p>
+        <a href="{{ url_for('index') }}" class="btn-error-primary"><i class="fas fa-house"></i>Back to Home</a>
+    </div>
+</div>
+{% endblock %}

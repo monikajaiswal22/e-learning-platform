@@ -1,0 +1,719 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* ============================================================
+       CONTACT — CRIMSON RED + ANIMATIONS
+       ============================================================ */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+
+        --crimson-900: #450a0a;
+        --crimson-800: #7f1d1d;
+        --crimson-700: #991b1b;
+        --crimson-600: #b91c1c;
+        --crimson-500: #dc2626;
+        --crimson-400: #ef4444;
+        --crimson-300: #f87171;
+        --crimson-200: #fecaca;
+        --crimson-100: #fee2e2;
+        --crimson-50:  #fef2f2;
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
+    }
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-14px) rotate(3deg); }
+    }
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
+    }
+    @keyframes shimmer {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.6s cubic-bezier(.2,.7,.2,1),
+                    transform 0.6s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    /* ==================== HEADER ==================== */
+    .page-header {
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
+        border-radius: 20px;
+        padding: 40px 32px;
+        margin-bottom: 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.28);
+        text-align: center;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%; right: -25%;
+        width: 340px; height: 340px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.45) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50%; left: -15%;
+        width: 280px; height: 280px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 10s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .page-header > * { position: relative; z-index: 1; }
+
+    .page-header h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+        letter-spacing: -0.03em;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .page-header h1 i {
+        color: #fbbf24;
+        animation: float 3.5s ease-in-out infinite;
+        filter: drop-shadow(0 4px 10px rgba(251, 191, 36, 0.4));
+    }
+
+    .page-header p {
+        opacity: 0.92;
+        max-width: 600px;
+        margin: 0 auto;
+        font-size: 0.95rem;
+    }
+
+    /* ==================== INFO CARDS ==================== */
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+        border: 1px solid #e2e8f0;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .info-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.12);
+        border-color: var(--crimson-200);
+    }
+
+    .info-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        background: var(--primary-gradient);
+        color: white;
+        flex-shrink: 0;
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.25);
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+    }
+
+    .info-card:hover .info-icon {
+        transform: scale(1.08) rotate(-6deg);
+        box-shadow: 0 10px 24px rgba(127, 29, 29, 0.35);
+    }
+
+    .info-text h6 {
+        margin: 0 0 4px;
+        font-weight: 700;
+        color: var(--crimson-900);
+        font-size: 0.95rem;
+    }
+
+    .info-text p {
+        margin: 0;
+        color: #64748b;
+        font-size: 0.85rem;
+    }
+
+    .info-text a {
+        color: var(--crimson-700);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s ease;
+    }
+
+    .info-text a:hover {
+        color: var(--crimson-500);
+        text-decoration: underline;
+    }
+
+    /* ==================== FORM CARD ==================== */
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(127, 29, 29, 0.1);
+        border: 1px solid var(--crimson-100);
+        animation: fadeInUp 0.7s cubic-bezier(.2,.7,.2,1);
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
+        padding: 22px 28px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .form-header::before {
+        content: '';
+        position: absolute;
+        top: -50%; right: -25%;
+        width: 260px; height: 260px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .form-header > * { position: relative; z-index: 1; }
+
+    .form-header h4 {
+        margin: 0;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .form-header h4 i { color: #fbbf24; }
+
+    .form-header p {
+        margin: 6px 0 0;
+        opacity: 0.9;
+        font-size: 0.85rem;
+    }
+
+    .form-body { padding: 28px; }
+
+    .form-group { margin-bottom: 22px; }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--crimson-900);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+    }
+
+    .form-label i {
+        color: var(--crimson-600);
+        transition: transform 0.3s ease;
+        width: 18px;
+    }
+
+    .form-group:hover .form-label i { transform: scale(1.15); }
+
+    .required-field::after {
+        content: '*';
+        color: var(--crimson-600);
+        margin-left: 2px;
+        font-weight: 700;
+    }
+
+    .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px 16px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        font-size: 14px;
+        color: var(--crimson-900);
+        background: #fafafa;
+        width: 100%;
+    }
+
+    .form-control::placeholder { color: #94a3b8; }
+
+    .form-control:hover {
+        border-color: var(--crimson-200);
+        background: white;
+    }
+
+    .form-control:focus {
+        border-color: var(--crimson-500);
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+        outline: none;
+        background: white;
+        transform: translateY(-1px);
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 140px;
+        line-height: 1.6;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .form-text {
+        color: #94a3b8;
+        font-size: 0.78rem;
+        margin-top: 6px;
+        display: block;
+    }
+
+    .form-text i { color: var(--crimson-500); }
+
+    .invalid-feedback {
+        color: var(--crimson-600);
+        font-size: 12px;
+        margin-top: 6px;
+        display: block;
+        font-weight: 500;
+    }
+
+    /* ==================== BUTTONS ==================== */
+    .btn-send {
+        background: linear-gradient(180deg, var(--crimson-600) 0%, var(--crimson-700) 100%);
+        border: 1px solid var(--crimson-800);
+        padding: 14px 32px;
+        font-size: 1rem;
+        font-weight: 700;
+        border-radius: 12px;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        color: white;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 4px 16px rgba(127, 29, 29, 0.25);
+        position: relative;
+        overflow: hidden;
+        letter-spacing: -0.01em;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        cursor: pointer;
+    }
+
+    .btn-send::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-send:hover::before { left: 100%; }
+
+    .btn-send:hover {
+        transform: translateY(-3px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 12px 28px rgba(127, 29, 29, 0.4);
+        color: white;
+        background: linear-gradient(180deg, var(--crimson-700) 0%, var(--crimson-800) 100%);
+    }
+
+    /* ==================== FAQ SECTION ==================== */
+    .faq-card {
+        background: white;
+        border-radius: 16px;
+        padding: 22px 24px;
+        margin-bottom: 14px;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+    }
+
+    .faq-card:hover {
+        transform: translateX(6px);
+        border-color: var(--crimson-200);
+        box-shadow: 0 8px 24px rgba(127, 29, 29, 0.1);
+    }
+
+    .faq-card h6 {
+        color: var(--crimson-900);
+        font-weight: 700;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.92rem;
+    }
+
+    .faq-card h6 i {
+        color: var(--crimson-600);
+        font-size: 0.85rem;
+    }
+
+    .faq-card p {
+        margin: 0;
+        color: #64748b;
+        font-size: 0.85rem;
+        line-height: 1.6;
+    }
+
+    /* ==================== SIDEBAR TITLE ==================== */
+    .section-title {
+        color: var(--crimson-900);
+        font-weight: 800;
+        font-size: 1.15rem;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: -0.02em;
+    }
+
+    .section-title i {
+        color: var(--crimson-600);
+    }
+
+    /* ==================== ALERT ==================== */
+    .alert-custom {
+        border-radius: 14px;
+        border: none;
+        border-left: 4px solid;
+        padding: 18px 22px;
+        font-size: 0.9rem;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .alert-info-custom {
+        background: linear-gradient(135deg, #e0f2fe 0%, #ecfeff 100%);
+        border-left-color: #0891b2;
+        color: #155e75;
+    }
+
+    .alert-info-custom i {
+        color: #0891b2;
+        font-size: 1.15rem;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .alert-info-custom strong { color: #0e7490; }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+        .page-header { padding: 28px 22px; }
+        .page-header h1 { font-size: 1.4rem; }
+        .form-body { padding: 22px; }
+        .form-header { padding: 18px 22px; }
+        .info-card { padding: 18px; gap: 14px; }
+        .info-icon { width: 48px; height: 48px; font-size: 18px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        .reveal { opacity: 1; transform: none; }
+    }
+</style>
+
+<div class="container">
+    <!-- ==================== HEADER ==================== -->
+    <div class="page-header">
+        <h1><i class="fas fa-envelope me-2"></i>Get in Touch</h1>
+        <p>Have a question, suggestion, or just want to say hello? We'd love to hear from you.</p>
+    </div>
+
+    <div class="row">
+        <!-- ==================== CONTACT FORM ==================== -->
+        <div class="col-lg-7 mb-4">
+            <div class="form-card">
+                <div class="form-header">
+                    <h4><i class="fas fa-paper-plane"></i>Send us a Message</h4>
+                    <p>We typically respond within 24 hours</p>
+                </div>
+                <div class="form-body">
+                    <!-- Info Alert -->
+                    <div class="alert-custom alert-info-custom">
+                        <i class="fas fa-circle-info"></i>
+                        <div>
+                            <strong>Quick Response</strong>
+                            <br>
+                            <span style="font-size: 0.85rem;">All fields marked with <span style="color: #b91c1c; font-weight: 700;">*</span> are required.</span>
+                        </div>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('contact') }}" id="contactForm">
+                        {{ form.hidden_tag() if form else '' }}
+
+                        <!-- Name -->
+                        <div class="form-group">
+                            <label class="form-label required-field" for="name">
+                                <i class="fas fa-user"></i> Your Name
+                            </label>
+                            {{ form.name(class="form-control", placeholder="Enter your full name", id="name") if form else '<input type="text" name="name" class="form-control" placeholder="Enter your full name" id="name" required>' }}
+                            {% if form and form.name.errors %}
+                                {% for error in form.name.errors %}
+                                    <span class="invalid-feedback d-block">{{ error }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label class="form-label required-field" for="email">
+                                <i class="fas fa-envelope"></i> Email Address
+                            </label>
+                            {{ form.email(class="form-control", placeholder="you@example.com", id="email") if form else '<input type="email" name="email" class="form-control" placeholder="you@example.com" id="email" required>' }}
+                            {% if form and form.email.errors %}
+                                {% for error in form.email.errors %}
+                                    <span class="invalid-feedback d-block">{{ error }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <!-- Subject -->
+                        <div class="form-group">
+                            <label class="form-label required-field" for="subject">
+                                <i class="fas fa-tag"></i> Subject
+                            </label>
+                            {{ form.subject(class="form-control", placeholder="What is this regarding?", id="subject") if form else '<input type="text" name="subject" class="form-control" placeholder="What is this regarding?" id="subject" required>' }}
+                            {% if form and form.subject.errors %}
+                                {% for error in form.subject.errors %}
+                                    <span class="invalid-feedback d-block">{{ error }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <!-- Message -->
+                        <div class="form-group">
+                            <label class="form-label required-field" for="message">
+                                <i class="fas fa-comment"></i> Message
+                            </label>
+                            {{ form.message(class="form-control", rows="6", placeholder="Tell us how we can help you...", id="message") if form else '<textarea name="message" class="form-control" rows="6" placeholder="Tell us how we can help you..." id="message" required></textarea>' }}
+                            <small class="form-text">
+                                <i class="fas fa-circle-info me-1"></i>Minimum 10 characters
+                            </small>
+                            {% if form and form.message.errors %}
+                                {% for error in form.message.errors %}
+                                    <span class="invalid-feedback d-block">{{ error }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <!-- Submit -->
+                        <button type="submit" class="btn-send" id="submitBtn">
+                            <i class="fas fa-paper-plane"></i>Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CONTACT INFO ==================== -->
+        <div class="col-lg-5 mb-4">
+            <h5 class="section-title">
+                <i class="fas fa-circle-info"></i>Contact Information
+            </h5>
+
+            <!-- Email -->
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="info-text">
+                    <h6>Email Us</h6>
+                    <p><a href="mailto:support@elearning.com">support@elearning.com</a></p>
+                </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <div class="info-text">
+                    <h6>Call Us</h6>
+                    <p><a href="tel:+911234567890">+91 123 456 7890</a></p>
+                </div>
+            </div>
+
+            <!-- Address -->
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-location-dot"></i>
+                </div>
+                <div class="info-text">
+                    <h6>Visit Us</h6>
+                    <p>123 Learning Street, Education City, India</p>
+                </div>
+            </div>
+
+            <!-- Hours -->
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="info-text">
+                    <h6>Working Hours</h6>
+                    <p>Monday - Friday, 9:00 AM - 6:00 PM IST</p>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <h5 class="section-title mt-4">
+                <i class="fas fa-circle-question"></i>Quick FAQs
+            </h5>
+
+            <div class="faq-card">
+                <h6><i class="fas fa-circle-check"></i>How do I enroll in a course?</h6>
+                <p>Browse our courses, click on any course, then click "Enroll Now" button to get started.</p>
+            </div>
+
+            <div class="faq-card">
+                <h6><i class="fas fa-circle-check"></i>Can I get a refund?</h6>
+                <p>Yes! We offer a 30-day money-back guarantee if you're not satisfied with a course.</p>
+            </div>
+
+            <div class="faq-card">
+                <h6><i class="fas fa-circle-check"></i>How do I get my certificate?</h6>
+                <p>Complete all lessons and pass the quizzes (70%+) to automatically unlock your certificate.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==================== SCROLL REVEAL ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal');
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => obs.observe(el));
+    });
+
+    // ==================== FORM VALIDATION ====================
+    const form = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function showToast(msg, type = 'error') {
+        let toast = document.querySelector('.toast-notification');
+        if (toast) toast.remove();
+
+        toast = document.createElement('div');
+        toast.style.cssText = `
+            position: fixed; bottom: 24px; right: 24px;
+            background: linear-gradient(135deg, ${type === 'error' ? '#b91c1c, #7f1d1d' : '#059669, #10b981'});
+            color: white; padding: 14px 24px; border-radius: 12px;
+            z-index: 9999; font-weight: 600; font-size: 0.9rem;
+            box-shadow: 0 12px 32px rgba(127, 29, 29, 0.35);
+        `;
+        toast.innerHTML = `<i class="fas fa-${type === 'error' ? 'circle-exclamation' : 'circle-check'} me-2"></i>${msg}`;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.transition = 'all 0.3s ease';
+            toast.style.transform = 'translateX(120%)';
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const name = document.getElementById('name')?.value.trim();
+            const email = document.getElementById('email')?.value.trim();
+            const subject = document.getElementById('subject')?.value.trim();
+            const message = document.getElementById('message')?.value.trim();
+            const emailRegex = /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/;
+
+            if (!name) {
+                e.preventDefault();
+                showToast('Please enter your name');
+                document.getElementById('name')?.focus();
+                return false;
+            }
+
+            if (!email) {
+                e.preventDefault();
+                showToast('Please enter your email');
+                document.getElementById('email')?.focus();
+                return false;
+            }
+
+            if (!emailRegex.test(email)) {
+                e.preventDefault();
+                showToast('Please enter a valid email address');
+                document.getElementById('email')?.focus();
+                return false;
+            }
+
+            if (!subject) {
+                e.preventDefault();
+                showToast('Please enter a subject');
+                document.getElementById('subject')?.focus();
+                return false;
+            }
+
+            if (!message || message.length < 10) {
+                e.preventDefault();
+                showToast('Message must be at least 10 characters');
+                document.getElementById('message')?.focus();
+                return false;
+            }
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Sending...';
+            }
+            return true;
+        });
+    }
+</script>
+{% endblock %}

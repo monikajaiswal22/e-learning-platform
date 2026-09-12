@@ -2,472 +2,655 @@
 
 {% block content %}
 <style>
-    /* Modern Form Styles */
+    /* ============================================================
+       ADD COURSE — CRIMSON RED + ANIMATIONS
+       ============================================================ */
     :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --primary-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --danger-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+
+        --crimson-900: #450a0a;
+        --crimson-800: #7f1d1d;
+        --crimson-700: #991b1b;
+        --crimson-600: #b91c1c;
+        --crimson-500: #dc2626;
+        --crimson-400: #ef4444;
+        --crimson-300: #f87171;
+        --crimson-200: #fecaca;
+        --crimson-100: #fee2e2;
+        --crimson-50:  #fef2f2;
     }
-    
-    .form-header {
-        background: var(--primary-gradient);
-        border-radius: 20px 20px 0 0;
-        padding: 25px 30px;
-        color: white;
-        position: relative;
-        overflow: hidden;
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-24px); }
+        to   { opacity: 1; transform: translateY(0); }
     }
-    
-    .form-header::before {
-        content: '📚';
-        position: absolute;
-        bottom: -20px;
-        right: 20px;
-        font-size: 80px;
-        opacity: 0.1;
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
     }
-    
-    .form-header h3 {
-        margin: 0;
-        font-weight: 700;
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
     }
-    
-    .form-header p {
-        margin: 5px 0 0;
-        opacity: 0.9;
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-14px) rotate(3deg); }
     }
-    
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
+    }
+    @keyframes shimmer {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.85); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+        50%      { box-shadow: 0 0 0 14px rgba(220, 38, 38, 0); }
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.6s cubic-bezier(.2,.7,.2,1),
+                    transform 0.6s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    /* ==================== FORM CARD ==================== */
     .form-card {
         background: white;
         border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        box-shadow: 0 20px 50px rgba(127, 29, 29, 0.12);
         margin-bottom: 30px;
+        border: 1px solid var(--crimson-100);
+        animation: fadeInUp 0.7s cubic-bezier(.2,.7,.2,1);
     }
-    
-    .form-body {
+
+    .form-header {
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
         padding: 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
     }
-    
-    .form-group {
-        margin-bottom: 25px;
+
+    .form-header::before {
+        content: '';
+        position: absolute;
+        top: -50%; right: -25%;
+        width: 340px; height: 340px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
     }
-    
+
+    .form-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50%; left: -15%;
+        width: 280px; height: 280px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 10s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .form-header > * { position: relative; z-index: 1; }
+
+    .form-header h3 {
+        margin: 0;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .form-header h3 i {
+        color: #fbbf24;
+        animation: float 3.5s ease-in-out infinite;
+        filter: drop-shadow(0 4px 10px rgba(251, 191, 36, 0.4));
+    }
+
+    .form-header p { margin: 8px 0 0; opacity: 0.92; font-size: 0.95rem; }
+
+    .form-body { padding: 30px; }
+    .form-group { margin-bottom: 26px; }
+
     .form-label {
         font-weight: 600;
         margin-bottom: 8px;
-        color: #2c3e50;
+        color: var(--crimson-900);
         display: flex;
         align-items: center;
         gap: 8px;
+        font-size: 0.9rem;
     }
-    
-    .form-label i {
-        color: #667eea;
-    }
-    
+
+    .form-label i { color: var(--crimson-600); transition: transform 0.3s ease; }
+    .form-group:hover .form-label i { transform: scale(1.15); }
+
     .required-field::after {
         content: '*';
-        color: #eb3349;
-        margin-left: 4px;
+        color: var(--crimson-600);
+        margin-left: 2px;
+        font-weight: 700;
     }
-    
+
     .form-control, .form-select {
-        border: 2px solid #e9ecef;
+        border: 2px solid #e2e8f0;
         border-radius: 12px;
-        padding: 12px 15px;
-        transition: all 0.3s ease;
+        padding: 12px 16px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
         font-size: 14px;
+        color: var(--crimson-900);
+        background: #fafafa;
     }
-    
+
+    .form-control::placeholder { color: #94a3b8; }
+
+    .form-control:hover, .form-select:hover {
+        border-color: var(--crimson-200);
+        background: white;
+    }
+
     .form-control:focus, .form-select:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        border-color: var(--crimson-500);
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
         outline: none;
+        background: white;
+        transform: translateY(-1px);
     }
-    
-    textarea.form-control {
-        resize: vertical;
-        min-height: 120px;
+
+    .form-control:read-only {
+        background: #f1f5f9;
+        cursor: not-allowed;
     }
-    
-    /* Image Preview Section */
+
+    textarea.form-control { resize: vertical; min-height: 130px; line-height: 1.6; }
+
+    /* ==================== IMAGE PREVIEW ==================== */
     .image-preview-container {
-        background: #f8f9fa;
+        background: linear-gradient(135deg, #fef2f2 0%, #fafafa 100%);
+        border: 2px dashed var(--crimson-200);
         border-radius: 16px;
-        padding: 20px;
+        padding: 22px;
         margin-top: 15px;
         text-align: center;
+        animation: scaleIn 0.4s cubic-bezier(.2,.7,.2,1);
     }
-    
+
     .preview-image {
         max-width: 100%;
         max-height: 250px;
         border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 12px 32px rgba(127, 29, 29, 0.15);
+        transition: transform 0.4s cubic-bezier(.2,.7,.2,1);
     }
-    
+
+    .preview-image:hover { transform: scale(1.03); }
+
+    /* ==================== SAMPLE IMAGES ==================== */
     .sample-images-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 15px;
-        margin-top: 10px;
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        gap: 14px;
+        margin-top: 12px;
     }
-    
+
     .sample-card {
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
         border-radius: 12px;
         overflow: hidden;
         background: white;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.08);
+        border: 2px solid transparent;
+        position: relative;
     }
-    
+
     .sample-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        transform: translateY(-6px);
+        box-shadow: 0 12px 28px rgba(127, 29, 29, 0.2);
+        border-color: var(--crimson-400);
     }
-    
+
     .sample-image {
         width: 100%;
         height: 80px;
         object-fit: cover;
+        transition: transform 0.5s cubic-bezier(.2,.7,.2,1);
     }
-    
+
+    .sample-card:hover .sample-image { transform: scale(1.08); }
+
     .sample-label {
         padding: 8px;
         font-size: 12px;
         text-align: center;
-        font-weight: 500;
+        font-weight: 600;
         background: white;
-    }
-    
-    /* Alert Styles */
-    .alert-custom {
-        border-radius: 12px;
-        border-left: 4px solid;
-        padding: 15px;
-    }
-    
-    .alert-info-custom {
-        background: linear-gradient(135deg, #4facfe10, #00f2fe10);
-        border-left-color: #4facfe;
-    }
-    
-    /* Button Styles */
-    .btn-submit {
-        background: var(--success-gradient);
-        border: none;
-        padding: 14px;
-        font-size: 16px;
-        font-weight: 600;
-        border-radius: 12px;
+        color: var(--crimson-900);
         transition: all 0.3s ease;
-        color: white;
     }
-    
-    .btn-submit:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(17, 153, 142, 0.3);
-        color: white;
+
+    .sample-card:hover .sample-label {
+        background: var(--crimson-50);
+        color: var(--crimson-700);
     }
-    
-    .btn-cancel {
-        background: #6c757d;
-        border: none;
-        padding: 14px;
-        font-size: 16px;
-        font-weight: 600;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        color: white;
-        text-decoration: none;
-    }
-    
-    .btn-cancel:hover {
-        background: #5a6268;
-        transform: translateY(-2px);
-        color: white;
-    }
-    
-    .btn-outline-danger {
-        background: transparent;
-        color: #eb3349;
-        border: 2px solid #eb3349;
-        padding: 5px 15px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        cursor: pointer;
-    }
-    
-    .btn-outline-danger:hover {
-        background: #eb3349;
-        color: white;
-    }
-    
-    /* Toggle Switch for Price */
+
+    /* ==================== PRICE TOGGLE ==================== */
     .price-toggle {
         display: flex;
-        gap: 15px;
+        gap: 12px;
         align-items: center;
         margin-bottom: 15px;
+        flex-wrap: wrap;
     }
-    
+
     .toggle-btn {
-        padding: 8px 20px;
+        padding: 9px 22px;
         border-radius: 25px;
-        border: 2px solid #e9ecef;
+        border: 2px solid #e2e8f0;
         background: white;
         cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: 500;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        font-weight: 600;
+        font-size: 0.88rem;
+        color: #475569;
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    .toggle-btn::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .toggle-btn:hover::before { left: 100%; }
+
+    .toggle-btn:hover {
+        border-color: var(--crimson-400);
+        color: var(--crimson-700);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(185, 28, 28, 0.12);
+    }
+
     .toggle-btn.active {
         background: var(--success-gradient);
-        border-color: #11998e;
+        border-color: #059669;
         color: white;
+        box-shadow: 0 6px 20px rgba(5, 150, 105, 0.3);
+        transform: translateY(-2px);
     }
-    
-    /* Character counter */
+
+    /* ==================== CHARACTER COUNTER ==================== */
     .char-counter {
         text-align: right;
         font-size: 12px;
-        color: #6c757d;
-        margin-top: 5px;
+        color: #94a3b8;
+        margin-top: 6px;
+        font-weight: 500;
+        transition: color 0.3s ease;
     }
-    
-    .char-counter.warning {
-        color: #f6d365;
+
+    .char-counter.warning { color: #d97706; font-weight: 600; }
+    .char-counter.danger { color: var(--crimson-600); font-weight: 700; }
+
+    /* ==================== ALERTS ==================== */
+    .alert-custom {
+        border-radius: 14px;
+        border: none;
+        border-left: 4px solid;
+        padding: 18px 20px;
+        animation: fadeInUp 0.5s ease;
+        font-size: 0.9rem;
     }
-    
-    .char-counter.danger {
-        color: #eb3349;
+
+    .alert-info-custom {
+        background: linear-gradient(135deg, #e0f2fe 0%, #ecfeff 100%);
+        border-left-color: #0891b2;
+        color: #155e75;
     }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-        .form-body {
-            padding: 20px;
-        }
-        
-        .form-header {
-            padding: 20px;
-        }
-        
-        .sample-images-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
+
+    .alert-info-custom i.fa-lightbulb {
+        color: #d97706;
+        animation: float 2.5s ease-in-out infinite;
     }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+
+    .alert-info-custom strong { color: #0e7490; }
+    .alert-info-custom ul { padding-left: 20px; }
+    .alert-info-custom li { margin: 4px 0; }
+
+    /* ==================== BUTTONS ==================== */
+    .btn-submit {
+        background: linear-gradient(180deg, var(--crimson-600) 0%, var(--crimson-700) 100%);
+        border: 1px solid var(--crimson-800);
+        padding: 15px;
+        font-size: 1rem;
+        font-weight: 700;
+        border-radius: 12px;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        color: white;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 4px 16px rgba(127, 29, 29, 0.25);
+        position: relative;
+        overflow: hidden;
+        letter-spacing: -0.01em;
     }
-    
-    .fade-in {
-        animation: fadeIn 0.5s ease forwards;
+
+    .btn-submit::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.6s ease;
     }
-    
-    /* Tooltip */
+
+    .btn-submit:hover::before { left: 100%; }
+
+    .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 12px 28px rgba(127, 29, 29, 0.4);
+        color: white;
+        background: linear-gradient(180deg, var(--crimson-700) 0%, var(--crimson-800) 100%);
+    }
+
+    .btn-submit:active { transform: translateY(-1px); }
+
+    .btn-cancel {
+        background: #f1f5f9;
+        border: 2px solid #e2e8f0;
+        padding: 14px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        color: #475569;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-cancel:hover {
+        background: #e2e8f0;
+        border-color: #cbd5e1;
+        color: var(--crimson-800);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+    }
+
+    .btn-cancel i { transition: transform 0.3s ease; }
+    .btn-cancel:hover i { transform: translateX(-4px); }
+
+    .btn-outline-danger {
+        background: transparent;
+        color: var(--crimson-600);
+        border: 2px solid var(--crimson-600);
+        padding: 6px 16px;
+        border-radius: 10px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-outline-danger:hover {
+        background: var(--primary-gradient);
+        border-color: transparent;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.25);
+    }
+
+    .badge.bg-secondary {
+        background: #f1f5f9 !important;
+        color: var(--crimson-700) !important;
+        font-weight: 700;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        padding: 6px 14px;
+        border-radius: 20px;
+        border: 1px solid var(--crimson-200);
+    }
+
     .tooltip-icon {
         cursor: help;
-        color: #6c757d;
+        color: #94a3b8;
         margin-left: 5px;
         font-size: 12px;
+        transition: color 0.2s ease;
     }
-    
-    .tooltip-icon:hover {
-        color: #667eea;
-    }
-    
-    /* Loading state */
-    .btn-loading {
-        position: relative;
-        pointer-events: none;
-        opacity: 0.7;
-    }
-    
+
+    .tooltip-icon:hover { color: var(--crimson-600); transform: scale(1.15); }
+
+    .btn-loading { position: relative; pointer-events: none; opacity: 0.85; }
+
     .btn-loading::after {
         content: '';
         position: absolute;
-        width: 18px;
-        height: 18px;
-        top: 50%;
-        right: 15px;
+        width: 18px; height: 18px;
+        top: 50%; right: 18px;
         margin-top: -9px;
-        border: 2px solid white;
-        border-top-color: transparent;
+        border: 2px solid rgba(255,255,255,0.4);
+        border-top-color: white;
         border-radius: 50%;
         animation: spin 0.6s linear infinite;
     }
-    
-    @keyframes spin {
-        to { transform: rotate(360deg); }
+
+    @media (max-width: 768px) {
+        .form-body { padding: 22px; }
+        .form-header { padding: 22px; }
+        .form-header h3 { font-size: 1.3rem; }
+        .sample-images-grid { grid-template-columns: repeat(2, 1fr); }
+        .toggle-btn { padding: 8px 16px; font-size: 0.82rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        .reveal { opacity: 1; transform: none; }
     }
 </style>
 
-<div class="row justify-content-center fade-in">
-    <div class="col-md-8 col-lg-7">
+<div class="row justify-content-center">
+    <div class="col-md-9 col-lg-8">
         <div class="form-card">
             <div class="form-header">
-                <h3><i class="fas fa-plus-circle me-2"></i>Create New Course</h3>
+                <h3><i class="fas fa-circle-plus me-2"></i>Create New Course</h3>
                 <p>Share your knowledge with the world. Create an engaging course that students will love!</p>
             </div>
-            
+
             <div class="form-body">
-                <!-- FIXED: Added action -->
+                <!-- Show non-field errors -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
                 <form method="POST" enctype="multipart/form-data" id="courseForm" action="{{ url_for('add_course') }}">
                     {{ form.hidden_tag() }}
-                    
-                    <!-- Course Title -->
-                    <div class="form-group">
+
+                    <!-- Title -->
+                    <div class="form-group reveal">
                         {{ form.title.label(class="form-label required-field") }}
                         {{ form.title(class="form-control", placeholder="e.g., Python Programming Masterclass: From Zero to Hero", id="courseTitle") }}
                         <div class="char-counter" id="titleCounter">0/100 characters</div>
                         {% for error in form.title.errors %}
-                            <span class="text-danger small">{{ error }}</span>
+                            <span class="text-danger small d-block mt-1">{{ error }}</span>
                         {% endfor %}
                     </div>
-                    
-                    <!-- Course Description -->
-                    <div class="form-group">
+
+                    <!-- Description -->
+                    <div class="form-group reveal">
                         {{ form.description.label(class="form-label required-field") }}
-                        {{ form.description(class="form-control", rows="6", placeholder="Describe what students will learn in this course. Be specific and engaging! Include learning outcomes, prerequisites, and target audience.", id="courseDescription") }}
+                        {{ form.description(class="form-control", rows="6", placeholder="Describe what students will learn...", id="courseDescription") }}
                         <div class="char-counter" id="descCounter">0/2000 characters</div>
                         {% for error in form.description.errors %}
-                            <span class="text-danger small">{{ error }}</span>
+                            <span class="text-danger small d-block mt-1">{{ error }}</span>
                         {% endfor %}
                     </div>
-                    
-                    <!-- Course Category -->
-                    <div class="form-group">
-                        {{ form.category.label(class="form-label required-field") }}
-                        {{ form.category(class="form-select", id="courseCategory") }}
-                        {% for error in form.category.errors %}
-                            <span class="text-danger small">{{ error }}</span>
-                        {% endfor %}
+
+                    <!-- Category + Level -->
+                    <div class="row reveal">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form.category.label(class="form-label required-field") }}
+                                {{ form.category(class="form-select", id="courseCategory") }}
+                                {% for error in form.category.errors %}
+                                    <span class="text-danger small d-block mt-1">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form.level.label(class="form-label required-field") }}
+                                {{ form.level(class="form-select", id="courseLevel") }}
+                                {% for error in form.level.errors %}
+                                    <span class="text-danger small d-block mt-1">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
-                    
-                    <!-- Course Level -->
-                    <div class="form-group">
-                        {{ form.level.label(class="form-label required-field") }}
-                        {{ form.level(class="form-select", id="courseLevel") }}
-                        {% for error in form.level.errors %}
-                            <span class="text-danger small">{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    
-                    <!-- Course Price with Toggle -->
-                    <div class="form-group">
+
+                    <!-- Price -->
+                    <div class="form-group reveal">
                         <label class="form-label">
                             <i class="fas fa-dollar-sign"></i> Course Price
                             <span class="tooltip-icon" data-bs-toggle="tooltip" title="Set a price for your course or make it free!">
-                                <i class="fas fa-question-circle"></i>
+                                <i class="fas fa-circle-question"></i>
                             </span>
                         </label>
                         <div class="price-toggle">
-                            <div class="toggle-btn" data-price="paid">💰 Paid Course</div>
-                            <div class="toggle-btn" data-price="free">🎁 Free Course</div>
+                            <div class="toggle-btn" data-price="paid" type="button">
+                                <i class="fas fa-sack-dollar me-1"></i>Paid Course
+                            </div>
+                            <div class="toggle-btn" data-price="free" type="button">
+                                <i class="fas fa-gift me-1"></i>Free Course
+                            </div>
                         </div>
                         <div id="priceInputContainer">
                             {{ form.price(class="form-control", placeholder="Enter price in USD (e.g., 49.99)", id="coursePrice") }}
                         </div>
-                        <small class="text-muted">
-                            <i class="fas fa-info-circle"></i> 
+                        <small class="text-muted d-block mt-2">
+                            <i class="fas fa-circle-info"></i>
                             Free courses attract more students! You can always change this later.
                         </small>
                         {% for error in form.price.errors %}
-                            <span class="text-danger small">{{ error }}</span>
+                            <span class="text-danger small d-block mt-1">{{ error }}</span>
                         {% endfor %}
                     </div>
-                    
-                    <!-- Image Upload Section -->
-                    <div class="form-group">
+
+                    <!-- Image Upload -->
+                    <div class="form-group reveal">
                         <label class="form-label">
                             <i class="fas fa-image"></i> Course Image
                         </label>
-                        
-                        <!-- Option 1: Upload from computer -->
+
                         <div class="mb-3">
                             {{ form.image.label(class="form-label") }}
                             {{ form.image(class="form-control", accept="image/*", id="imageUpload") }}
-                            <small class="text-muted">
+                            <small class="text-muted d-block mt-1">
                                 <i class="fas fa-upload"></i> Upload from your computer (JPG, PNG, GIF - Max 16MB)
                             </small>
                             {% for error in form.image.errors %}
-                                <span class="text-danger small">{{ error }}</span>
+                                <span class="text-danger small d-block mt-1">{{ error }}</span>
                             {% endfor %}
                         </div>
-                        
-                        <!-- OR Divider -->
+
                         <div class="text-center my-3">
                             <span class="badge bg-secondary">OR</span>
                         </div>
-                        
-                        <!-- Option 2: Image URL -->
+
                         <div class="mb-3">
                             {{ form.image_url.label(class="form-label") }}
                             {{ form.image_url(class="form-control", placeholder="https://example.com/course-image.jpg", id="imageUrl") }}
-                            <small class="text-muted">
+                            <small class="text-muted d-block mt-1">
                                 <i class="fas fa-link"></i> Paste an image URL from the web (Unsplash, Imgur, etc.)
                             </small>
                             {% for error in form.image_url.errors %}
-                                <span class="text-danger small">{{ error }}</span>
+                                <span class="text-danger small d-block mt-1">{{ error }}</span>
                             {% endfor %}
                         </div>
-                        
-                        <!-- Image Preview -->
+
                         <div id="imagePreviewContainer" style="display: none;">
                             <div class="image-preview-container">
                                 <label class="form-label">Image Preview</label>
                                 <div>
                                     <img id="previewImage" src="" alt="Course preview" class="preview-image">
                                 </div>
-                                <button type="button" class="btn btn-outline-danger mt-2" id="clearImage">
+                                <button type="button" class="btn btn-outline-danger mt-3" id="clearImage">
                                     <i class="fas fa-times"></i> Clear Image
                                 </button>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Sample Images Gallery -->
-                    <div class="form-group">
+
+                    <!-- Sample Images -->
+                    <div class="form-group reveal">
                         <label class="form-label">
                             <i class="fas fa-images"></i> Sample Images (Click to use)
                         </label>
                         <div class="sample-images-grid">
                             <div class="sample-card" onclick="useSampleImage('https://images.unsplash.com/photo-1461749280684-dccba630e2f6')">
-                                <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6" class="sample-image" alt="Programming">
+                                <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6" class="sample-image" alt="Programming" loading="lazy">
                                 <div class="sample-label">💻 Programming</div>
                             </div>
                             <div class="sample-card" onclick="useSampleImage('https://images.unsplash.com/photo-1516116216624-53e697fedbea')">
-                                <img src="https://images.unsplash.com/photo-1516116216624-53e697fedbea" class="sample-image" alt="Web Development">
+                                <img src="https://images.unsplash.com/photo-1516116216624-53e697fedbea" class="sample-image" alt="Web Development" loading="lazy">
                                 <div class="sample-label">🌐 Web Dev</div>
                             </div>
                             <div class="sample-card" onclick="useSampleImage('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40')">
-                                <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40" class="sample-image" alt="Business">
+                                <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40" class="sample-image" alt="Business" loading="lazy">
                                 <div class="sample-label">📈 Business</div>
                             </div>
                             <div class="sample-card" onclick="useSampleImage('https://images.unsplash.com/photo-1561070791-2526d30994b5')">
-                                <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5" class="sample-image" alt="Design">
+                                <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5" class="sample-image" alt="Design" loading="lazy">
                                 <div class="sample-label">🎨 Design</div>
                             </div>
                             <div class="sample-card" onclick="useSampleImage('https://images.unsplash.com/photo-1517694712202-14dd9538aa97')">
-                                <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97" class="sample-image" alt="Data Science">
+                                <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97" class="sample-image" alt="Data Science" loading="lazy">
                                 <div class="sample-label">📊 Data Science</div>
                             </div>
                             <div class="sample-card" onclick="useSampleImage('https://images.unsplash.com/photo-1555066931-4365d14bab8c')">
-                                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c" class="sample-image" alt="Coding">
+                                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c" class="sample-image" alt="Coding" loading="lazy">
                                 <div class="sample-label">⌨️ Coding</div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Pro Tips Alert -->
-                    <div class="alert alert-custom alert-info-custom mt-3">
+
+                    <!-- Pro Tips -->
+                    <div class="alert alert-custom alert-info-custom reveal">
                         <i class="fas fa-lightbulb me-2"></i>
                         <strong>Pro Tips for a Successful Course:</strong>
                         <ul class="mb-0 mt-2">
@@ -477,12 +660,12 @@
                             <li>Add engaging video lessons after creating the course</li>
                         </ul>
                     </div>
-                    
-                    <!-- Form Actions -->
-                    <div class="d-grid gap-3 mt-4">
-                        {{ form.submit(class="btn btn-submit text-white", value="Create Course ➝") }}
-                        <a href="{{ url_for('dashboard') }}" class="btn btn-cancel text-white text-center">
-                            <i class="fas fa-arrow-left me-2"></i>Cancel
+
+                    <!-- Actions -->
+                    <div class="d-grid gap-3 mt-4 reveal">
+                        {{ form.submit(class="btn btn-submit", value="Create Course") }}
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-cancel">
+                            <i class="fas fa-arrow-left"></i>Cancel
                         </a>
                     </div>
                 </form>
@@ -492,17 +675,28 @@
 </div>
 
 <script>
-    // Initialize tooltips
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
+    // ==================== SCROLL REVEAL ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal');
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => obs.observe(el));
+
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
     });
-    
-    // Character counter for title
+
+    // ==================== CHARACTER COUNTERS ====================
     const titleInput = document.getElementById('courseTitle');
     const titleCounter = document.getElementById('titleCounter');
-    
-    if (titleInput) {
+
+    if (titleInput && titleCounter) {
         titleInput.addEventListener('input', function() {
             const length = this.value.length;
             titleCounter.textContent = `${length}/100 characters`;
@@ -518,12 +712,11 @@
         });
         titleInput.dispatchEvent(new Event('input'));
     }
-    
-    // Character counter for description
+
     const descInput = document.getElementById('courseDescription');
     const descCounter = document.getElementById('descCounter');
-    
-    if (descInput) {
+
+    if (descInput && descCounter) {
         descInput.addEventListener('input', function() {
             const length = this.value.length;
             descCounter.textContent = `${length}/2000 characters`;
@@ -539,166 +732,161 @@
         });
         descInput.dispatchEvent(new Event('input'));
     }
-    
-    // Price Toggle Functionality
+
+    // ==================== PRICE TOGGLE — FIXED ====================
     const toggleBtns = document.querySelectorAll('.toggle-btn');
     const priceInput = document.getElementById('coursePrice');
-    const priceContainer = document.getElementById('priceInputContainer');
-    
-    toggleBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            toggleBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            if (this.dataset.price === 'free') {
-                priceInput.value = '0.00';
-                priceInput.disabled = true;
-                priceInput.style.opacity = '0.6';
-            } else {
-                priceInput.disabled = false;
-                priceInput.style.opacity = '1';
-                if (priceInput.value === '0.00') {
-                    priceInput.value = '';
+
+    if (priceInput) {
+        // Remove HTML5 required attribute — Flask will handle validation
+        priceInput.removeAttribute('required');
+
+        function setFreeMode() {
+            priceInput.value = '0.00';
+            priceInput.readOnly = true;         // READONLY — submit hoti hai
+            priceInput.style.opacity = '0.7';
+            priceInput.style.cursor = 'not-allowed';
+            priceInput.style.background = '#f1f5f9';
+        }
+
+        function setPaidMode() {
+            priceInput.readOnly = false;        // editable
+            priceInput.style.opacity = '1';
+            priceInput.style.cursor = '';
+            priceInput.style.background = '';
+            if (priceInput.value === '0.00') priceInput.value = '';
+        }
+
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                toggleBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                if (this.dataset.price === 'free') {
+                    setFreeMode();
+                } else {
+                    setPaidMode();
+                    priceInput.focus();
                 }
-            }
+            });
         });
-    });
-    
-    // Check current price on load
-    if (priceInput && parseFloat(priceInput.value) === 0) {
-        const freeBtn = document.querySelector('.toggle-btn[data-price="free"]');
-        if (freeBtn) freeBtn.click();
-    } else {
-        const paidBtn = document.querySelector('.toggle-btn[data-price="paid"]');
-        if (paidBtn) paidBtn.classList.add('active');
+
+        // Set initial state based on current value
+        const currentValue = parseFloat(priceInput.value);
+        if (!isNaN(currentValue) && currentValue === 0) {
+            const freeBtn = document.querySelector('.toggle-btn[data-price="free"]');
+            if (freeBtn) freeBtn.click();
+        } else {
+            const paidBtn = document.querySelector('.toggle-btn[data-price="paid"]');
+            if (paidBtn) paidBtn.classList.add('active');
+        }
     }
-    
-    // Image Preview Function
+
+    // ==================== IMAGE PREVIEW ====================
     const imageUpload = document.getElementById('imageUpload');
     const imageUrl = document.getElementById('imageUrl');
     const previewContainer = document.getElementById('imagePreviewContainer');
     const previewImage = document.getElementById('previewImage');
     const clearBtn = document.getElementById('clearImage');
-    
+
     function showPreview(src) {
-        if (src) {
+        if (src && previewContainer && previewImage) {
             previewImage.src = src;
             previewContainer.style.display = 'block';
             previewImage.onerror = function() {
                 previewImage.src = 'https://via.placeholder.com/800x400?text=Invalid+Image+URL';
             };
-        } else {
+        } else if (previewContainer) {
             previewContainer.style.display = 'none';
         }
     }
-    
-    // Handle file upload preview
+
     if (imageUpload) {
         imageUpload.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    showPreview(e.target.result);
-                    imageUrl.value = ''; // Clear URL field
+                reader.onload = function(ev) {
+                    showPreview(ev.target.result);
+                    if (imageUrl) imageUrl.value = '';
                 };
                 reader.readAsDataURL(file);
-            } else {
-                if (!imageUrl.value) {
-                    previewContainer.style.display = 'none';
-                }
             }
         });
     }
-    
-    // Handle URL input preview
+
     if (imageUrl) {
         imageUrl.addEventListener('input', function() {
-            const url = this.value;
-            if (url) {
-                showPreview(url);
-                imageUpload.value = ''; // Clear file input
-            } else if (!imageUpload.files.length) {
-                previewContainer.style.display = 'none';
+            if (this.value) {
+                showPreview(this.value);
+                if (imageUpload) imageUpload.value = '';
             }
         });
     }
-    
-    // Clear image
+
     if (clearBtn) {
         clearBtn.addEventListener('click', function() {
             if (imageUpload) imageUpload.value = '';
             if (imageUrl) imageUrl.value = '';
-            previewContainer.style.display = 'none';
+            if (previewContainer) previewContainer.style.display = 'none';
         });
     }
-    
-    // Use sample image
+
     function useSampleImage(url) {
         if (imageUrl) {
             imageUrl.value = url;
             showPreview(url);
             if (imageUpload) imageUpload.value = '';
+            setTimeout(() => {
+                if (previewContainer) {
+                    previewContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100);
         }
     }
-    
-    // Form validation before submit
+    window.useSampleImage = useSampleImage;
+
+    // ==================== FORM SUBMIT — FIXED ====================
     const form = document.getElementById('courseForm');
     if (form) {
         form.addEventListener('submit', function(e) {
             const title = titleInput?.value.trim();
             const description = descInput?.value.trim();
-            
-            if (!title || title.length === 0) {
+
+            function showError(msg, focusEl) {
                 e.preventDefault();
-                alert('Please enter a course title');
-                titleInput?.focus();
-                return false;
+                const toast = document.createElement('div');
+                toast.style.cssText = `
+                    position: fixed; bottom: 24px; right: 24px;
+                    background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+                    color: white; padding: 14px 24px; border-radius: 12px;
+                    z-index: 9999; font-weight: 600; font-size: 0.9rem;
+                    box-shadow: 0 12px 32px rgba(127, 29, 29, 0.35);
+                    animation: fadeInUp 0.35s ease;
+                `;
+                toast.innerHTML = '<i class="fas fa-circle-exclamation me-2"></i>' + msg;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3500);
+                if (focusEl) focusEl.focus();
             }
-            
-            if (title.length > 100) {
-                e.preventDefault();
-                alert('Course title must be less than 100 characters');
-                return false;
+
+            if (!title) return showError('Please enter a course title', titleInput);
+            if (title.length > 100) return showError('Title must be less than 100 characters');
+            if (!description) return showError('Please enter a course description', descInput);
+            if (description.length > 2000) return showError('Description must be less than 2000 characters');
+
+            // Make sure price has a value even if readonly
+            if (priceInput && !priceInput.value) {
+                priceInput.value = '0.00';
             }
-            
-            if (!description || description.length === 0) {
-                e.preventDefault();
-                alert('Please enter a course description');
-                descInput?.focus();
-                return false;
-            }
-            
-            if (description.length > 2000) {
-                e.preventDefault();
-                alert('Course description must be less than 2000 characters');
-                return false;
-            }
-            
-            // Show loading state
+
             const submitBtn = document.querySelector('.btn-submit');
             if (submitBtn) {
                 submitBtn.classList.add('btn-loading');
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Course...';
             }
-            
             return true;
         });
     }
-    
-    // Auto-fill demo data (helpful for testing)
-    function fillDemoData() {
-        if (titleInput && !titleInput.value) {
-            titleInput.value = 'Complete Web Development Bootcamp 2024';
-            titleInput.dispatchEvent(new Event('input'));
-        }
-        if (descInput && !descInput.value) {
-            descInput.value = 'Learn HTML, CSS, JavaScript, React, Node.js, and MongoDB from scratch. Build real-world projects and become a full-stack developer. This course includes 50+ hours of video content, 20+ projects, and lifetime access. Perfect for beginners and experienced developers looking to upgrade their skills.';
-            descInput.dispatchEvent(new Event('input'));
-        }
-    }
-    
-    // Uncomment to auto-fill demo data (optional)
-    // fillDemoData();
 </script>
 {% endblock %}

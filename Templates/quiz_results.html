@@ -2,62 +2,168 @@
 
 {% block content %}
 <style>
-    /* Modern Quiz Results Styles */
+    /* ============================================================
+       QUIZ RESULTS — CRIMSON RED
+       ============================================================ */
     :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --primary-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+
+        --crimson-900: #450a0a;
+        --crimson-800: #7f1d1d;
+        --crimson-700: #991b1b;
+        --crimson-600: #b91c1c;
+        --crimson-500: #dc2626;
+        --crimson-400: #ef4444;
+        --crimson-300: #f87171;
+        --crimson-200: #fecaca;
+        --crimson-100: #fee2e2;
+        --crimson-50:  #fef2f2;
     }
-    
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
+    }
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-14px) rotate(3deg); }
+    }
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
+    }
+    @keyframes shimmer {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    /* ==================== HEADER ==================== */
     .results-header {
-        background: var(--primary-gradient);
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
         border-radius: 20px;
         padding: 30px;
         margin-bottom: 30px;
         color: white;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.28);
     }
-    
+
     .results-header::before {
-        content: '📊';
+        content: '';
         position: absolute;
-        bottom: -20px;
-        right: 20px;
-        font-size: 100px;
-        opacity: 0.1;
+        top: -50%; right: -25%;
+        width: 340px; height: 340px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.45) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
     }
-    
+
+    .results-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50%; left: -15%;
+        width: 280px; height: 280px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 10s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .results-header > * { position: relative; z-index: 1; }
+
     .results-title {
         font-size: 1.8rem;
-        font-weight: 700;
+        font-weight: 800;
         margin-bottom: 10px;
+        letter-spacing: -0.03em;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    
-    /* Stats Cards */
+
+    .results-title i {
+        color: #fbbf24;
+        animation: float 3.5s ease-in-out infinite;
+        filter: drop-shadow(0 4px 10px rgba(251, 191, 36, 0.4));
+    }
+
+    .results-header p { opacity: 0.92; }
+
+    .results-header .btn-light {
+        background: rgba(255, 255, 255, 0.95);
+        color: var(--crimson-800);
+        border: none;
+        padding: 10px 22px;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 0.88rem;
+        transition: all 0.35s ease;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .results-header .btn-light:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+        color: var(--crimson-900);
+    }
+
+    /* ==================== STATS ==================== */
     .stats-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
+        gap: 18px;
         margin-bottom: 30px;
     }
-    
+
     .stat-card {
         background: white;
         border-radius: 16px;
-        padding: 20px;
+        padding: 22px 18px;
         text-align: center;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        transition: all 0.4s ease;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: var(--primary-gradient);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s ease;
+    }
+
+    .stat-card:hover::before { transform: scaleX(1); }
+
     .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        transform: translateY(-6px);
+        box-shadow: 0 20px 44px rgba(127, 29, 29, 0.15);
+        border-color: var(--crimson-200);
     }
-    
+
     .stat-icon {
         width: 60px;
         height: 60px;
@@ -68,62 +174,90 @@
         margin-bottom: 15px;
         font-size: 24px;
     }
-    
+
+    .stat-card:hover .stat-icon {
+        transform: scale(1.12) rotate(-6deg);
+    }
+
     .stat-value {
-        font-size: 32px;
-        font-weight: 700;
+        font-size: 2rem;
+        font-weight: 800;
         margin-bottom: 5px;
+        color: var(--crimson-900);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        letter-spacing: -0.03em;
     }
-    
+
     .stat-label {
-        color: #6c757d;
-        font-size: 14px;
+        color: #64748b;
+        font-size: 0.82rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
-    
-    /* Charts */
+
+    /* ==================== CHART ==================== */
     .chart-container {
         background: white;
         border-radius: 16px;
-        padding: 20px;
-        margin-bottom: 30px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        padding: 22px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+        border: 1px solid #e2e8f0;
+        transition: all 0.35s ease;
     }
-    
+
+    .chart-container:hover {
+        box-shadow: 0 12px 28px rgba(127, 29, 29, 0.1);
+        border-color: var(--crimson-200);
+    }
+
     .chart-title {
-        font-size: 1.2rem;
-        font-weight: 600;
+        font-size: 1.1rem;
+        font-weight: 700;
         margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--crimson-100);
+        color: var(--crimson-900);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        letter-spacing: -0.01em;
     }
-    
+
+    .chart-title i { color: var(--crimson-600); }
+
     .progress-chart {
         display: flex;
         flex-direction: column;
         gap: 15px;
     }
-    
+
     .chart-item {
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 14px;
         flex-wrap: wrap;
     }
-    
+
     .chart-label {
-        width: 100px;
-        font-weight: 500;
+        width: 130px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: var(--crimson-900);
     }
-    
+
     .chart-bar-container {
         flex: 1;
-        background: #e9ecef;
+        background: #f1f5f9;
         border-radius: 10px;
         height: 30px;
         overflow: hidden;
         position: relative;
+        border: 1px solid #e2e8f0;
+        min-width: 100px;
     }
-    
+
     .chart-bar {
         height: 100%;
         display: flex;
@@ -132,251 +266,487 @@
         padding-right: 10px;
         color: white;
         font-size: 12px;
-        font-weight: 600;
-        transition: width 1s ease;
+        font-weight: 700;
+        transition: width 1.2s ease;
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    .chart-bar::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        animation: shimmer 2.5s infinite;
+    }
+
     .chart-bar.passed { background: var(--success-gradient); }
-    .chart-bar.failed { background: var(--danger-gradient); }
-    .chart-bar.excellent { background: linear-gradient(135deg, #11998e, #38ef7d); }
-    .chart-bar.good { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-    .chart-bar.average { background: linear-gradient(135deg, #f6d365, #fda085); }
-    .chart-bar.poor { background: linear-gradient(135deg, #eb3349, #f45c43); }
-    
+    .chart-bar.failed { background: var(--primary-gradient); }
+    .chart-bar.excellent { background: var(--success-gradient); }
+    .chart-bar.good { background: var(--info-gradient); }
+    .chart-bar.average { background: var(--warning-gradient); }
+    .chart-bar.poor { background: var(--primary-gradient); }
+
     .chart-percentage {
-        min-width: 50px;
+        min-width: 55px;
         text-align: right;
-        font-weight: 600;
+        font-weight: 700;
+        color: var(--crimson-700);
+        font-size: 0.85rem;
     }
-    
-    /* Table Styles */
-    .table-container {
-        background: white;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-    }
-    
-    .table-custom {
-        margin-bottom: 0;
-    }
-    
-    .table-custom thead {
-        background: var(--primary-gradient);
-        color: white;
-    }
-    
-    .table-custom th {
-        padding: 15px;
-        font-weight: 600;
-        border: none;
-    }
-    
-    .table-custom td {
-        padding: 15px;
-        vertical-align: middle;
-    }
-    
-    .table-custom tbody tr {
-        transition: all 0.3s ease;
-    }
-    
-    .table-custom tbody tr:hover {
-        background: #f8f9fa;
-        transform: scale(1.01);
-    }
-    
-    .badge-custom {
-        padding: 8px 15px;
-        border-radius: 20px;
-        font-weight: 500;
-    }
-    
-    .badge-passed {
-        background: linear-gradient(135deg, #11998e20, #38ef7d20);
-        color: #11998e;
-    }
-    
-    .badge-failed {
-        background: linear-gradient(135deg, #eb334920, #f45c4320);
-        color: #eb3349;
-    }
-    
-    .score-progress {
-        width: 80px;
-        height: 6px;
-        background: #e9ecef;
-        border-radius: 3px;
-        overflow: hidden;
-        display: inline-block;
-        margin-left: 10px;
-    }
-    
-    .score-progress-bar {
-        height: 100%;
-        border-radius: 3px;
-        transition: width 0.5s ease;
-    }
-    
-    /* Filter Section */
+
+    /* ==================== FILTER ==================== */
     .filter-section {
         background: white;
         border-radius: 16px;
-        padding: 15px 20px;
+        padding: 16px 20px;
         margin-bottom: 25px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+        border: 1px solid var(--crimson-100);
         display: flex;
-        gap: 15px;
+        gap: 14px;
         flex-wrap: wrap;
         align-items: center;
     }
-    
+
     .filter-label {
-        font-weight: 600;
-        color: #495057;
+        font-weight: 700;
+        color: var(--crimson-900);
+        font-size: 0.88rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
-    
+
+    .filter-label i { color: var(--crimson-600); }
+
     .filter-select {
-        padding: 8px 15px;
+        padding: 9px 16px;
         border-radius: 10px;
-        border: 1px solid #dee2e6;
+        border: 2px solid #e2e8f0;
         background: white;
         cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--crimson-900);
+        transition: all 0.3s ease;
     }
-    
-    .empty-state {
-        text-align: center;
-        padding: 60px 20px;
+
+    .filter-select:hover {
+        border-color: var(--crimson-300);
+        background: var(--crimson-50);
     }
-    
-    .empty-icon {
-        font-size: 80px;
-        color: #dee2e6;
-        margin-bottom: 20px;
+
+    .filter-select:focus {
+        border-color: var(--crimson-500);
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
     }
-    
+
+    /* ============================================================
+       TABLE — CLEAN ALIGNED
+       ============================================================ */
+    .table-container {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+        border: 1px solid var(--crimson-100);
+    }
+
+    .table-custom {
+        margin-bottom: 0;
+    }
+
+    /* Header */
+    .table-custom thead {
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%);
+        color: white;
+    }
+
+    .table-custom th {
+        padding: 14px 16px !important;
+        font-weight: 700;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        border: none;
+        vertical-align: middle !important;
+        white-space: nowrap;
+    }
+
+    .table-custom th i {
+        color: #fbbf24;
+        margin-right: 4px;
+    }
+
+    /* Body cells — force middle alignment */
+    .table-custom td {
+        padding: 14px 16px !important;
+        vertical-align: middle !important;
+        color: #475569;
+        font-size: 0.88rem;
+        border-bottom: 1px solid #f1f5f9;
+        height: auto;
+    }
+
+    .table-custom tbody tr {
+        transition: background 0.25s ease;
+        height: 56px;
+    }
+
+    .table-custom tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table-custom tbody tr:hover {
+        background: var(--crimson-50);
+    }
+
+    /* ==================== SIMPLE SINGLE-LINE DATE ==================== */
+    .date-simple {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        border: 1px solid var(--crimson-200);
+        border-left: 3px solid var(--crimson-600);
+        border-radius: 8px;
+        white-space: nowrap;
+        transition: all 0.25s ease;
+    }
+
+    .date-simple:hover {
+        border-color: var(--crimson-400);
+        border-left-color: var(--crimson-700);
+        box-shadow: 0 3px 10px rgba(127, 29, 29, 0.12);
+    }
+
+    .date-simple i {
+        color: var(--crimson-600);
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+
+    .date-simple-text {
+        font-weight: 700;
+        color: var(--crimson-900);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.85rem;
+        letter-spacing: -0.01em;
+    }
+
+    .date-simple-sep {
+        color: var(--crimson-300);
+        font-weight: 700;
+        margin: 0 2px;
+    }
+
+    .date-simple-time {
+        font-weight: 600;
+        color: #64748b;
+        font-size: 0.8rem;
+    }
+
+    /* ==================== COURSE / QUIZ ==================== */
+    .cell-course,
+    .cell-quiz {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.88rem;
+    }
+
+    .cell-course {
+        font-weight: 700;
+        color: var(--crimson-900);
+    }
+
+    .cell-course i { color: var(--crimson-600); font-size: 0.82rem; }
+
+    .cell-quiz {
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .cell-quiz i { color: var(--crimson-500); font-size: 0.78rem; }
+
+    /* ==================== SCORE ==================== */
+    .cell-score {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 2px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .score-current {
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: var(--crimson-900);
+    }
+
+    .score-divider {
+        font-size: 0.85rem;
+        color: #cbd5e1;
+        font-weight: 500;
+    }
+
+    .score-total {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #94a3b8;
+    }
+
+    /* ==================== PERCENTAGE ==================== */
+    .cell-percentage {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        white-space: nowrap;
+    }
+
+    .percentage-bar {
+        width: 70px;
+        height: 6px;
+        background: #f1f5f9;
+        border-radius: 3px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .percentage-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 1s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .percentage-fill::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+        animation: shimmer 2s infinite;
+    }
+
+    .fill-pass { background: linear-gradient(90deg, #059669, #10b981); }
+    .fill-fail { background: linear-gradient(90deg, #b91c1c, #ef4444); }
+
+    .percentage-text {
+        font-size: 0.9rem;
+        font-weight: 800;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        min-width: 42px;
+    }
+
+    .text-pass { color: #059669; }
+    .text-fail { color: var(--crimson-600); }
+
+    /* ==================== STATUS BADGE ==================== */
+    .badge-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.75rem;
+        white-space: nowrap;
+    }
+
+    .badge-status i { font-size: 0.72rem; }
+
+    .badge-status.passed {
+        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        color: #047857;
+        border: 1px solid #a7f3d0;
+    }
+
+    .badge-status.failed {
+        background: linear-gradient(135deg, #fef2f2, #fee2e2);
+        color: var(--crimson-700);
+        border: 1px solid var(--crimson-200);
+    }
+
+    /* ==================== ACTION BUTTON ==================== */
+    .btn-cert,
+    .btn-retry {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 9px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid transparent;
+    }
+
+    .btn-cert::before,
+    .btn-retry::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-cert:hover::before,
+    .btn-retry:hover::before { left: 100%; }
+
+    .btn-cert {
+        background: linear-gradient(180deg, #059669 0%, #047857 100%);
+        color: white !important;
+        border-color: #065f46;
+        box-shadow: 0 3px 10px rgba(5, 150, 105, 0.2);
+    }
+
+    .btn-cert:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(5, 150, 105, 0.4);
+        color: white !important;
+    }
+
+    .btn-retry {
+        background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+        color: white !important;
+        border-color: #b45309;
+        box-shadow: 0 3px 10px rgba(217, 119, 6, 0.2);
+    }
+
+    .btn-retry:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(217, 119, 6, 0.4);
+        color: white !important;
+    }
+
+    /* ==================== OTHER BUTTONS ==================== */
     .btn-primary {
-        background: var(--primary-gradient);
-        border: none;
-        transition: all 0.3s ease;
+        background: linear-gradient(180deg, var(--crimson-600) 0%, var(--crimson-700) 100%);
+        border: 1px solid var(--crimson-800);
         color: white;
-        padding: 10px 25px;
+        padding: 11px 26px;
         border-radius: 25px;
-    }
-    
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        color: white;
-    }
-    
-    .btn-sm {
-        padding: 5px 12px;
-        font-size: 12px;
-    }
-    
-    .btn-success {
-        background: var(--success-gradient);
-        border: none;
-        color: white;
-    }
-    
-    .btn-success:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(17, 153, 142, 0.4);
-        color: white;
-    }
-    
-    .btn-warning {
-        background: var(--warning-gradient);
-        border: none;
-        color: white;
-    }
-    
-    .btn-warning:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(246, 211, 101, 0.4);
-        color: white;
-    }
-    
-    .btn-outline-primary {
-        border: 2px solid #667eea;
-        color: #667eea;
-        background: transparent;
+        font-weight: 700;
+        font-size: 0.88rem;
+        box-shadow: 0 4px 16px rgba(127, 29, 29, 0.25);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
         transition: all 0.3s ease;
     }
-    
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(127, 29, 29, 0.4);
+        color: white;
+    }
+
+    .btn-sm {
+        padding: 7px 14px;
+        font-size: 0.78rem;
+        border-radius: 8px;
+    }
+
+    .btn-outline-primary {
+        border: 2px solid var(--crimson-600);
+        color: var(--crimson-700);
+        background: transparent;
+        font-weight: 700;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
     .btn-outline-primary:hover {
         background: var(--primary-gradient);
         border-color: transparent;
         color: white;
         transform: translateY(-2px);
     }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+
+    /* ==================== TIPS ==================== */
+    .chart-container.text-center i.fa-lightbulb { color: #d97706 !important; animation: float 2.5s ease-in-out infinite; }
+    .chart-container.text-center i.fa-chart-line { color: var(--crimson-600) !important; animation: float 3s ease-in-out infinite; }
+    .chart-container.text-center i.fa-trophy { color: #059669 !important; animation: float 2.8s ease-in-out infinite; }
+
+    .chart-container.text-center h6 {
+        color: var(--crimson-900);
+        font-weight: 700;
+        margin-bottom: 8px;
     }
-    
-    .fade-in-up {
-        animation: fadeInUp 0.5s ease forwards;
+
+    /* ==================== EMPTY ==================== */
+    .empty-state {
+        text-align: center;
+        padding: 70px 20px;
     }
-    
+
+    .empty-icon {
+        font-size: 80px;
+        color: var(--crimson-200);
+        margin-bottom: 20px;
+        animation: float 3.5s ease-in-out infinite;
+    }
+
+    .empty-state h4 {
+        color: var(--crimson-900);
+        font-weight: 700;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
     @media (max-width: 768px) {
-        .results-header {
-            padding: 20px;
-        }
-        
-        .results-title {
-            font-size: 1.4rem;
-        }
-        
-        .stat-value {
-            font-size: 24px;
-        }
-        
-        .chart-label {
-            width: 80px;
-            font-size: 12px;
-        }
-        
-        .table-custom td, 
-        .table-custom th {
-            padding: 10px;
-            font-size: 12px;
+        .results-header { padding: 24px 20px; }
+        .results-title { font-size: 1.35rem; }
+        .stat-value { font-size: 1.5rem; }
+        .stat-icon { width: 50px; height: 50px; font-size: 20px; }
+        .chart-label { width: 100px; font-size: 12px; }
+        .table-custom td,
+        .table-custom th { padding: 10px 10px !important; font-size: 12px; }
+        .filter-section { flex-direction: column; align-items: stretch; }
+        .filter-select { width: 100%; }
+        .percentage-bar { width: 50px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
         }
     }
 </style>
 
-<div class="container fade-in-up">
-    <!-- Header -->
+<div class="container">
+    <!-- ==================== HEADER ==================== -->
     <div class="results-header">
-        <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
                 <div class="results-title">
                     <i class="fas fa-chart-line me-2"></i>My Quiz Results
                 </div>
-                <p class="mb-0 opacity-90">
-                    Track your performance and see your progress over time
-                </p>
+                <p class="mb-0">Track your performance and see your progress over time</p>
             </div>
-            <a href="{{ url_for('dashboard') }}" class="btn btn-light mt-2 mt-md-0">
-                <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+            <a href="{{ url_for('dashboard') }}" class="btn btn-light">
+                <i class="fas fa-arrow-left"></i>Back to Dashboard
             </a>
         </div>
     </div>
-    
+
     {% if attempts %}
-        <!-- Statistics Cards -->
+        <!-- ==================== STATS ==================== -->
         {% set total_attempts = attempts|length %}
-        
-        <!-- FIXED: selectattr filter kaam nahi karta, loop use kiya -->
+
         {% set passed_count = namespace(value=0) %}
         {% for attempt in attempts %}
             {% if attempt.passed %}
@@ -384,15 +754,13 @@
             {% endif %}
         {% endfor %}
         {% set failed_count = total_attempts - passed_count.value %}
-        
-        <!-- FIXED: sum filter kaam nahi karta, loop use kiya -->
+
         {% set total_score = namespace(value=0) %}
         {% for attempt in attempts %}
             {% set total_score.value = total_score.value + attempt.percentage %}
         {% endfor %}
         {% set avg_score = total_score.value / total_attempts if total_attempts > 0 else 0 %}
-        
-        <!-- FIXED: max/min filter kaam nahi karta, loop use kiya -->
+
         {% set best_score = namespace(value=0) %}
         {% set worst_score = namespace(value=100) %}
         {% for attempt in attempts %}
@@ -403,63 +771,63 @@
                 {% set worst_score.value = attempt.percentage %}
             {% endif %}
         {% endfor %}
-        
+
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea20, #764ba220);">
-                    <i class="fas fa-tasks" style="color: #667eea;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #fee2e2, #fecaca);">
+                    <i class="fas fa-tasks" style="color: #b91c1c;"></i>
                 </div>
                 <div class="stat-value">{{ total_attempts }}</div>
-                <div class="stat-label">Total Quizzes Taken</div>
+                <div class="stat-label">Total Quizzes</div>
             </div>
-            
+
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #11998e20, #38ef7d20);">
-                    <i class="fas fa-check-circle" style="color: #11998e;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);">
+                    <i class="fas fa-circle-check" style="color: #059669;"></i>
                 </div>
                 <div class="stat-value">{{ passed_count.value }}</div>
-                <div class="stat-label">Quizzes Passed</div>
+                <div class="stat-label">Passed</div>
             </div>
-            
+
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #eb334920, #f45c4320);">
-                    <i class="fas fa-times-circle" style="color: #eb3349;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #fee2e2, #fecaca);">
+                    <i class="fas fa-circle-xmark" style="color: #b91c1c;"></i>
                 </div>
                 <div class="stat-value">{{ failed_count }}</div>
-                <div class="stat-label">Quizzes Failed</div>
+                <div class="stat-label">Failed</div>
             </div>
-            
+
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #f6d36520, #fda08520);">
-                    <i class="fas fa-percent" style="color: #f6d365;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
+                    <i class="fas fa-percent" style="color: #d97706;"></i>
                 </div>
                 <div class="stat-value">{{ "%.1f"|format(avg_score) }}%</div>
                 <div class="stat-label">Average Score</div>
             </div>
-            
+
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe20, #00f2fe20);">
-                    <i class="fas fa-trophy" style="color: #4facfe;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #cffafe, #a5f3fc);">
+                    <i class="fas fa-trophy" style="color: #0891b2;"></i>
                 </div>
                 <div class="stat-value">{{ "%.0f"|format(best_score.value) }}%</div>
                 <div class="stat-label">Best Score</div>
             </div>
-            
+
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #eb334920, #f45c4320);">
-                    <i class="fas fa-chart-line" style="color: #eb3349;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #fee2e2, #fecaca);">
+                    <i class="fas fa-chart-line" style="color: #b91c1c;"></i>
                 </div>
                 <div class="stat-value">{{ "%.0f"|format(worst_score.value) }}%</div>
                 <div class="stat-label">Worst Score</div>
             </div>
         </div>
-        
-        <!-- Performance Charts -->
+
+        <!-- ==================== CHARTS ==================== -->
         <div class="row">
             <div class="col-md-6">
                 <div class="chart-container">
                     <div class="chart-title">
-                        <i class="fas fa-chart-pie me-2"></i>Pass Rate
+                        <i class="fas fa-chart-pie"></i>Pass Rate
                     </div>
                     <div class="progress-chart">
                         <div class="chart-item">
@@ -483,14 +851,13 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-6">
                 <div class="chart-container">
                     <div class="chart-title">
-                        <i class="fas fa-chart-bar me-2"></i>Score Distribution
+                        <i class="fas fa-chart-bar"></i>Score Distribution
                     </div>
                     <div class="progress-chart">
-                        <!-- FIXED: selectattr filter kaam nahi karta, loop use kiya -->
                         {% set excellent = namespace(value=0) %}
                         {% set good = namespace(value=0) %}
                         {% set average = namespace(value=0) %}
@@ -506,7 +873,7 @@
                                 {% set poor.value = poor.value + 1 %}
                             {% endif %}
                         {% endfor %}
-                        
+
                         <div class="chart-item">
                             <div class="chart-label">Excellent (90%+)</div>
                             <div class="chart-bar-container">
@@ -547,16 +914,16 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Filter Section -->
+
+        <!-- ==================== FILTER ==================== -->
         <div class="filter-section">
-            <span class="filter-label"><i class="fas fa-filter me-1"></i>Filter by:</span>
+            <span class="filter-label"><i class="fas fa-filter"></i>Filter by:</span>
             <select id="statusFilter" class="filter-select" onchange="filterTable()">
                 <option value="all">All Attempts</option>
                 <option value="passed">Passed Only</option>
                 <option value="failed">Failed Only</option>
             </select>
-            
+
             <select id="courseFilter" class="filter-select" onchange="filterTable()">
                 <option value="all">All Courses</option>
                 {% set course_titles = [] %}
@@ -570,77 +937,100 @@
                 <option value="{{ course_title }}">{{ course_title }}</option>
                 {% endfor %}
             </select>
-            
+
             <div class="ms-auto">
                 <button class="btn btn-sm btn-outline-primary" onclick="exportResults()">
-                    <i class="fas fa-download me-1"></i>Export Results
+                    <i class="fas fa-download me-1"></i>Export CSV
                 </button>
             </div>
         </div>
-        
-        <!-- Results Table -->
+
+        <!-- ==================== TABLE ==================== -->
         <div class="table-container">
             <div class="table-responsive">
                 <table class="table table-custom" id="resultsTable">
                     <thead>
                         <tr>
-                            <th><i class="fas fa-calendar me-1"></i> Date</th>
-                            <th><i class="fas fa-book me-1"></i> Course</th>
-                            <th><i class="fas fa-puzzle-piece me-1"></i> Quiz</th>
-                            <th><i class="fas fa-chart-simple me-1"></i> Score</th>
-                            <th><i class="fas fa-percent me-1"></i> Percentage</th>
-                            <th><i class="fas fa-flag-checkered me-1"></i> Status</th>
-                            <th><i class="fas fa-certificate me-1"></i> Action</th>
+                            <th><i class="fas fa-calendar"></i> Date</th>
+                            <th><i class="fas fa-book"></i> Course</th>
+                            <th><i class="fas fa-puzzle-piece"></i> Quiz</th>
+                            <th style="width: 80px;"><i class="fas fa-chart-simple"></i> Score</th>
+                            <th style="width: 170px;"><i class="fas fa-percent"></i> Percentage</th>
+                            <th style="width: 110px;"><i class="fas fa-flag-checkered"></i> Status</th>
+                            <th style="width: 130px;"><i class="fas fa-certificate"></i> Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for attempt in attempts %}
-                        <tr data-status="{% if attempt.passed %}passed{% else %}failed{% endif %}" 
+                        <tr data-status="{% if attempt.passed %}passed{% else %}failed{% endif %}"
                             data-course="{{ attempt.quiz.lesson.course.title }}"
                             data-percentage="{{ attempt.percentage }}">
+
                             <td>
-                                <i class="far fa-calendar-alt me-1 text-muted"></i>
-                                {{ attempt.attempted_at.strftime('%b %d, %Y %H:%M') }}
+                                <div class="date-simple">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span class="date-simple-text">{{ attempt.attempted_at.strftime('%d %b %Y') }}</span>
+                                    <span class="date-simple-sep">·</span>
+                                    <span class="date-simple-time">{{ attempt.attempted_at.strftime('%I:%M %p') }}</span>
+                                </div>
                             </td>
+
                             <td>
-                                <strong>{{ attempt.quiz.lesson.course.title[:30] }}</strong>
-                                {% if attempt.quiz.lesson.course.title|length > 30 %}...{% endif %}
+                                <div class="cell-course">
+                                    <i class="fas fa-book-open"></i>
+                                    <span>{{ attempt.quiz.lesson.course.title[:28] }}{% if attempt.quiz.lesson.course.title|length > 28 %}...{% endif %}</span>
+                                </div>
                             </td>
-                            <td>{{ attempt.quiz.lesson.title[:25] }}{% if attempt.quiz.lesson.title|length > 25 %}...{% endif %}</td>
+
                             <td>
-                                <span class="fw-bold">{{ attempt.score }}/{{ attempt.total_questions }}</span>
+                                <div class="cell-quiz">
+                                    <i class="fas fa-puzzle-piece"></i>
+                                    <span>{{ attempt.quiz.lesson.title[:22] }}{% if attempt.quiz.lesson.title|length > 22 %}...{% endif %}</span>
+                                </div>
                             </td>
-                            <td style="min-width: 120px;">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="score-progress">
-                                        <div class="score-progress-bar" style="width: {{ attempt.percentage }}%; background: {{ '#11998e' if attempt.percentage >= 70 else '#eb3349' }}"></div>
+
+                            <td>
+                                <div class="cell-score">
+                                    <span class="score-current">{{ attempt.score }}</span>
+                                    <span class="score-divider">/</span>
+                                    <span class="score-total">{{ attempt.total_questions }}</span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="cell-percentage">
+                                    <div class="percentage-bar">
+                                        <div class="percentage-fill {% if attempt.percentage >= 70 %}fill-pass{% else %}fill-fail{% endif %}"
+                                             style="width: {{ attempt.percentage }}%;"></div>
                                     </div>
-                                    <span class="fw-bold {% if attempt.percentage >= 70 %}text-success{% else %}text-danger{% endif %}">
+                                    <span class="percentage-text {% if attempt.percentage >= 70 %}text-pass{% else %}text-fail{% endif %}">
                                         {{ "%.0f"|format(attempt.percentage) }}%
                                     </span>
                                 </div>
                             </td>
+
                             <td>
                                 {% if attempt.passed %}
-                                    <span class="badge-custom badge-passed">
-                                        <i class="fas fa-check-circle me-1"></i>Passed
+                                    <span class="badge-status passed">
+                                        <i class="fas fa-circle-check"></i>Passed
                                     </span>
                                 {% else %}
-                                    <span class="badge-custom badge-failed">
-                                        <i class="fas fa-times-circle me-1"></i>Failed
+                                    <span class="badge-status failed">
+                                        <i class="fas fa-circle-xmark"></i>Failed
                                     </span>
                                 {% endif %}
                             </td>
+
                             <td>
                                 {% if attempt.passed %}
-                                    <a href="{{ url_for('generate_certificate', course_id=attempt.quiz.lesson.course.id) }}" 
-                                       class="btn btn-sm btn-success" target="_blank">
-                                        <i class="fas fa-certificate me-1"></i>Certificate
+                                    <a href="{{ url_for('generate_certificate', course_id=attempt.quiz.lesson.course.id) }}"
+                                       class="btn-cert" target="_blank">
+                                        <i class="fas fa-download"></i>Certificate
                                     </a>
                                 {% else %}
-                                    <a href="{{ url_for('take_quiz', lesson_id=attempt.quiz.lesson.id) }}" 
-                                       class="btn btn-sm btn-warning">
-                                        <i class="fas fa-redo me-1"></i>Retry
+                                    <a href="{{ url_for('take_quiz', lesson_id=attempt.quiz.lesson.id) }}"
+                                       class="btn-retry">
+                                        <i class="fas fa-redo"></i>Retry
                                     </a>
                                 {% endif %}
                             </td>
@@ -650,34 +1040,33 @@
                 </table>
             </div>
         </div>
-        
-        <!-- Performance Tips -->
+
+        <!-- ==================== TIPS ==================== -->
         <div class="row mt-4">
             <div class="col-md-4">
                 <div class="chart-container text-center">
-                    <i class="fas fa-lightbulb fa-3x text-warning mb-3"></i>
+                    <i class="fas fa-lightbulb fa-3x mb-3"></i>
                     <h6>Study Tips</h6>
-                    <p class="small text-muted">Review the lessons where you scored below 70% to improve your understanding.</p>
+                    <p class="small text-muted mb-0">Review the lessons where you scored below 70% to improve your understanding.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="chart-container text-center">
-                    <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                    <i class="fas fa-chart-line fa-3x mb-3"></i>
                     <h6>Keep Improving</h6>
-                    <p class="small text-muted">Your average score is {{ "%.1f"|format(avg_score) }}%. Keep practicing!</p>
+                    <p class="small text-muted mb-0">Your average score is <strong style="color: var(--crimson-700);">{{ "%.1f"|format(avg_score) }}%</strong>. Keep practicing!</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="chart-container text-center">
-                    <i class="fas fa-trophy fa-3x text-success mb-3"></i>
+                    <i class="fas fa-trophy fa-3x mb-3"></i>
                     <h6>Best Performance</h6>
-                    <p class="small text-muted">Your highest score is {{ "%.0f"|format(best_score.value) }}%. Great job!</p>
+                    <p class="small text-muted mb-0">Your highest score is <strong style="color: #059669;">{{ "%.0f"|format(best_score.value) }}%</strong>. Great job!</p>
                 </div>
             </div>
         </div>
-        
+
     {% else %}
-        <!-- Empty State -->
         <div class="table-container">
             <div class="empty-state">
                 <div class="empty-icon">
@@ -685,8 +1074,8 @@
                 </div>
                 <h4>No Quiz Attempts Yet</h4>
                 <p class="text-muted">You haven't taken any quizzes. Start learning to see your results here!</p>
-                <a href="{{ url_for('courses') }}" class="btn btn-primary">
-                    <i class="fas fa-book-open me-2"></i>Browse Courses
+                <a href="{{ url_for('courses') }}" class="btn btn-primary mt-3">
+                    <i class="fas fa-book-open"></i>Browse Courses
                 </a>
             </div>
         </div>
@@ -698,66 +1087,53 @@
         const statusFilter = document.getElementById('statusFilter').value;
         const courseFilter = document.getElementById('courseFilter').value;
         const rows = document.querySelectorAll('#resultsTable tbody tr');
-        
+
         rows.forEach(row => {
             const status = row.dataset.status;
             const course = row.dataset.course;
-            
             let showRow = true;
-            
-            if (statusFilter !== 'all' && status !== statusFilter) {
-                showRow = false;
-            }
-            
-            if (courseFilter !== 'all' && course !== courseFilter) {
-                showRow = false;
-            }
-            
+            if (statusFilter !== 'all' && status !== statusFilter) showRow = false;
+            if (courseFilter !== 'all' && course !== courseFilter) showRow = false;
             row.style.display = showRow ? '' : 'none';
         });
-        
-        // Update visible count
+
         const visibleCount = Array.from(rows).filter(row => row.style.display !== 'none').length;
-        
         let existingInfo = document.getElementById('filterInfo');
         if (existingInfo) existingInfo.remove();
-        
+
         const infoSpan = document.createElement('span');
         infoSpan.id = 'filterInfo';
-        infoSpan.className = 'text-muted ms-3 small';
-        infoSpan.innerHTML = `<i class="fas fa-eye me-1"></i>Showing ${visibleCount} of ${rows.length} attempts`;
-        
+        infoSpan.className = 'ms-3';
+        infoSpan.style.cssText = 'color: var(--crimson-700); font-weight: 600; background: var(--crimson-50); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--crimson-200); font-size: 0.85rem;';
+        infoSpan.innerHTML = `<i class="fas fa-eye me-1"></i>Showing ${visibleCount} of ${rows.length}`;
+
         const filterDiv = document.querySelector('.filter-section');
-        if (filterDiv && !document.getElementById('filterInfo')) {
-            filterDiv.appendChild(infoSpan);
-        }
+        if (filterDiv) filterDiv.appendChild(infoSpan);
     }
-    
+
     function exportResults() {
         const table = document.getElementById('resultsTable');
         const rows = table.querySelectorAll('tbody tr');
-        let csvContent = "Date,Course,Quiz,Score,Total Questions,Percentage,Status\n";
-        
+        let csvContent = "Date,Course,Quiz,Score,Total,Percentage,Status\n";
+
         rows.forEach(row => {
             if (row.style.display !== 'none') {
                 const cells = row.querySelectorAll('td');
-                const date = cells[0]?.innerText.trim() || '';
+                const date = cells[0]?.querySelector('.date-simple')?.innerText.replace(/\n/g, ' ').trim() || '';
                 const course = cells[1]?.innerText.trim() || '';
                 const quiz = cells[2]?.innerText.trim() || '';
                 const scoreText = cells[3]?.innerText.trim() || '';
-                const percentage = cells[4]?.querySelector('.fw-bold')?.innerText || '';
+                const percentage = cells[4]?.querySelector('.percentage-text')?.innerText || '';
                 const status = cells[5]?.innerText.trim() || '';
-                
-                // Extract score and total
-                const scoreMatch = scoreText.match(/(\d+)\/(\d+)/);
+
+                const scoreMatch = scoreText.match(/(\d+)\s*\/\s*(\d+)/);
                 const score = scoreMatch ? scoreMatch[1] : '';
                 const total = scoreMatch ? scoreMatch[2] : '';
-                
+
                 csvContent += `"${date}","${course}","${quiz}",${score},${total},"${percentage}","${status}"\n`;
             }
         });
-        
-        // Download CSV
+
         const blob = new Blob([csvContent], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -768,23 +1144,42 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     }
-    
-    // Animate progress bars on load
+
     window.addEventListener('load', () => {
-        document.querySelectorAll('.score-progress-bar').forEach(bar => {
+        document.querySelectorAll('.percentage-fill').forEach(bar => {
             const width = bar.style.width;
             bar.style.width = '0%';
-            setTimeout(() => {
-                bar.style.width = width;
-            }, 100);
+            setTimeout(() => { bar.style.width = width; }, 150);
         });
-        
-        document.querySelectorAll('.chart-bar').forEach(bar => {
+
+        document.querySelectorAll('.chart-bar').forEach((bar, idx) => {
             const width = bar.style.width;
             bar.style.width = '0%';
-            setTimeout(() => {
-                bar.style.width = width;
-            }, 200);
+            setTimeout(() => { bar.style.width = width; }, 200 + (idx * 80));
+        });
+
+        document.querySelectorAll('.stat-value').forEach(stat => {
+            const raw = stat.innerText.replace('%', '').trim();
+            const value = parseFloat(raw);
+            if (!isNaN(value)) {
+                const isPercent = stat.innerText.includes('%');
+                const target = value;
+                const duration = 900;
+                const startTime = performance.now();
+
+                function update(now) {
+                    const elapsed = now - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    const current = target * eased;
+                    if (isPercent) stat.innerText = current.toFixed(1) + '%';
+                    else if (Number.isInteger(target)) stat.innerText = Math.floor(current);
+                    else stat.innerText = current.toFixed(1);
+                    if (progress < 1) requestAnimationFrame(update);
+                    else stat.innerText = isPercent ? target.toFixed(1) + '%' : target;
+                }
+                requestAnimationFrame(update);
+            }
         });
     });
 </script>

@@ -2,630 +2,1100 @@
 
 {% block content %}
 <style>
-    /* Modern Course Detail Styles */
+    /* ============================================================
+       COURSE DETAIL — CRIMSON RED + ANIMATIONS
+       ============================================================ */
     :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --primary-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --danger-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+
+        --crimson-900: #450a0a;
+        --crimson-800: #7f1d1d;
+        --crimson-700: #991b1b;
+        --crimson-600: #b91c1c;
+        --crimson-500: #dc2626;
+        --crimson-400: #ef4444;
+        --crimson-300: #f87171;
+        --crimson-200: #fecaca;
+        --crimson-100: #fee2e2;
+        --crimson-50:  #fef2f2;
     }
-    
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
+    }
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-14px) rotate(3deg); }
+    }
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50%      { transform: scale(1.1); opacity: 0.8; }
+    }
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
+    }
+    @keyframes shimmer {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes starFloat {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-8px) rotate(8deg); }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.6s cubic-bezier(.2,.7,.2,1),
+                    transform 0.6s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    .reveal-stagger > * {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.55s cubic-bezier(.2,.7,.2,1),
+                    transform 0.55s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal-stagger.revealed > * {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .reveal-stagger.revealed > *:nth-child(1) { transition-delay: 0.05s; }
+    .reveal-stagger.revealed > *:nth-child(2) { transition-delay: 0.12s; }
+    .reveal-stagger.revealed > *:nth-child(3) { transition-delay: 0.19s; }
+    .reveal-stagger.revealed > *:nth-child(4) { transition-delay: 0.26s; }
+    .reveal-stagger.revealed > *:nth-child(5) { transition-delay: 0.33s; }
+
+    /* ==================== HERO ==================== */
     .hero-section {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
         border-radius: 20px;
         padding: 40px;
         margin-bottom: 30px;
         color: white;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.28);
     }
-    
+
     .hero-section::before {
         content: '';
         position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-        animation: pulse 4s ease-in-out infinite;
+        top: -50%; right: -30%;
+        width: 500px; height: 500px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
     }
-    
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); opacity: 0.5; }
-        50% { transform: scale(1.1); opacity: 0.8; }
+
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        bottom: -50%; left: -20%;
+        width: 420px; height: 420px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 10s ease-in-out infinite;
+        pointer-events: none;
     }
-    
+
+    .hero-section > * { position: relative; z-index: 1; }
+
     .hero-title {
         font-size: 2.5rem;
-        font-weight: 700;
+        font-weight: 800;
         margin-bottom: 20px;
-        position: relative;
-        z-index: 1;
+        letter-spacing: -0.03em;
+        line-height: 1.2;
+        animation: fadeInDown 0.7s cubic-bezier(.2,.7,.2,1);
     }
-    
+
+    .hero-title::first-letter { color: #fbbf24; }
+
     .hero-meta {
-        position: relative;
-        z-index: 1;
         display: flex;
-        gap: 20px;
+        gap: 14px;
         flex-wrap: wrap;
+        animation: fadeInUp 0.7s cubic-bezier(.2,.7,.2,1) 0.1s backwards;
     }
-    
+
     .hero-meta-item {
-        background: rgba(255,255,255,0.2);
+        background: rgba(255, 255, 255, 0.15);
         backdrop-filter: blur(10px);
         padding: 8px 16px;
         border-radius: 20px;
         font-size: 0.9rem;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
     }
-    
+
+    .hero-meta-item:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .hero-meta-item i { color: #fbbf24; }
+
+    /* ==================== RATING STARS ==================== */
     .rating-stars {
         display: inline-flex;
         gap: 3px;
     }
-    
-    .star-filled {
-        color: #ffc107;
+
+    .star-filled { color: #fbbf24; }
+    .star-half   { color: #fbbf24; }
+    .star-empty  { color: #94a3b8; }
+
+    /* ==================== BREADCRUMB ==================== */
+    .breadcrumb-custom {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        border-radius: 30px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        animation: fadeInDown 0.6s cubic-bezier(.2,.7,.2,1);
+        font-size: 0.88rem;
     }
-    
-    .star-half {
-        color: #ffc107;
-        position: relative;
+
+    .breadcrumb-custom a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.2s ease;
     }
-    
-    .star-empty {
-        color: #dee2e6;
-    }
-    
+
+    .breadcrumb-custom a:hover { color: #fbbf24; }
+
+    /* ==================== INFO CARDS ==================== */
     .info-card {
         background: white;
         border-radius: 16px;
-        padding: 20px;
+        padding: 22px;
         margin-bottom: 25px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
-        border: none;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        border: 1px solid #e2e8f0;
+        position: relative;
     }
-    
+
     .info-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.1);
+        border-color: var(--crimson-200);
+        transform: translateY(-3px);
     }
-    
+
     .card-header-custom {
         background: var(--primary-gradient);
         color: white;
         padding: 15px 20px;
+        border-radius: 14px;
+        font-weight: 700;
+        margin: -22px -22px 20px -22px;
         border-radius: 16px 16px 0 0;
-        font-weight: 600;
-        margin: -20px -20px 20px -20px;
+        display: flex;
+        align-items: center;
+        letter-spacing: -0.01em;
     }
-    
-    .card-header-success {
-        background: var(--success-gradient);
-    }
-    
-    .card-header-info {
-        background: var(--info-gradient);
-    }
-    
+
+    .card-header-custom i { color: #fbbf24; }
+
+    .card-header-success { background: var(--success-gradient); }
+    .card-header-success i { color: #fff; }
+
+    .card-header-info { background: var(--info-gradient); }
+    .card-header-info i { color: #fff; }
+
+    /* ==================== LESSON ITEMS ==================== */
     .lesson-item {
         display: flex;
         align-items: center;
-        padding: 12px 15px;
-        border-bottom: 1px solid #e9ecef;
-        transition: all 0.3s ease;
+        padding: 14px 16px;
+        border-bottom: 1px solid #f1f5f9;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
         cursor: pointer;
+        border-radius: 10px;
     }
-    
+
     .lesson-item:hover {
-        background: #f8f9fa;
-        transform: translateX(5px);
+        background: var(--crimson-50);
+        transform: translateX(6px);
+        border-bottom-color: transparent;
     }
-    
+
+    .lesson-item:last-child { border-bottom: none; }
+
     .lesson-icon {
-        width: 35px;
-        height: 35px;
-        background: linear-gradient(135deg, #667eea20, #764ba220);
+        width: 38px;
+        height: 38px;
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 15px;
-        color: #667eea;
+        margin-right: 14px;
+        color: var(--crimson-700);
+        flex-shrink: 0;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
     }
-    
+
+    .lesson-item:hover .lesson-icon {
+        background: var(--primary-gradient);
+        color: white;
+        transform: scale(1.1) rotate(-6deg);
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.3);
+    }
+
+    .lesson-item strong { color: var(--crimson-700); }
+
+    /* ==================== PRICE CARD ==================== */
     .price-card {
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
         color: white;
         text-align: center;
-        padding: 30px;
+        padding: 32px 26px;
         border-radius: 16px;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.28);
+        margin-bottom: 25px;
     }
-    
-    .price-card::after {
-        content: '🎓';
+
+    .price-card::before {
+        content: '';
         position: absolute;
-        bottom: 10px;
-        right: 10px;
-        font-size: 60px;
-        opacity: 0.1;
+        top: -60%; right: -30%;
+        width: 320px; height: 320px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.45) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 7s ease-in-out infinite;
+        pointer-events: none;
     }
-    
+
+    .price-card::after {
+        content: '';
+        position: absolute;
+        bottom: -50%; left: -20%;
+        width: 280px; height: 280px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.3) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 9s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .price-card > * { position: relative; z-index: 1; }
+
     .price-amount {
-        font-size: 48px;
-        font-weight: 700;
+        font-size: 3rem;
+        font-weight: 800;
         margin-bottom: 10px;
+        letter-spacing: -0.04em;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
     }
-    
+
+    .price-amount small {
+        font-size: 0.85rem;
+        font-weight: 500;
+        opacity: 0.85;
+        letter-spacing: 0;
+    }
+
+    /* ==================== FEATURE LIST ==================== */
     .feature-list {
         list-style: none;
         padding: 0;
+        margin: 0;
     }
-    
+
     .feature-list li {
-        padding: 10px 0;
-        border-bottom: 1px solid #e9ecef;
+        padding: 11px 0;
+        border-bottom: 1px solid #f1f5f9;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
+        font-size: 0.9rem;
+        color: #475569;
+        transition: all 0.25s ease;
     }
-    
-    .feature-list li:last-child {
-        border-bottom: none;
+
+    .feature-list li:hover {
+        color: var(--crimson-800);
+        transform: translateX(4px);
     }
-    
+
+    .feature-list li:last-child { border-bottom: none; }
+
     .feature-icon {
-        width: 30px;
-        color: #11998e;
+        width: 24px;
+        text-align: center;
+        color: var(--crimson-600);
+        transition: transform 0.3s ease;
+        flex-shrink: 0;
     }
-    
+
+    .feature-list li:hover .feature-icon {
+        transform: scale(1.2);
+        color: var(--crimson-700);
+    }
+
+    /* ==================== BUTTONS ==================== */
     .btn-enroll {
         background: var(--success-gradient);
         border: none;
         padding: 15px;
-        font-size: 1.1rem;
-        font-weight: 600;
+        font-size: 1.05rem;
+        font-weight: 700;
         border-radius: 12px;
-        transition: all 0.3s ease;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
         width: 100%;
         color: white;
+        box-shadow: 0 6px 20px rgba(5, 150, 105, 0.25);
+        position: relative;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
     }
-    
+
+    .btn-enroll::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-enroll:hover::before { left: 100%; }
+
     .btn-enroll:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(17, 153, 142, 0.3);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(5, 150, 105, 0.4);
         color: white;
     }
-    
+
     .btn-start {
-        background: var(--primary-gradient);
+        background: rgba(255, 255, 255, 0.98);
         border: none;
         padding: 15px;
-        font-size: 1.1rem;
-        font-weight: 600;
+        font-size: 1.05rem;
+        font-weight: 700;
         border-radius: 12px;
         width: 100%;
-        color: white;
+        color: var(--crimson-800);
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
     }
-    
+
+    .btn-start::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(185, 28, 28, 0.12), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-start:hover::before { left: 100%; }
+
     .btn-start:hover {
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        color: var(--crimson-900);
+        transform: translateY(-3px) scale(1.01);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
     }
-    
+
+    /* ==================== REVIEW CTA (NEW) ==================== */
+    .review-cta {
+        text-align: center;
+        padding: 30px 22px;
+        background: linear-gradient(135deg, #fef2f2 0%, #fafafa 100%);
+        border: 2px dashed var(--crimson-300);
+        border-radius: 16px;
+        transition: all 0.4s cubic-bezier(.2,.7,.2,1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .review-cta:hover {
+        border-color: var(--crimson-500);
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.15);
+        transform: translateY(-3px);
+    }
+
+    .review-cta::before {
+        content: '';
+        position: absolute;
+        top: -50%; right: -30%;
+        width: 220px; height: 220px;
+        background: radial-gradient(circle, rgba(251, 191, 36, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .review-cta > * { position: relative; z-index: 1; }
+
+    .review-cta-icon {
+        font-size: 3rem;
+        color: #fbbf24;
+        margin-bottom: 14px;
+        display: inline-block;
+        animation: starFloat 3s ease-in-out infinite;
+        filter: drop-shadow(0 6px 16px rgba(251, 191, 36, 0.4));
+    }
+
+    .review-cta h5 {
+        color: var(--crimson-900);
+        font-weight: 800;
+        margin-bottom: 8px;
+        letter-spacing: -0.02em;
+    }
+
+    .review-cta p {
+        color: #64748b;
+        font-size: 0.9rem;
+        margin-bottom: 18px;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .btn-review {
+        background: linear-gradient(180deg, var(--crimson-600) 0%, var(--crimson-700) 100%);
+        border: 1px solid var(--crimson-800);
+        color: white;
+        padding: 13px 32px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        border-radius: 12px;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 6px 20px rgba(127, 29, 29, 0.25);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+    }
+
+    .btn-review::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-review:hover::before { left: 100%; }
+
+    .btn-review:hover {
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 12px 28px rgba(127, 29, 29, 0.4);
+        background: linear-gradient(180deg, var(--crimson-700) 0%, var(--crimson-800) 100%);
+    }
+
+    .review-cta-reviewed {
+        text-align: center;
+        padding: 26px 22px;
+        background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+        border: 2px solid #a7f3d0;
+        border-radius: 16px;
+    }
+
+    .review-cta-reviewed i {
+        color: #059669;
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    .review-cta-reviewed h5 {
+        color: #065f46;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .review-cta-reviewed p {
+        color: #047857;
+        font-size: 0.88rem;
+        margin: 0;
+    }
+
+    .review-cta-locked {
+        text-align: center;
+        padding: 24px 22px;
+        background: #f8fafc;
+        border: 2px dashed #cbd5e1;
+        border-radius: 16px;
+    }
+
+    .review-cta-locked i {
+        color: #94a3b8;
+        font-size: 2.2rem;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .review-cta-locked h6 {
+        color: #475569;
+        font-weight: 700;
+        margin-bottom: 6px;
+        font-size: 1rem;
+    }
+
+    .review-cta-locked p {
+        color: #94a3b8;
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    /* ==================== WISHLIST ==================== */
+    .wishlist-btn {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: none;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        z-index: 10;
+        color: var(--crimson-700);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .wishlist-btn:hover {
+        transform: scale(1.12);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .wishlist-btn.active {
+        background: var(--primary-gradient);
+        color: white;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    .wishlist-btn.active i { animation: float 1.4s ease-in-out infinite; }
+
+    /* ==================== INSTRUCTOR AVATAR ==================== */
     .instructor-avatar {
         width: 100px;
         height: 100px;
         border-radius: 50%;
         object-fit: cover;
-        border: 3px solid #667eea;
+        border: 4px solid var(--crimson-600);
         margin-bottom: 15px;
+        transition: all 0.4s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 8px 24px rgba(127, 29, 29, 0.2);
     }
-    
-    .breadcrumb-custom {
-        background: rgba(255,255,255,0.2);
-        backdrop-filter: blur(10px);
-        display: inline-flex;
-        padding: 8px 16px;
-        border-radius: 30px;
-        margin-bottom: 20px;
+
+    .instructor-avatar:hover {
+        transform: scale(1.05) rotate(3deg);
+        box-shadow: 0 12px 32px rgba(127, 29, 29, 0.35);
     }
-    
-    .breadcrumb-custom a {
-        color: white;
-        text-decoration: none;
-    }
-    
-    .wishlist-btn {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: rgba(255,255,255,0.9);
-        border: none;
-        width: 40px;
-        height: 40px;
+
+    /* ==================== REVIEWS ==================== */
+    .review-avatar {
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
+        background: var(--primary-gradient);
+        color: white;
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
+        font-size: 1.15rem;
+        font-weight: 700;
         transition: all 0.3s ease;
-        z-index: 10;
+        box-shadow: 0 4px 12px rgba(127, 29, 29, 0.25);
     }
-    
-    .wishlist-btn:hover {
-        transform: scale(1.1);
+
+    .review-avatar:hover { transform: scale(1.1); }
+
+    .review-item {
+        border-top: 1px solid #f1f5f9;
+        padding-top: 18px;
+        margin-top: 18px;
+        transition: all 0.3s ease;
     }
-    
-    .wishlist-btn.active {
-        background: #eb3349;
-        color: white;
+
+    .review-item:hover { padding-left: 8px; }
+
+    /* ==================== PROGRESS BARS ==================== */
+    .progress {
+        background: #f1f5f9;
+        border-radius: 10px;
+        height: 22px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
     }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+
+    .progress-bar {
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: width 1s cubic-bezier(.2,.7,.2,1);
+        position: relative;
+        overflow: hidden;
     }
-    
-    .fade-in-up {
-        animation: fadeInUp 0.5s ease forwards;
+
+    .progress-bar::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        animation: shimmer 2s infinite;
     }
-    
+
+    .progress-bar.bg-success { background: var(--success-gradient) !important; }
+    .progress-bar.bg-primary { background: var(--primary-gradient) !important; }
+    .progress-bar.bg-warning { background: var(--warning-gradient) !important; }
+    .progress-bar.bg-danger  { background: var(--primary-gradient) !important; }
+
+    /* ==================== BADGES ==================== */
+    .badge.bg-light {
+        background: #f1f5f9 !important;
+        color: var(--crimson-800) !important;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 8px;
+    }
+
+    /* ==================== ALERTS ==================== */
+    .alert-success {
+        background: rgba(255, 255, 255, 0.2) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        color: white !important;
+        border-radius: 12px;
+        font-weight: 500;
+    }
+
+    .alert-success i { color: #fbbf24; }
+
+    /* ==================== RESPONSIVE ==================== */
     @media (max-width: 768px) {
-        .hero-section {
-            padding: 25px;
+        .hero-section { padding: 26px 22px; }
+        .hero-title { font-size: 1.6rem; }
+        .hero-meta { flex-direction: column; gap: 10px; }
+        .hero-meta-item { width: 100%; justify-content: flex-start; }
+        .price-amount { font-size: 2.25rem; }
+        .info-card { padding: 18px; }
+        .card-header-custom { margin: -18px -18px 16px -18px; }
+        .instructor-avatar { width: 80px; height: 80px; }
+        .btn-review { padding: 12px 24px; font-size: 0.88rem; }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
         }
-        
-        .hero-title {
-            font-size: 1.8rem;
-        }
-        
-        .hero-meta {
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .price-amount {
-            font-size: 36px;
-        }
+        .reveal { opacity: 1; transform: none; }
     }
 </style>
 
-<div class="fade-in-up">
-    <!-- Hero Section -->
-    <div class="hero-section">
-        <div class="breadcrumb-custom">
-            <a href="{{ url_for('courses') }}">Courses</a>
-            <span class="mx-2">/</span>
-            <span style="color: rgba(255,255,255,0.8);">{{ course.title[:30] }}{% if course.title|length > 30 %}...{% endif %}</span>
+<!-- ==================== HERO ==================== -->
+<div class="hero-section">
+    <div class="breadcrumb-custom">
+        <a href="{{ url_for('courses') }}">
+            <i class="fas fa-book me-1"></i> Courses
+        </a>
+        <span class="mx-2" style="color: rgba(255,255,255,0.6);">/</span>
+        <span style="color: rgba(255,255,255,0.85);">
+            {{ course.title[:30] }}{% if course.title|length > 30 %}...{% endif %}
+        </span>
+    </div>
+
+    <h1 class="hero-title">{{ course.title }}</h1>
+
+    <div class="hero-meta">
+        <div class="hero-meta-item">
+            <i class="fas fa-user"></i> {{ course.instructor.username }}
         </div>
-        
-        <h1 class="hero-title">{{ course.title }}</h1>
-        
-        <div class="hero-meta">
-            <div class="hero-meta-item">
-                <i class="fas fa-user"></i> {{ course.instructor.username }}
-            </div>
-            <div class="hero-meta-item">
-                <i class="fas fa-calendar"></i> {{ course.created_at.strftime('%B %d, %Y') }}
-            </div>
-            <div class="hero-meta-item">
-                <i class="fas fa-book"></i> {{ course.lessons.count() }} Lessons
-            </div>
-            <div class="hero-meta-item">
-                <i class="fas fa-users"></i> {{ course.enrollments.count() }} Students
-            </div>
+        <div class="hero-meta-item">
+            <i class="fas fa-calendar"></i> {{ course.created_at.strftime('%B %d, %Y') }}
         </div>
-        
-        <!-- Rating Display -->
-        {% if course.total_reviews > 0 %}
-        <div class="hero-meta mt-3">
-            <div class="hero-meta-item">
-                <div class="rating-stars">
-                    {% set full_stars = course.avg_rating|int %}
-                    {% set has_half = (course.avg_rating - full_stars) >= 0.5 %}
-                    
-                    {% for i in range(5) %}
-                        {% if i < full_stars %}
-                            <i class="fas fa-star star-filled"></i>
-                        {% elif i == full_stars and has_half %}
-                            <i class="fas fa-star-half-alt star-filled"></i>
-                        {% else %}
-                            <i class="far fa-star star-empty"></i>
-                        {% endif %}
-                    {% endfor %}
+        <div class="hero-meta-item">
+            <i class="fas fa-book"></i> {{ course.lessons.count() }} Lessons
+        </div>
+        <div class="hero-meta-item">
+            <i class="fas fa-users"></i> {{ course.enrollments.count() }} Students
+        </div>
+    </div>
+
+    {% if course.total_reviews > 0 %}
+    <div class="hero-meta mt-3">
+        <div class="hero-meta-item">
+            <div class="rating-stars">
+                {% set full_stars = course.avg_rating|int %}
+                {% set has_half = (course.avg_rating - full_stars) >= 0.5 %}
+                {% for i in range(5) %}
+                    {% if i < full_stars %}
+                        <i class="fas fa-star star-filled"></i>
+                    {% elif i == full_stars and has_half %}
+                        <i class="fas fa-star-half-alt star-filled"></i>
+                    {% else %}
+                        <i class="far fa-star star-empty"></i>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <span class="ms-2">
+                {{ "%.1f"|format(course.avg_rating) }} ({{ course.total_reviews }} reviews)
+            </span>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="row">
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div class="col-lg-8">
+
+        <!-- Description -->
+        <div class="info-card reveal">
+            <div class="card-header-custom">
+                <i class="fas fa-align-left me-2"></i> Course Description
+            </div>
+            <p class="mb-0" style="line-height: 1.8;">{{ course.description }}</p>
+        </div>
+
+        <!-- What You'll Learn -->
+        <div class="info-card reveal">
+            <div class="card-header-custom card-header-success">
+                <i class="fas fa-graduation-cap me-2"></i> What You'll Learn
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-circle-check feature-icon"></i> Complete understanding of {{ course.title }}</li>
+                        <li><i class="fas fa-circle-check feature-icon"></i> Practical hands-on projects</li>
+                        <li><i class="fas fa-circle-check feature-icon"></i> Real-world applications</li>
+                    </ul>
                 </div>
-                <span class="ms-2">
-                    {{ "%.1f"|format(course.avg_rating) }} ({{ course.total_reviews }} reviews)
-                </span>
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><i class="fas fa-circle-check feature-icon"></i> Downloadable resources</li>
+                        <li><i class="fas fa-circle-check feature-icon"></i> Certificate of completion</li>
+                        <li><i class="fas fa-circle-check feature-icon"></i> Lifetime access</li>
+                    </ul>
+                </div>
             </div>
+        </div>
+
+        <!-- Course Content -->
+        <div class="info-card reveal">
+            <div class="card-header-custom card-header-info">
+                <i class="fas fa-list me-2"></i> Course Content
+                <span class="badge bg-light text-dark ms-2">{{ course.lessons.count() }} Lessons</span>
+            </div>
+
+            {% if course.lessons.count() > 0 %}
+                <div>
+                    {% for lesson in course.lessons.all()[:5] %}
+                    <div class="lesson-item" {% if is_enrolled %}onclick="window.location.href='{{ url_for('learn_course', course_id=course.id) }}?lesson_id={{ lesson.id }}'"{% endif %}>
+                        <div class="lesson-icon">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div>
+                            <strong>Lesson {{ lesson.order }}:</strong> {{ lesson.title }}
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    {% if course.lessons.count() > 5 %}
+                    <div class="text-center mt-3">
+                        <button class="btn btn-outline-primary btn-sm" onclick="window.location.href='{{ url_for('learn_course', course_id=course.id) }}'">
+                            <i class="fas fa-ellipsis-h"></i> And {{ course.lessons.count() - 5 }} more lessons...
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-video fa-3x mb-3" style="color: var(--crimson-200);"></i>
+                    <p class="text-muted">No lessons yet. Check back soon!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- ✅ WRITE REVIEW SECTION — NEW -->
+        {% if current_user.is_authenticated and is_enrolled %}
+            {% set user_reviews = reviews|selectattr('user_id', 'equalto', current_user.id)|list %}
+            {% if user_reviews %}
+                <div class="review-cta-reviewed reveal">
+                    <i class="fas fa-circle-check"></i>
+                    <h5>You've already reviewed this course</h5>
+                    <p>Thank you for sharing your feedback!</p>
+                </div>
+            {% else %}
+                <div class="review-cta reveal">
+                    <div class="review-cta-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h5>Share Your Experience</h5>
+                    <p>Your review helps other students choose the right course and helps the instructor improve.</p>
+                    <a href="{{ url_for('add_review', course_id=course.id) }}" class="btn-review">
+                        <i class="fas fa-pen"></i> Write a Review
+                    </a>
+                </div>
+            {% endif %}
+        {% elif current_user.is_authenticated and not is_enrolled %}
+            <div class="review-cta-locked reveal">
+                <i class="fas fa-lock"></i>
+                <h6>Want to review this course?</h6>
+                <p>Enroll first to share your experience</p>
+            </div>
+        {% endif %}
+
+        <!-- Reviews -->
+        {% if reviews %}
+        <div class="info-card reveal">
+            <div class="card-header-custom">
+                <i class="fas fa-star me-2"></i> Student Reviews
+            </div>
+            <div class="mb-3">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <div class="text-center">
+                        <div style="font-size: 48px; font-weight: 800; color: var(--crimson-700); letter-spacing: -0.03em;">
+                            {{ "%.1f"|format(course.avg_rating) }}
+                        </div>
+                        <div class="rating-stars">
+                            {% for i in range(5) %}
+                                {% if i < course.avg_rating|int %}
+                                    <i class="fas fa-star star-filled"></i>
+                                {% elif i < course.avg_rating %}
+                                    <i class="fas fa-star-half-alt star-filled"></i>
+                                {% else %}
+                                    <i class="far fa-star star-empty"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <small class="text-muted">{{ course.total_reviews }} reviews</small>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-success" style="width: 80%">5 ★</div>
+                        </div>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-primary" style="width: 15%">4 ★</div>
+                        </div>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-warning" style="width: 3%">3 ★</div>
+                        </div>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-danger" style="width: 2%">2 ★</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% for review in reviews[:3] %}
+            <div class="review-item">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="review-avatar">
+                        {{ review.user.username[0].upper() }}
+                    </div>
+                    <div>
+                        <strong style="color: var(--crimson-900);">{{ review.user.username }}</strong>
+                        <div class="rating-stars small">
+                            {% for i in range(5) %}
+                                {% if i < review.rating %}
+                                    <i class="fas fa-star star-filled"></i>
+                                {% else %}
+                                    <i class="far fa-star star-empty"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <small class="text-muted">{{ review.created_at.strftime('%B %d, %Y') }}</small>
+                    </div>
+                </div>
+                <p class="mt-2 mb-0" style="color: #475569;">{{ review.comment }}</p>
+            </div>
+            {% endfor %}
         </div>
         {% endif %}
     </div>
-    
-    <div class="row">
-        <!-- Main Content -->
-        <div class="col-lg-8">
-            <!-- Course Description -->
-            <div class="info-card">
-                <div class="card-header-custom">
-                    <i class="fas fa-align-left me-2"></i> Course Description
-                </div>
-                <p class="mb-0" style="line-height: 1.8;">{{ course.description }}</p>
-            </div>
-            
-            <!-- What You'll Learn -->
-            <div class="info-card">
-                <div class="card-header-custom card-header-success">
-                    <i class="fas fa-graduation-cap me-2"></i> What You'll Learn
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check-circle feature-icon" style="color: #11998e;"></i> Complete understanding of {{ course.title }}</li>
-                            <li><i class="fas fa-check-circle feature-icon" style="color: #11998e;"></i> Practical hands-on projects</li>
-                            <li><i class="fas fa-check-circle feature-icon" style="color: #11998e;"></i> Real-world applications</li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check-circle feature-icon" style="color: #11998e;"></i> Downloadable resources</li>
-                            <li><i class="fas fa-check-circle feature-icon" style="color: #11998e;"></i> Certificate of completion</li>
-                            <li><i class="fas fa-check-circle feature-icon" style="color: #11998e;"></i> Lifetime access</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Course Content Preview -->
-            <div class="info-card">
-                <div class="card-header-custom card-header-info">
-                    <i class="fas fa-list me-2"></i> Course Content
-                    <span class="badge bg-light text-dark ms-2">{{ course.lessons.count() }} Lessons</span>
-                </div>
-                
-                {% if course.lessons.count() > 0 %}
-                    <div>
-                        {% for lesson in course.lessons.all()[:5] %}
-                        <div class="lesson-item" {% if is_enrolled %}onclick="window.location.href='{{ url_for('learn_course', course_id=course.id) }}?lesson_id={{ lesson.id }}'"{% endif %}>
-                            <div class="lesson-icon">
-                                <i class="fas fa-play"></i>
-                            </div>
-                            <div>
-                                <strong>Lesson {{ lesson.order }}:</strong> {{ lesson.title }}
-                            </div>
-                        </div>
-                        {% endfor %}
-                        
-                        {% if course.lessons.count() > 5 %}
-                        <div class="text-center mt-3">
-                            <button class="btn btn-outline-primary btn-sm" onclick="window.location.href='{{ url_for('learn_course', course_id=course.id) }}'">
-                                <i class="fas fa-ellipsis-h"></i> And {{ course.lessons.count() - 5 }} more lessons...
-                            </button>
-                        </div>
-                        {% endif %}
-                    </div>
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <div class="col-lg-4">
+
+        <!-- Course Image -->
+        <div class="info-card p-0 overflow-hidden reveal">
+            <div class="position-relative">
+                {% if course.image_url %}
+                    <img src="{{ course.image_url }}" class="w-100" alt="{{ course.title }}"
+                         style="height: 250px; object-fit: cover;"
+                         onerror="this.src='https://via.placeholder.com/400x300?text=' + encodeURIComponent('{{ course.title }}')">
                 {% else %}
-                    <div class="text-center py-4">
-                        <i class="fas fa-video fa-3x text-muted mb-3"></i>
-                        <p class="text-muted">No lessons yet. Check back soon!</p>
-                    </div>
+                    <img src="https://via.placeholder.com/400x300?text={{ course.title|replace(' ', '+') }}"
+                         class="w-100" alt="{{ course.title }}" style="height: 250px; object-fit: cover;">
+                {% endif %}
+
+                {% if current_user.is_authenticated and not is_enrolled %}
+                <form action="{{ url_for('add_to_wishlist', course_id=course.id) if not is_in_wishlist else url_for('remove_from_wishlist', course_id=course.id) }}" method="get">
+                    <button type="submit" class="wishlist-btn {% if is_in_wishlist %}active{% endif %}" title="{% if is_in_wishlist %}Remove from wishlist{% else %}Add to wishlist{% endif %}">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </form>
                 {% endif %}
             </div>
-            
-            <!-- Reviews Section -->
-            {% if reviews %}
-            <div class="info-card">
-                <div class="card-header-custom">
-                    <i class="fas fa-star me-2"></i> Student Reviews
-                </div>
-                <div class="mb-3">
-                    <div class="d-flex align-items-center gap-3 flex-wrap">
-                        <div class="text-center">
-                            <div style="font-size: 48px; font-weight: bold; color: #667eea;">
-                                {{ "%.1f"|format(course.avg_rating) }}
-                            </div>
-                            <div class="rating-stars">
-                                {% for i in range(5) %}
-                                    {% if i < course.avg_rating|int %}
-                                        <i class="fas fa-star star-filled"></i>
-                                    {% elif i < course.avg_rating %}
-                                        <i class="fas fa-star-half-alt star-filled"></i>
-                                    {% else %}
-                                        <i class="far fa-star star-empty"></i>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                            <small class="text-muted">{{ course.total_reviews }} reviews</small>
-                        </div>
-                        <div class="flex-grow-1">
-                            <div class="progress mb-2">
-                                <div class="progress-bar bg-success" style="width: 80%">5 ★</div>
-                            </div>
-                            <div class="progress mb-2">
-                                <div class="progress-bar bg-primary" style="width: 15%">4 ★</div>
-                            </div>
-                            <div class="progress mb-2">
-                                <div class="progress-bar bg-warning" style="width: 3%">3 ★</div>
-                            </div>
-                            <div class="progress mb-2">
-                                <div class="progress-bar bg-danger" style="width: 2%">2 ★</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                {% for review in reviews[:3] %}
-                <div class="border-top pt-3 mt-3">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                            {{ review.user.username[0].upper() }}
-                        </div>
-                        <div>
-                            <strong>{{ review.user.username }}</strong>
-                            <div class="rating-stars small">
-                                {% for i in range(5) %}
-                                    {% if i < review.rating %}
-                                        <i class="fas fa-star star-filled"></i>
-                                    {% else %}
-                                        <i class="far fa-star star-empty"></i>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                            <small class="text-muted">{{ review.created_at.strftime('%B %d, %Y') }}</small>
-                        </div>
-                    </div>
-                    <p class="mt-2 mb-0">{{ review.comment }}</p>
-                </div>
-                {% endfor %}
+        </div>
+
+        <!-- Price Card -->
+        <div class="price-card">
+            <div class="price-amount">
+                {% if course.price > 0 %}
+                    ${{ "%.2f"|format(course.price) }}
+                {% else %}
+                    FREE
+                {% endif %}
             </div>
+            <div class="mb-3">
+                {% if course.price > 0 %}
+                    <small>One-time payment • Lifetime access</small>
+                {% else %}
+                    <small>Free course! Start learning today</small>
+                {% endif %}
+            </div>
+
+            {% if current_user.is_authenticated %}
+                {% if is_enrolled %}
+                    <div class="alert alert-success mb-3">
+                        <i class="fas fa-circle-check"></i> You are enrolled!
+                    </div>
+                    <a href="{{ url_for('learn_course', course_id=course.id) }}" class="btn-start">
+                        <i class="fas fa-play"></i> Start Learning Now
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('enroll', course_id=course.id) }}" class="btn-enroll"
+                       onclick="return confirm('Enroll in {{ course.title }} for ${{ "%.2f"|format(course.price) }}?')">
+                        <i class="fas fa-shopping-cart"></i> Enroll Now
+                    </a>
+                {% endif %}
+            {% else %}
+                <a href="{{ url_for('login') }}" class="btn-enroll">
+                    <i class="fas fa-right-to-bracket"></i> Login to Enroll
+                </a>
+                <a href="{{ url_for('register') }}" class="btn-start mt-2">
+                    <i class="fas fa-user-plus"></i> Register New Account
+                </a>
             {% endif %}
         </div>
-        
-        <!-- Sidebar -->
-        <div class="col-lg-4">
-            <!-- Course Image Card -->
-            <div class="info-card p-0 overflow-hidden">
-                <div class="position-relative">
-                    {% if course.image_url %}
-                        <img src="{{ course.image_url }}" class="w-100" alt="{{ course.title }}" 
-                             style="height: 250px; object-fit: cover;"
-                             onerror="this.src='https://via.placeholder.com/400x300?text=' + encodeURIComponent('{{ course.title }}')">
-                    {% else %}
-                        <img src="https://via.placeholder.com/400x300?text={{ course.title|replace(' ', '+') }}" 
-                             class="w-100" alt="{{ course.title }}" style="height: 250px; object-fit: cover;">
-                    {% endif %}
-                    
-                    <!-- Wishlist Button -->
-                    {% if current_user.is_authenticated and not is_enrolled %}
-                    <form action="{{ url_for('add_to_wishlist', course_id=course.id) if not is_in_wishlist else url_for('remove_from_wishlist', course_id=course.id) }}" method="get">
-                        <button type="submit" class="wishlist-btn {% if is_in_wishlist %}active{% endif %}" title="{% if is_in_wishlist %}Remove from wishlist{% else %}Add to wishlist{% endif %}">
-                            <i class="fas fa-heart"></i>
-                        </button>
-                    </form>
-                    {% endif %}
+
+        <!-- Course Features -->
+        <div class="info-card reveal">
+            <h5 class="mb-3" style="color: var(--crimson-900); font-weight: 700;">
+                <i class="fas fa-gem" style="color: var(--crimson-600);"></i> Course Features
+            </h5>
+            <ul class="feature-list">
+                <li><i class="fas fa-infinity feature-icon"></i> Lifetime Access</li>
+                <li><i class="fas fa-certificate feature-icon"></i> Certificate of Completion</li>
+                <li><i class="fas fa-headset feature-icon"></i> 24/7 Support</li>
+                <li><i class="fas fa-download feature-icon"></i> Downloadable Resources</li>
+                <li><i class="fas fa-mobile-alt feature-icon"></i> Mobile Friendly</li>
+            </ul>
+        </div>
+
+        <!-- Instructor -->
+        <div class="info-card text-center reveal">
+            <h5 class="mb-3" style="color: var(--crimson-900); font-weight: 700;">
+                <i class="fas fa-chalkboard-teacher" style="color: var(--crimson-600);"></i> About the Instructor
+            </h5>
+
+            {% if course.instructor.avatar %}
+                <img src="{{ course.instructor.avatar }}" class="instructor-avatar" alt="{{ course.instructor.username }}">
+            {% else %}
+                <div class="instructor-avatar d-inline-flex align-items-center justify-content-center"
+                     style="background: var(--primary-gradient); color: white; font-size: 42px; font-weight: 800;">
+                    {{ course.instructor.username[0].upper() }}
                 </div>
-            </div>
-            
-            <!-- Price Card -->
-            <div class="price-card mb-4">
-                <div class="price-amount">
-                    {% if course.price > 0 %}
-                        ${{ "%.2f"|format(course.price) }}
-                    {% else %}
-                        FREE
-                    {% endif %}
-                </div>
-                <div class="mb-3">
-                    {% if course.price > 0 %}
-                        <small>One-time payment • Lifetime access</small>
-                    {% else %}
-                        <small>Free course! Start learning today</small>
-                    {% endif %}
-                </div>
-                
-                <!-- Enroll Button -->
-                {% if current_user.is_authenticated %}
-                    {% if is_enrolled %}
-                        <div class="alert alert-success mb-3" style="background: rgba(255,255,255,0.2); border: none; color: white;">
-                            <i class="fas fa-check-circle"></i> You are enrolled!
-                        </div>
-                        <a href="{{ url_for('learn_course', course_id=course.id) }}" class="btn-start btn text-white">
-                            <i class="fas fa-play"></i> Start Learning Now
-                        </a>
-                    {% else %}
-                        <a href="{{ url_for('enroll', course_id=course.id) }}" class="btn-enroll btn text-white" 
-                           onclick="return confirm('Enroll in {{ course.title }} for ${{ "%.2f"|format(course.price) }}?')">
-                            <i class="fas fa-shopping-cart"></i> Enroll Now
-                        </a>
-                    {% endif %}
-                {% else %}
-                    <a href="{{ url_for('login') }}" class="btn-enroll btn text-white">
-                        <i class="fas fa-sign-in-alt"></i> Login to Enroll
-                    </a>
-                    <a href="{{ url_for('register') }}" class="btn btn-outline-light mt-2 w-100">
-                        <i class="fas fa-user-plus"></i> Register New Account
-                    </a>
+            {% endif %}
+
+            <h5 style="color: var(--crimson-900); font-weight: 700;">
+                {{ course.instructor.full_name or course.instructor.username }}
+            </h5>
+            <p class="text-muted small">@{{ course.instructor.username }}</p>
+
+            {% if course.instructor.bio %}
+                <p class="small" style="color: #475569;">
+                    {{ course.instructor.bio[:120] }}{% if course.instructor.bio|length > 120 %}...{% endif %}
+                </p>
+            {% endif %}
+
+            <div class="d-flex justify-content-center gap-2 mt-3 flex-wrap">
+                <a href="{{ url_for('public_profile', username=course.instructor.username) }}" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-user"></i> View Profile
+                </a>
+                {% if course.instructor.social_twitter %}
+                <a href="{{ course.instructor.social_twitter }}" target="_blank" class="btn btn-outline-info btn-sm">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                {% endif %}
+                {% if course.instructor.social_linkedin %}
+                <a href="{{ course.instructor.social_linkedin }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                    <i class="fab fa-linkedin"></i>
+                </a>
                 {% endif %}
             </div>
-            
-            <!-- Course Features -->
-            <div class="info-card">
-                <h5 class="mb-3">
-                    <i class="fas fa-gem"></i> Course Features
-                </h5>
-                <ul class="feature-list">
-                    <li><i class="fas fa-infinity feature-icon" style="color: #667eea;"></i> Lifetime Access</li>
-                    <li><i class="fas fa-certificate feature-icon" style="color: #667eea;"></i> Certificate of Completion</li>
-                    <li><i class="fas fa-headset feature-icon" style="color: #667eea;"></i> 24/7 Support</li>
-                    <li><i class="fas fa-download feature-icon" style="color: #667eea;"></i> Downloadable Resources</li>
-                    <li><i class="fas fa-mobile-alt feature-icon" style="color: #667eea;"></i> Mobile Friendly</li>
-                </ul>
-            </div>
-            
-            <!-- Instructor Card -->
-            <div class="info-card text-center">
-                <h5 class="mb-3">
-                    <i class="fas fa-chalkboard-teacher"></i> About the Instructor
-                </h5>
-                
-                {% if course.instructor.avatar %}
-                    <img src="{{ course.instructor.avatar }}" class="instructor-avatar" alt="{{ course.instructor.username }}">
-                {% else %}
-                    <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" 
-                         style="width: 100px; height: 100px; font-size: 42px;">
-                        {{ course.instructor.username[0].upper() }}
-                    </div>
-                {% endif %}
-                
-                <h5>{{ course.instructor.full_name or course.instructor.username }}</h5>
-                <p class="text-muted small">@{{ course.instructor.username }}</p>
-                
-                {% if course.instructor.bio %}
-                    <p class="small">{{ course.instructor.bio[:120] }}{% if course.instructor.bio|length > 120 %}...{% endif %}</p>
-                {% endif %}
-                
-                <div class="d-flex justify-content-center gap-2 mt-3">
-                    <a href="{{ url_for('public_profile', username=course.instructor.username) }}" class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-user"></i> View Profile
-                    </a>
-                    {% if course.instructor.social_twitter %}
-                    <a href="{{ course.instructor.social_twitter }}" target="_blank" class="btn btn-outline-info btn-sm">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    {% endif %}
-                    {% if course.instructor.social_linkedin %}
-                    <a href="{{ course.instructor.social_linkedin }}" target="_blank" class="btn btn-outline-primary btn-sm">
-                        <i class="fab fa-linkedin"></i>
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <!-- Share Course -->
-            <div class="info-card">
-                <h5 class="mb-3">
-                    <i class="fas fa-share-alt"></i> Share This Course
-                </h5>
-                <div class="d-grid gap-2">
-                    <button class="btn btn-outline-primary btn-sm" onclick="copyCourseLink(event)">
-                        <i class="fas fa-copy"></i> Copy Link
-                    </button>
-                    <div class="text-center">
-                        <small class="text-muted">Share with friends and earn rewards!</small>
-                    </div>
+        </div>
+
+        <!-- Share -->
+        <div class="info-card reveal">
+            <h5 class="mb-3" style="color: var(--crimson-900); font-weight: 700;">
+                <i class="fas fa-share-alt" style="color: var(--crimson-600);"></i> Share This Course
+            </h5>
+            <div class="d-grid gap-2">
+                <button class="btn btn-outline-primary btn-sm" onclick="copyCourseLink(event)">
+                    <i class="fas fa-copy"></i> Copy Link
+                </button>
+                <div class="text-center">
+                    <small class="text-muted">Share with friends and earn rewards!</small>
                 </div>
             </div>
         </div>
@@ -633,39 +1103,76 @@
 </div>
 
 <script>
-function copyCourseLink(event) {
-    const url = window.location.href;
-    const btn = event.target.closest('button');
-    const originalText = btn.innerHTML;
-    
-    navigator.clipboard.writeText(url).then(() => {
-        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-        setTimeout(() => {
-            btn.innerHTML = originalText;
-        }, 2000);
-    }).catch(() => {
-        // Fallback for older browsers
+    // ==================== SCROLL REVEAL ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal, .reveal-stagger');
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => obs.observe(el));
+    });
+
+    // ==================== COPY LINK ====================
+    function copyCourseLink(event) {
+        const url = window.location.href;
+        const btn = event.target.closest('button');
+        const originalText = btn.innerHTML;
+
+        function showCopied() {
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            btn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
+            btn.style.color = 'white';
+            btn.style.borderColor = 'transparent';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = '';
+                btn.style.color = '';
+                btn.style.borderColor = '';
+            }, 2000);
+        }
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(url).then(showCopied).catch(() => fallbackCopy(url, showCopied));
+        } else {
+            fallbackCopy(url, showCopied);
+        }
+    }
+
+    function fallbackCopy(text, callback) {
         const textArea = document.createElement('textarea');
-        textArea.value = url;
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
         document.body.appendChild(textArea);
         textArea.select();
-        document.execCommand('copy');
+        try { document.execCommand('copy'); callback(); } catch(e) {}
         document.body.removeChild(textArea);
-        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-        setTimeout(() => {
-            btn.innerHTML = originalText;
-        }, 2000);
-    });
-}
+    }
 
-// Add hover animation to lesson items
-document.querySelectorAll('.lesson-item').forEach(item => {
-    item.addEventListener('click', function() {
-        const isEnrolled = {{ is_enrolled|tojson }};
-        if (!isEnrolled) {
-            alert('Please enroll in this course to access lessons!');
-        }
+    // ==================== LESSON CLICK ====================
+    document.querySelectorAll('.lesson-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const isEnrolled = {{ is_enrolled|tojson }};
+            if (!isEnrolled) {
+                const toast = document.createElement('div');
+                toast.style.cssText = `
+                    position: fixed; bottom: 24px; right: 24px;
+                    background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+                    color: white; padding: 14px 24px; border-radius: 12px;
+                    z-index: 9999; font-weight: 600; font-size: 0.9rem;
+                    box-shadow: 0 12px 32px rgba(127, 29, 29, 0.35);
+                    animation: fadeInUp 0.35s ease;
+                `;
+                toast.innerHTML = '<i class="fas fa-lock me-2"></i>Please enroll in this course to access lessons!';
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3200);
+            }
+        });
     });
-});
 </script>
 {% endblock %}

@@ -2,330 +2,521 @@
 
 {% block content %}
 <style>
-    /* Modern Edit Profile Styles */
+    /* ============================================================
+       EDIT PROFILE — CRIMSON RED + ANIMATIONS
+       ============================================================ */
     :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --primary-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --danger-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+
+        --crimson-900: #450a0a;
+        --crimson-800: #7f1d1d;
+        --crimson-700: #991b1b;
+        --crimson-600: #b91c1c;
+        --crimson-500: #dc2626;
+        --crimson-400: #ef4444;
+        --crimson-300: #f87171;
+        --crimson-200: #fecaca;
+        --crimson-100: #fee2e2;
+        --crimson-50:  #fef2f2;
     }
-    
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
+    }
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-14px) rotate(3deg); }
+    }
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
+    }
+    @keyframes shimmer {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.85); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes slideInRight {
+        from { transform: translateX(120%); opacity: 0; }
+        to   { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to   { transform: translateX(120%); opacity: 0; }
+    }
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+        50%      { box-shadow: 0 0 0 12px rgba(220, 38, 38, 0); }
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.6s cubic-bezier(.2,.7,.2,1),
+                    transform 0.6s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    /* ==================== PAGE HEADER ==================== */
     .page-header {
-        background: var(--primary-gradient);
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
         border-radius: 20px;
-        padding: 25px 30px;
+        padding: 28px 30px;
         margin-bottom: 30px;
         color: white;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.28);
     }
-    
+
     .page-header::before {
-        content: '✏️';
+        content: '';
         position: absolute;
-        bottom: -20px;
-        right: 20px;
-        font-size: 80px;
-        opacity: 0.1;
+        top: -50%; right: -25%;
+        width: 340px; height: 340px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.45) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
     }
-    
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50%; left: -15%;
+        width: 280px; height: 280px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 10s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .page-header > * { position: relative; z-index: 1; }
+
     .page-header h3 {
         margin: 0;
-        font-weight: 700;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    
-    .page-header p {
-        margin: 5px 0 0;
-        opacity: 0.9;
+
+    .page-header h3 i {
+        color: #fbbf24;
+        animation: float 3.5s ease-in-out infinite;
+        filter: drop-shadow(0 4px 10px rgba(251, 191, 36, 0.4));
     }
-    
+
+    .page-header p { margin: 6px 0 0; opacity: 0.92; }
+
+    /* ==================== FORM CARD ==================== */
     .form-card {
         background: white;
         border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        box-shadow: 0 20px 50px rgba(127, 29, 29, 0.1);
         margin-bottom: 30px;
+        border: 1px solid var(--crimson-100);
+        animation: fadeInUp 0.7s cubic-bezier(.2,.7,.2,1);
     }
-    
-    .form-body {
-        padding: 30px;
-    }
-    
-    .form-group {
-        margin-bottom: 22px;
-    }
-    
+
+    .form-body { padding: 30px; }
+    .form-group { margin-bottom: 22px; }
+
     .form-label {
         font-weight: 600;
         margin-bottom: 8px;
-        color: #2c3e50;
+        color: var(--crimson-900);
         display: flex;
         align-items: center;
         gap: 8px;
+        font-size: 0.9rem;
     }
-    
+
     .form-label i {
-        color: #667eea;
+        color: var(--crimson-600);
         width: 18px;
+        transition: transform 0.3s ease;
     }
-    
+
+    .form-group:hover .form-label i { transform: scale(1.15); }
+
+    /* ==================== INPUTS ==================== */
     .form-control, .form-select {
-        border: 2px solid #e9ecef;
+        border: 2px solid #e2e8f0;
         border-radius: 12px;
-        padding: 12px 15px;
-        transition: all 0.3s ease;
+        padding: 12px 16px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
         font-size: 14px;
+        color: var(--crimson-900);
+        background: #fafafa;
     }
-    
+
+    .form-control::placeholder { color: #94a3b8; }
+
+    .form-control:hover, .form-select:hover {
+        border-color: var(--crimson-200);
+        background: white;
+    }
+
     .form-control:focus, .form-select:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        border-color: var(--crimson-500);
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
         outline: none;
+        background: white;
+        transform: translateY(-1px);
     }
-    
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 110px;
+        line-height: 1.6;
+    }
+
+    /* Validation states */
     .form-control.is-valid {
-        border-color: #11998e;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2311998e' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+        border-color: #059669;
+        background: #ecfdf5;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23059669' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
         background-repeat: no-repeat;
         background-position: right 12px center;
         background-size: 16px;
-        padding-right: 35px;
+        padding-right: 38px;
     }
-    
+
     .form-control.is-invalid {
-        border-color: #eb3349;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23eb3349'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23eb3349' stroke='none'/%3e%3c/svg%3e");
+        border-color: var(--crimson-500);
+        background: #fef2f2;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc2626'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc2626' stroke='none'/%3e%3c/svg%3e");
         background-repeat: no-repeat;
         background-position: right 12px center;
         background-size: 16px;
-        padding-right: 35px;
+        padding-right: 38px;
     }
-    
+
     .invalid-feedback {
-        color: #eb3349;
+        color: var(--crimson-600);
         font-size: 12px;
-        margin-top: 5px;
+        margin-top: 6px;
         display: block;
+        font-weight: 500;
     }
-    
+
     .valid-feedback {
-        color: #11998e;
+        color: #059669;
         font-size: 12px;
-        margin-top: 5px;
+        margin-top: 6px;
         display: block;
+        font-weight: 500;
     }
-    
-    /* Section Header */
+
+    /* ==================== SECTION HEADER ==================== */
     .section-header {
         display: flex;
         align-items: center;
         gap: 10px;
-        margin: 25px 0 15px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #e9ecef;
+        margin: 30px 0 18px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--crimson-100);
+        position: relative;
     }
-    
+
+    .section-header::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 50px;
+        height: 2px;
+        background: var(--primary-gradient);
+        border-radius: 2px;
+        animation: scaleIn 0.6s ease both;
+    }
+
     .section-header h5 {
         margin: 0;
-        font-weight: 600;
-        color: #2c3e50;
+        font-weight: 700;
+        color: var(--crimson-900);
+        letter-spacing: -0.02em;
     }
-    
+
     .section-header i {
-        color: #667eea;
-        font-size: 20px;
+        color: var(--crimson-600);
+        font-size: 1.15rem;
+        transition: transform 0.3s ease;
     }
-    
-    /* Skills Tags */
+
+    .section-header:hover i { transform: scale(1.15) rotate(-6deg); }
+
+    /* ==================== SKILLS ==================== */
     .skills-preview {
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
         margin-top: 10px;
     }
-    
+
     .skill-tag {
         display: inline-block;
-        padding: 5px 12px;
-        background: linear-gradient(135deg, #667eea15, #764ba215);
-        color: #667eea;
+        padding: 6px 14px;
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
+        color: var(--crimson-700);
         border-radius: 20px;
         font-size: 12px;
-        transition: all 0.3s ease;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        animation: scaleIn 0.3s ease;
+        border: 1px solid var(--crimson-200);
     }
-    
-    /* Social Preview */
+
+    .skill-tag:hover {
+        background: var(--primary-gradient);
+        color: white;
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 4px 12px rgba(127, 29, 29, 0.25);
+        border-color: transparent;
+    }
+
+    /* ==================== SOCIAL PREVIEW ==================== */
     .social-preview {
-        background: #f8f9fa;
-        border-radius: 12px;
-        padding: 15px;
-        margin-top: 10px;
+        background: linear-gradient(135deg, #fef2f2 0%, #fafafa 100%);
+        border: 2px dashed var(--crimson-200);
+        border-radius: 14px;
+        padding: 18px;
+        margin-top: 12px;
         display: none;
     }
-    
+
     .social-preview.show {
         display: block;
-        animation: fadeIn 0.3s ease;
+        animation: fadeInUp 0.4s cubic-bezier(.2,.7,.2,1);
     }
-    
+
+    .social-preview strong {
+        color: var(--crimson-900);
+        font-size: 0.85rem;
+        display: block;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
     .social-preview a {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 8px 15px;
+        padding: 8px 16px;
         border-radius: 25px;
         text-decoration: none;
         margin-right: 10px;
-        margin-bottom: 5px;
-        transition: all 0.3s ease;
+        margin-bottom: 8px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        font-size: 0.85rem;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
-    
+
     .social-preview a:hover {
-        transform: translateY(-2px);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        color: white;
     }
-    
-    /* Character Counters */
+
+    /* ==================== CHARACTER COUNTER ==================== */
     .char-counter {
         text-align: right;
-        font-size: 11px;
-        color: #6c757d;
-        margin-top: 5px;
+        font-size: 12px;
+        color: #94a3b8;
+        margin-top: 6px;
+        font-weight: 500;
+        transition: color 0.3s ease;
     }
-    
-    .char-counter.warning {
-        color: #f6d365;
-    }
-    
-    .char-counter.danger {
-        color: #eb3349;
-    }
-    
-    /* Action Buttons */
+
+    .char-counter.warning { color: #d97706; font-weight: 600; }
+    .char-counter.danger { color: var(--crimson-600); font-weight: 700; }
+
+    /* ==================== BUTTONS ==================== */
     .btn-update {
-        background: var(--success-gradient);
-        border: none;
-        padding: 14px;
-        font-size: 16px;
-        font-weight: 600;
+        background: linear-gradient(180deg, var(--crimson-600) 0%, var(--crimson-700) 100%);
+        border: 1px solid var(--crimson-800);
+        padding: 15px;
+        font-size: 1rem;
+        font-weight: 700;
         border-radius: 12px;
-        transition: all 0.3s ease;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
         color: white;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 4px 16px rgba(127, 29, 29, 0.25);
+        position: relative;
+        overflow: hidden;
+        letter-spacing: -0.01em;
     }
-    
+
+    .btn-update::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-update:hover::before { left: 100%; }
+
     .btn-update:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(17, 153, 142, 0.3);
+        transform: translateY(-3px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 12px 28px rgba(127, 29, 29, 0.4);
         color: white;
+        background: linear-gradient(180deg, var(--crimson-700) 0%, var(--crimson-800) 100%);
     }
-    
+
+    .btn-update:active { transform: translateY(-1px); }
+
     .btn-cancel {
-        background: #6c757d;
-        border: none;
+        background: #f1f5f9;
+        border: 2px solid #e2e8f0;
         padding: 14px;
-        font-size: 16px;
+        font-size: 1rem;
         font-weight: 600;
         border-radius: 12px;
-        transition: all 0.3s ease;
-        color: white;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        color: #475569;
         text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
     }
-    
+
     .btn-cancel:hover {
-        background: #5a6268;
+        background: #e2e8f0;
+        border-color: #cbd5e1;
+        color: var(--crimson-800);
         transform: translateY(-2px);
-        color: white;
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
     }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-        .form-body {
-            padding: 20px;
-        }
-        
-        .page-header {
-            padding: 20px;
-        }
-        
-        .social-preview a {
-            display: block;
-            margin-bottom: 10px;
-        }
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .fade-in {
-        animation: fadeIn 0.5s ease forwards;
-    }
-    
+
+    .btn-cancel i { transition: transform 0.3s ease; }
+    .btn-cancel:hover i { transform: rotate(90deg); }
+
+    /* ==================== LOADING ==================== */
     .btn-loading {
         position: relative;
         pointer-events: none;
-        opacity: 0.7;
+        opacity: 0.85;
     }
-    
+
     .btn-loading::after {
         content: '';
         position: absolute;
-        width: 18px;
-        height: 18px;
-        top: 50%;
-        right: 15px;
+        width: 18px; height: 18px;
+        top: 50%; right: 18px;
         margin-top: -9px;
-        border: 2px solid white;
-        border-top-color: transparent;
+        border: 2px solid rgba(255,255,255,0.4);
+        border-top-color: white;
         border-radius: 50%;
         animation: spin 0.6s linear infinite;
     }
-    
-    @keyframes spin {
-        to { transform: rotate(360deg); }
+
+    /* ==================== TOAST ==================== */
+    .toast-notification {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: linear-gradient(135deg, #059669, #10b981);
+        color: white;
+        padding: 14px 24px;
+        border-radius: 12px;
+        z-index: 9999;
+        animation: slideInRight 0.35s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 12px 32px rgba(5, 150, 105, 0.35);
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .toast-error {
+        background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+        box-shadow: 0 12px 32px rgba(127, 29, 29, 0.4);
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+        .form-body { padding: 22px; }
+        .page-header { padding: 22px 20px; }
+        .social-preview a { display: flex; margin-right: 0; width: 100%; justify-content: center; }
+        .toast-notification { left: 16px; right: 16px; bottom: 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        .reveal { opacity: 1; transform: none; }
     }
 </style>
 
-<div class="container fade-in">
-    <!-- Page Header -->
+<div class="container">
+    <!-- ==================== PAGE HEADER ==================== -->
     <div class="page-header">
-        <h3><i class="fas fa-edit me-2"></i>Edit Profile</h3>
+        <h3><i class="fas fa-pen-to-square me-2"></i>Edit Profile</h3>
         <p>Update your personal information and public profile</p>
     </div>
-    
+
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="form-card">
                 <div class="form-body">
-                    <!-- FIXED: Added action -->
                     <form method="POST" id="profileForm" action="{{ url_for('edit_profile') }}">
                         {{ form.hidden_tag() }}
-                        
-                        <!-- Basic Information Section -->
-                        <div class="section-header">
-                            <i class="fas fa-user-circle"></i>
+
+                        <!-- ==================== BASIC INFO ==================== -->
+                        <div class="section-header reveal">
+                            <i class="fas fa-circle-user"></i>
                             <h5>Basic Information</h5>
                         </div>
-                        
+
                         <!-- Full Name -->
-                        <div class="form-group">
+                        <div class="form-group reveal">
                             {{ form.full_name.label(class="form-label") }}
                             {{ form.full_name(class="form-control", placeholder="Your full name", id="fullName") }}
                             <div class="invalid-feedback" id="fullNameError"></div>
                             <div class="valid-feedback" id="fullNameValid"></div>
                         </div>
-                        
+
                         <!-- Bio -->
-                        <div class="form-group">
+                        <div class="form-group reveal">
                             {{ form.bio.label(class="form-label") }}
                             {{ form.bio(class="form-control", rows="4", placeholder="Tell us about yourself...", id="bio") }}
                             <div class="char-counter" id="bioCounter">0/500 characters</div>
                             <div class="invalid-feedback" id="bioError"></div>
                         </div>
-                        
-                        <!-- Location & Occupation -->
-                        <div class="row">
+
+                        <!-- Location + Occupation -->
+                        <div class="row reveal">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     {{ form.location.label(class="form-label") }}
@@ -339,71 +530,73 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Education -->
-                        <div class="form-group">
+                        <div class="form-group reveal">
                             {{ form.education.label(class="form-label") }}
                             {{ form.education(class="form-control", placeholder="e.g., B.Sc. Computer Science, Stanford University", id="education") }}
                         </div>
-                        
+
                         <!-- Website -->
-                        <div class="form-group">
+                        <div class="form-group reveal">
                             {{ form.website.label(class="form-label") }}
                             {{ form.website(class="form-control", placeholder="https://yourwebsite.com", id="website") }}
                             <div class="invalid-feedback" id="websiteError"></div>
                         </div>
-                        
-                        <!-- Skills Section -->
-                        <div class="section-header">
+
+                        <!-- ==================== SKILLS ==================== -->
+                        <div class="section-header reveal">
                             <i class="fas fa-code"></i>
                             <h5>Skills & Expertise</h5>
                         </div>
-                        
-                        <div class="form-group">
+
+                        <div class="form-group reveal">
                             {{ form.skills.label(class="form-label") }}
                             {{ form.skills(class="form-control", placeholder="Python, JavaScript, Data Analysis, etc.", id="skills") }}
-                            <small class="text-muted">Separate skills with commas</small>
+                            <small class="text-muted d-block mt-1">
+                                <i class="fas fa-circle-info"></i> Separate skills with commas
+                            </small>
                             <div class="skills-preview" id="skillsPreview"></div>
                         </div>
-                        
-                        <!-- Social Media Section -->
-                        <div class="section-header">
-                            <i class="fas fa-share-alt"></i>
+
+                        <!-- ==================== SOCIAL ==================== -->
+                        <div class="section-header reveal">
+                            <i class="fas fa-share-nodes"></i>
                             <h5>Social Media Links</h5>
                         </div>
-                        
+
                         <!-- Twitter -->
-                        <div class="form-group">
+                        <div class="form-group reveal">
                             {{ form.social_twitter.label(class="form-label") }}
                             {{ form.social_twitter(class="form-control", placeholder="https://twitter.com/yourusername", id="twitter") }}
                             <div class="invalid-feedback" id="twitterError"></div>
                         </div>
-                        
+
                         <!-- LinkedIn -->
-                        <div class="form-group">
+                        <div class="form-group reveal">
                             {{ form.social_linkedin.label(class="form-label") }}
                             {{ form.social_linkedin(class="form-control", placeholder="https://linkedin.com/in/yourusername", id="linkedin") }}
                             <div class="invalid-feedback" id="linkedinError"></div>
                         </div>
-                        
+
                         <!-- GitHub -->
-                        <div class="form-group">
+                        <div class="form-group reveal">
                             {{ form.social_github.label(class="form-label") }}
                             {{ form.social_github(class="form-control", placeholder="https://github.com/yourusername", id="github") }}
                             <div class="invalid-feedback" id="githubError"></div>
                         </div>
-                        
+
                         <!-- Social Preview -->
                         <div class="social-preview" id="socialPreview">
                             <strong>Preview:</strong>
                             <div id="socialLinks"></div>
                         </div>
-                        
-                        <!-- Action Buttons -->
-                        <div class="d-grid gap-3 mt-4">
-                            {{ form.submit(class="btn btn-update text-white", id="submitBtn", value="💾 Save Changes") }}
-                            <a href="{{ url_for('profile') }}" class="btn btn-cancel text-white text-center">
-                                <i class="fas fa-times me-2"></i>Cancel
+
+                        <!-- ==================== ACTIONS ==================== -->
+                        <div class="d-grid gap-3 mt-4 reveal">
+                            {{ form.submit(class="btn btn-update", id="submitBtn", value="Save Changes") }}
+                            <a href="{{ url_for('profile') }}" class="btn btn-cancel">
+                                <i class="fas fa-xmark"></i>Cancel
                             </a>
                         </div>
                     </form>
@@ -414,7 +607,21 @@
 </div>
 
 <script>
-    // DOM Elements
+    // ==================== SCROLL REVEAL ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal');
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => obs.observe(el));
+    });
+
+    // ==================== ELEMENTS ====================
     const bioInput = document.getElementById('bio');
     const bioCounter = document.getElementById('bioCounter');
     const skillsInput = document.getElementById('skills');
@@ -427,8 +634,7 @@
     const socialLinks = document.getElementById('socialLinks');
     const form = document.getElementById('profileForm');
     const submitBtn = document.getElementById('submitBtn');
-    
-    // Error elements
+
     const fullNameError = document.getElementById('fullNameError');
     const bioError = document.getElementById('bioError');
     const websiteError = document.getElementById('websiteError');
@@ -436,13 +642,52 @@
     const linkedinError = document.getElementById('linkedinError');
     const githubError = document.getElementById('githubError');
     const fullNameValid = document.getElementById('fullNameValid');
-    
-    // Bio character counter
+
+    // ==================== HELPERS ====================
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function setInvalid(input, errorElement, message) {
+        input.classList.add('is-invalid');
+        input.classList.remove('is-valid');
+        if (errorElement) errorElement.textContent = message;
+    }
+
+    function setValid(input, errorElement) {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+        if (errorElement) errorElement.textContent = '';
+    }
+
+    function isValidUrl(url) {
+        if (!url) return true;
+        try { new URL(url); return true; } catch (e) { return false; }
+    }
+
+    function showToast(msg, type = 'error') {
+        let toast = document.querySelector('.toast-notification');
+        if (toast) toast.remove();
+
+        toast = document.createElement('div');
+        toast.className = 'toast-notification' + (type === 'error' ? ' toast-error' : '');
+        toast.innerHTML = `<i class="fas fa-${type === 'error' ? 'circle-exclamation' : 'circle-check'} me-2"></i>${msg}`;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.animation = 'slideOutRight 0.3s ease forwards';
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
+    }
+
+    // ==================== BIO COUNTER ====================
     function updateBioCounter() {
         if (!bioInput || !bioCounter) return;
         const length = bioInput.value.length;
         bioCounter.textContent = length + '/500 characters';
-        
+
         if (length > 500) {
             bioCounter.classList.add('danger');
             bioCounter.classList.remove('warning');
@@ -459,41 +704,19 @@
             bioInput.classList.remove('is-valid', 'is-invalid');
         }
     }
-    
-    // Skills preview (create tags)
+
+    // ==================== SKILLS PREVIEW ====================
     function updateSkillsPreview() {
         if (!skillsInput || !skillsPreview) return;
-        const skills = skillsInput.value.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s; });
-        skillsPreview.innerHTML = skills.map(function(skill) {
-            return '<span class="skill-tag">' + escapeHtml(skill) + '</span>';
-        }).join('');
+        const skills = skillsInput.value.split(',').map(s => s.trim()).filter(s => s);
+        skillsPreview.innerHTML = skills.map(skill =>
+            `<span class="skill-tag">${escapeHtml(skill)}</span>`
+        ).join('');
     }
-    
-    // URL validation
-    function isValidUrl(url) {
-        if (!url) return true;
-        try {
-            new URL(url);
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
-    
-    function setInvalid(input, errorElement, message) {
-        input.classList.add('is-invalid');
-        input.classList.remove('is-valid');
-        if (errorElement) errorElement.textContent = message;
-    }
-    
-    function setValid(input, errorElement) {
-        input.classList.remove('is-invalid');
-        input.classList.add('is-valid');
-        if (errorElement) errorElement.textContent = '';
-    }
-    
+
+    // ==================== URL VALIDATORS ====================
     function validateWebsite() {
-        if (!websiteInput || !websiteError) return true;
+        if (!websiteInput) return true;
         const value = websiteInput.value.trim();
         if (value && !isValidUrl(value)) {
             setInvalid(websiteInput, websiteError, 'Please enter a valid URL (e.g., https://example.com)');
@@ -507,7 +730,7 @@
             return true;
         }
     }
-    
+
     function validateSocialUrl(input, platform, errorElement) {
         if (!input) return true;
         const value = input.value.trim();
@@ -516,46 +739,42 @@
             if (errorElement) errorElement.textContent = '';
             return true;
         }
-        
-        var patterns = {
+
+        const patterns = {
             twitter: /twitter\.com\/[a-zA-Z0-9_]+/,
             linkedin: /linkedin\.com\/in\/[a-zA-Z0-9_-]+/,
             github: /github\.com\/[a-zA-Z0-9_-]+/
         };
-        
+
         if (patterns[platform] && patterns[platform].test(value)) {
             setValid(input, errorElement);
             return true;
-        } else {
-            setInvalid(input, errorElement, 'Please enter a valid ' + platform + ' profile URL');
-            return false;
         }
+        setInvalid(input, errorElement, `Please enter a valid ${platform} profile URL`);
+        return false;
     }
-    
-    // Update social preview
+
+    // ==================== SOCIAL PREVIEW ====================
     function updateSocialPreview() {
-        if (!twitterInput || !linkedinInput || !githubInput || !socialPreview || !socialLinks) return;
-        var twitter = twitterInput.value.trim();
-        var linkedin = linkedinInput.value.trim();
-        var github = githubInput.value.trim();
-        
-        var html = '';
+        if (!socialPreview || !socialLinks) return;
+        const twitter = twitterInput?.value.trim();
+        const linkedin = linkedinInput?.value.trim();
+        const github = githubInput?.value.trim();
+
+        let html = '';
         if (twitter) {
-            html += '<a href="' + escapeHtml(twitter) + '" target="_blank" style="background: #1DA1F2; color: white;">' +
-                        '<i class="fab fa-twitter"></i> Twitter' +
-                    '</a>';
+            html += `<a href="${escapeHtml(twitter)}" target="_blank" rel="noopener" style="background: #1DA1F2;">` +
+                    `<i class="fab fa-twitter"></i> Twitter</a>`;
         }
         if (linkedin) {
-            html += '<a href="' + escapeHtml(linkedin) + '" target="_blank" style="background: #0077b5; color: white;">' +
-                        '<i class="fab fa-linkedin"></i> LinkedIn' +
-                    '</a>';
+            html += `<a href="${escapeHtml(linkedin)}" target="_blank" rel="noopener" style="background: #0077b5;">` +
+                    `<i class="fab fa-linkedin"></i> LinkedIn</a>`;
         }
         if (github) {
-            html += '<a href="' + escapeHtml(github) + '" target="_blank" style="background: #333; color: white;">' +
-                        '<i class="fab fa-github"></i> GitHub' +
-                    '</a>';
+            html += `<a href="${escapeHtml(github)}" target="_blank" rel="noopener" style="background: #333;">` +
+                    `<i class="fab fa-github"></i> GitHub</a>`;
         }
-        
+
         if (html) {
             socialLinks.innerHTML = html;
             socialPreview.classList.add('show');
@@ -563,101 +782,83 @@
             socialPreview.classList.remove('show');
         }
     }
-    
-    // Escape HTML to prevent XSS
-    function escapeHtml(text) {
-        var div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-    
-    // Event listeners
+
+    // ==================== EVENT LISTENERS ====================
     if (bioInput) {
         bioInput.addEventListener('input', updateBioCounter);
         updateBioCounter();
     }
-    
+
     if (skillsInput) {
         skillsInput.addEventListener('input', updateSkillsPreview);
         updateSkillsPreview();
     }
-    
+
     if (websiteInput) {
         websiteInput.addEventListener('input', validateWebsite);
     }
-    
+
     if (twitterInput) {
         twitterInput.addEventListener('input', function() {
             validateSocialUrl(twitterInput, 'twitter', twitterError);
             updateSocialPreview();
         });
     }
-    
+
     if (linkedinInput) {
         linkedinInput.addEventListener('input', function() {
             validateSocialUrl(linkedinInput, 'linkedin', linkedinError);
             updateSocialPreview();
         });
     }
-    
+
     if (githubInput) {
         githubInput.addEventListener('input', function() {
             validateSocialUrl(githubInput, 'github', githubError);
             updateSocialPreview();
         });
     }
-    
-    // Form validation
+
+    // ==================== FORM VALIDATION ====================
     function validateForm() {
-        var isValid = true;
-        
-        // Validate bio length
-        if (bioInput && bioInput.value.length > 500) {
-            isValid = false;
-        }
-        
-        // Validate website
+        let isValid = true;
+        if (bioInput && bioInput.value.length > 500) isValid = false;
         if (!validateWebsite()) isValid = false;
-        
-        // Validate social URLs
         if (twitterInput && !validateSocialUrl(twitterInput, 'twitter', twitterError)) isValid = false;
         if (linkedinInput && !validateSocialUrl(linkedinInput, 'linkedin', linkedinError)) isValid = false;
         if (githubInput && !validateSocialUrl(githubInput, 'github', githubError)) isValid = false;
-        
         return isValid;
     }
-    
+
     if (form) {
         form.addEventListener('submit', function(e) {
             if (!validateForm()) {
                 e.preventDefault();
-                alert('Please fix the errors before saving.');
-                // Focus first invalid field
-                var firstInvalid = document.querySelector('.is-invalid');
+                showToast('Please fix the errors before saving.');
+                const firstInvalid = document.querySelector('.is-invalid');
                 if (firstInvalid) {
                     firstInvalid.focus();
                     firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
                 return false;
             }
-            
-            // Show loading state
+
             if (submitBtn) {
                 submitBtn.classList.add('btn-loading');
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving Changes...';
             }
         });
     }
-    
-    // Auto-save draft to localStorage
+
+    // ==================== AUTO-SAVE DRAFT ====================
     function saveDraft() {
         if (!document.getElementById('fullName')) return;
-        var formData = {
+        const formData = {
             fullName: document.getElementById('fullName').value || '',
             bio: bioInput ? bioInput.value : '',
-            location: document.getElementById('location') ? document.getElementById('location').value : '',
-            occupation: document.getElementById('occupation') ? document.getElementById('occupation').value : '',
-            education: document.getElementById('education') ? document.getElementById('education').value : '',
+            location: document.getElementById('location')?.value || '',
+            occupation: document.getElementById('occupation')?.value || '',
+            education: document.getElementById('education')?.value || '',
             website: websiteInput ? websiteInput.value : '',
             skills: skillsInput ? skillsInput.value : '',
             twitter: twitterInput ? twitterInput.value : '',
@@ -665,15 +866,12 @@
             github: githubInput ? githubInput.value : '',
             timestamp: new Date().toISOString()
         };
-        try {
-            localStorage.setItem('profile_draft', JSON.stringify(formData));
-        } catch(e) {}
+        try { localStorage.setItem('profile_draft', JSON.stringify(formData)); } catch(e) {}
     }
-    
-    // Auto-save every 30 seconds
+
     setInterval(saveDraft, 30000);
-    
-    // Console message
-    console.log('%c✏️ Profile Editor Ready', 'color: #11998e; font-size: 14px; font-weight: bold;');
+
+    // Initial previews
+    updateSocialPreview();
 </script>
 {% endblock %}

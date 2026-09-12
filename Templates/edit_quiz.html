@@ -2,417 +2,606 @@
 
 {% block content %}
 <style>
-    /* Modern Edit Quiz Styles */
+    /* ============================================================
+       EDIT QUIZ — CRIMSON RED + ANIMATIONS
+       ============================================================ */
     :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --primary-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --danger-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+
+        --crimson-900: #450a0a;
+        --crimson-800: #7f1d1d;
+        --crimson-700: #991b1b;
+        --crimson-600: #b91c1c;
+        --crimson-500: #dc2626;
+        --crimson-400: #ef4444;
+        --crimson-300: #f87171;
+        --crimson-200: #fecaca;
+        --crimson-100: #fee2e2;
+        --crimson-50:  #fef2f2;
     }
-    
-    .form-header {
-        background: var(--warning-gradient);
-        border-radius: 20px 20px 0 0;
-        padding: 25px 30px;
-        color: white;
-        position: relative;
-        overflow: hidden;
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-24px); }
+        to   { opacity: 1; transform: translateY(0); }
     }
-    
-    .form-header::before {
-        content: '✏️';
-        position: absolute;
-        bottom: -20px;
-        right: 20px;
-        font-size: 80px;
-        opacity: 0.1;
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
     }
-    
-    .form-header h3 {
-        margin: 0;
-        font-weight: 700;
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
     }
-    
-    .form-header p {
-        margin: 5px 0 0;
-        opacity: 0.9;
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-14px) rotate(3deg); }
     }
-    
-    .lesson-badge {
-        background: rgba(255,255,255,0.2);
-        backdrop-filter: blur(10px);
-        padding: 5px 12px;
-        border-radius: 20px;
-        display: inline-block;
-        margin-top: 10px;
-        font-size: 13px;
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
     }
-    
+    @keyframes shimmer {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes slideInRight {
+        from { transform: translateX(120%); opacity: 0; }
+        to   { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to   { transform: translateX(120%); opacity: 0; }
+    }
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+        50%      { box-shadow: 0 0 0 14px rgba(220, 38, 38, 0); }
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.6s cubic-bezier(.2,.7,.2,1),
+                    transform 0.6s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    /* ==================== FORM CARD ==================== */
     .form-card {
         background: white;
         border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        box-shadow: 0 20px 50px rgba(127, 29, 29, 0.1);
         margin-bottom: 30px;
+        border: 1px solid var(--crimson-100);
+        animation: fadeInUp 0.7s cubic-bezier(.2,.7,.2,1);
     }
-    
-    .form-body {
+
+    .form-header {
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
         padding: 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
     }
-    
-    .form-group {
-        margin-bottom: 25px;
+
+    .form-header::before {
+        content: '';
+        position: absolute;
+        top: -50%; right: -25%;
+        width: 340px; height: 340px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
     }
-    
+
+    .form-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50%; left: -15%;
+        width: 280px; height: 280px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 10s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .form-header > * { position: relative; z-index: 1; }
+
+    .form-header h3 {
+        margin: 0;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .form-header h3 i {
+        color: #fbbf24;
+        animation: float 3.5s ease-in-out infinite;
+        filter: drop-shadow(0 4px 10px rgba(251, 191, 36, 0.4));
+    }
+
+    .form-header p { margin: 8px 0 0; opacity: 0.92; font-size: 0.95rem; }
+
+    .lesson-badge {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 7px 16px;
+        border-radius: 30px;
+        display: inline-flex;
+        align-items: center;
+        margin-top: 12px;
+        font-size: 13px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .lesson-badge i { color: #fbbf24; }
+
+    .lesson-badge:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .form-body { padding: 30px; }
+    .form-group { margin-bottom: 26px; }
+
     .form-label {
         font-weight: 600;
         margin-bottom: 8px;
-        color: #2c3e50;
+        color: var(--crimson-900);
         display: flex;
         align-items: center;
         gap: 8px;
+        font-size: 0.9rem;
     }
-    
+
     .form-label i {
-        color: #f6d365;
+        color: var(--crimson-600);
         width: 18px;
+        transition: transform 0.3s ease;
     }
-    
+
+    .form-group:hover .form-label i { transform: scale(1.15); }
+
     .required-field::after {
         content: '*';
-        color: #eb3349;
-        margin-left: 4px;
+        color: var(--crimson-600);
+        margin-left: 2px;
+        font-weight: 700;
     }
-    
+
+    /* ==================== INPUTS ==================== */
     .form-control, .form-select {
-        border: 2px solid #e9ecef;
+        border: 2px solid #e2e8f0;
         border-radius: 12px;
-        padding: 12px 15px;
-        transition: all 0.3s ease;
+        padding: 12px 16px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
         font-size: 14px;
+        color: var(--crimson-900);
+        background: #fafafa;
     }
-    
+
+    .form-control::placeholder { color: #94a3b8; }
+
+    .form-control:hover, .form-select:hover {
+        border-color: var(--crimson-200);
+        background: white;
+    }
+
     .form-control:focus, .form-select:focus {
-        border-color: #f6d365;
-        box-shadow: 0 0 0 3px rgba(246, 211, 101, 0.1);
+        border-color: var(--crimson-500);
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
         outline: none;
+        background: white;
+        transform: translateY(-1px);
     }
-    
+
     .form-control.is-valid {
-        border-color: #11998e;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2311998e' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+        border-color: #059669;
+        background: #ecfdf5;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23059669' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
         background-repeat: no-repeat;
         background-position: right 12px center;
         background-size: 16px;
-        padding-right: 35px;
+        padding-right: 38px;
     }
-    
+
     .form-control.is-invalid {
-        border-color: #eb3349;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23eb3349'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23eb3349' stroke='none'/%3e%3c/svg%3e");
+        border-color: var(--crimson-500);
+        background: #fef2f2;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc2626'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc2626' stroke='none'/%3e%3c/svg%3e");
         background-repeat: no-repeat;
         background-position: right 12px center;
         background-size: 16px;
-        padding-right: 35px;
+        padding-right: 38px;
     }
-    
+
     .invalid-feedback {
-        color: #eb3349;
+        color: var(--crimson-600);
         font-size: 12px;
-        margin-top: 5px;
+        margin-top: 6px;
         display: block;
+        font-weight: 500;
     }
-    
+
     .valid-feedback {
-        color: #11998e;
+        color: #059669;
         font-size: 12px;
-        margin-top: 5px;
+        margin-top: 6px;
         display: block;
+        font-weight: 500;
     }
-    
-    /* Question Preview Card */
+
+    /* ==================== OPTION CARDS ==================== */
+    .option-card {
+        background: linear-gradient(135deg, #fef2f2 0%, #fafafa 100%);
+        border: 2px solid var(--crimson-100);
+        border-radius: 14px;
+        padding: 15px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+    }
+
+    .option-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(127, 29, 29, 0.12);
+        border-color: var(--crimson-300);
+    }
+
+    .option-letter {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        background: var(--primary-gradient);
+        color: white;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        box-shadow: 0 2px 6px rgba(127, 29, 29, 0.25);
+        transition: transform 0.3s ease;
+    }
+
+    .option-card:hover .option-letter {
+        transform: scale(1.1) rotate(-6deg);
+    }
+
+    /* ==================== POINTS STEPPER ==================== */
+    .points-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .points-stepper {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .stepper-btn {
+        width: 40px;
+        height: 40px;
+        border: 2px solid #e2e8f0;
+        background: white;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--crimson-700);
+        font-weight: 700;
+    }
+
+    .stepper-btn:hover {
+        background: var(--primary-gradient);
+        border-color: transparent;
+        color: white;
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.25);
+    }
+
+    .stepper-btn:active { transform: translateY(0) scale(0.98); }
+
+    .points-value {
+        width: 80px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 16px;
+        color: var(--crimson-900) !important;
+        background: white !important;
+    }
+
+    /* ==================== PREVIEW CARD ==================== */
     .preview-card {
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        background: linear-gradient(135deg, #fef2f2 0%, #fafafa 100%);
+        border: 2px dashed var(--crimson-200);
         border-radius: 16px;
-        padding: 20px;
+        padding: 22px;
         margin-bottom: 25px;
+        animation: scaleIn 0.4s cubic-bezier(.2,.7,.2,1);
     }
-    
+
     .preview-title {
-        font-weight: 600;
+        font-weight: 700;
         margin-bottom: 15px;
         display: flex;
         align-items: center;
         gap: 8px;
-        color: #2c3e50;
+        color: var(--crimson-900);
     }
-    
+
+    .preview-title i { color: var(--crimson-600); }
+
     .preview-question {
         background: white;
         border-radius: 12px;
         padding: 15px;
         margin-bottom: 15px;
+        color: var(--crimson-900);
+        border: 1px solid var(--crimson-100);
+        min-height: 50px;
+        transition: all 0.3s ease;
     }
-    
+
     .preview-options {
         list-style: none;
         padding: 0;
         margin: 0;
     }
-    
+
     .preview-options li {
-        padding: 8px 12px;
+        padding: 10px 14px;
         margin-bottom: 8px;
         background: white;
-        border-radius: 8px;
-        border-left: 3px solid #e9ecef;
-        transition: all 0.3s ease;
+        border-radius: 10px;
+        border-left: 3px solid #e2e8f0;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        color: #475569;
+        font-size: 0.9rem;
     }
-    
-    .preview-options li.correct-highlight {
-        border-left-color: #11998e;
-        background: linear-gradient(135deg, #11998e10, #38ef7d10);
+
+    .preview-options li:hover {
+        transform: translateX(4px);
     }
-    
+
     .preview-options li strong {
-        color: #f6d365;
+        color: var(--crimson-700);
+        margin-right: 4px;
     }
-    
-    /* Option Cards */
-    .option-card {
-        background: #f8f9fa;
-        border-radius: 12px;
-        padding: 15px;
-        transition: all 0.3s ease;
+
+    .preview-options li.correct-highlight {
+        border-left-color: #059669;
+        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        color: #065f46;
+        font-weight: 600;
+        animation: pulseGlow 2.5s ease-out infinite;
+        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15);
     }
-    
-    .option-card:hover {
-        transform: translateX(5px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+
+    .preview-options li.correct-highlight strong {
+        color: #047857;
     }
-    
-    .option-letter {
-        display: inline-block;
-        width: 30px;
-        height: 30px;
-        background: var(--warning-gradient);
-        color: white;
-        border-radius: 8px;
-        text-align: center;
-        line-height: 30px;
-        font-weight: bold;
-        margin-right: 10px;
+
+    /* ==================== ALERTS ==================== */
+    .alert-custom {
+        border-radius: 14px;
+        border: none;
+        border-left: 4px solid;
+        margin-bottom: 20px;
+        padding: 18px 20px;
+        font-size: 0.9rem;
+        animation: fadeInUp 0.5s ease;
     }
-    
-    /* Character Counters */
+
+    .alert-warning-custom {
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border-left-color: #d97706;
+        color: #92400e;
+    }
+
+    .alert-warning-custom i {
+        color: #d97706;
+        animation: float 2.5s ease-in-out infinite;
+    }
+
+    .alert-warning-custom strong { color: #78350f; }
+
+    /* ==================== CHARACTER COUNTER ==================== */
     .char-counter {
         text-align: right;
         font-size: 12px;
-        color: #6c757d;
-        margin-top: 5px;
+        color: #94a3b8;
+        margin-top: 6px;
+        font-weight: 500;
+        transition: color 0.3s ease;
     }
-    
-    .char-counter.warning {
-        color: #f6d365;
-    }
-    
-    .char-counter.danger {
-        color: #eb3349;
-    }
-    
-    /* Action Buttons */
+
+    .char-counter.warning { color: #d97706; font-weight: 600; }
+    .char-counter.danger { color: var(--crimson-600); font-weight: 700; }
+
+    /* ==================== BUTTONS ==================== */
     .btn-update {
-        background: var(--warning-gradient);
-        border: none;
-        padding: 14px;
-        font-size: 16px;
-        font-weight: 600;
+        background: linear-gradient(180deg, var(--crimson-600) 0%, var(--crimson-700) 100%);
+        border: 1px solid var(--crimson-800);
+        padding: 15px;
+        font-size: 1rem;
+        font-weight: 700;
         border-radius: 12px;
-        transition: all 0.3s ease;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
         color: white;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 4px 16px rgba(127, 29, 29, 0.25);
+        position: relative;
+        overflow: hidden;
+        letter-spacing: -0.01em;
     }
-    
+
+    .btn-update::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-update:hover::before { left: 100%; }
+
     .btn-update:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(246, 211, 101, 0.3);
+        transform: translateY(-3px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 12px 28px rgba(127, 29, 29, 0.4);
         color: white;
+        background: linear-gradient(180deg, var(--crimson-700) 0%, var(--crimson-800) 100%);
     }
-    
+
+    .btn-update:active { transform: translateY(-1px); }
+
     .btn-cancel {
-        background: #6c757d;
-        border: none;
+        background: #f1f5f9;
+        border: 2px solid #e2e8f0;
         padding: 14px;
-        font-size: 16px;
+        font-size: 1rem;
         font-weight: 600;
         border-radius: 12px;
-        transition: all 0.3s ease;
-        color: white;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        color: #475569;
         text-decoration: none;
-    }
-    
-    .btn-cancel:hover {
-        background: #5a6268;
-        transform: translateY(-2px);
-        color: white;
-    }
-    
-    /* Points input with stepper */
-    .points-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .points-stepper {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    
-    .stepper-btn {
-        width: 36px;
-        height: 36px;
-        border: 2px solid #e9ecef;
-        background: white;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
+        gap: 8px;
     }
-    
-    .stepper-btn:hover {
-        background: #f6d365;
-        border-color: #f6d365;
-        color: white;
+
+    .btn-cancel:hover {
+        background: #e2e8f0;
+        border-color: #cbd5e1;
+        color: var(--crimson-800);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
     }
-    
-    .points-value {
-        width: 80px;
-        text-align: center;
-        font-weight: 600;
-        font-size: 16px;
-    }
-    
-    /* Alert */
-    .alert-custom {
-        border-radius: 12px;
-        border-left: 4px solid;
-        margin-bottom: 20px;
-        padding: 15px 20px;
-    }
-    
-    .alert-warning-custom {
-        background: linear-gradient(135deg, #f6d36510, #fda08510);
-        border-left-color: #f6d365;
-        color: #856404;
-    }
-    
-    .alert-warning-custom i {
-        color: #f6d365;
-    }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-        .form-body {
-            padding: 20px;
-        }
-        
-        .form-header {
-            padding: 20px;
-        }
-        
-        .option-card {
-            margin-bottom: 15px;
-        }
-        
-        .preview-options li {
-            font-size: 13px;
-        }
-        
-        .points-wrapper {
-            flex-direction: column;
-            align-items: stretch;
-        }
-        
-        .points-stepper {
-            justify-content: center;
-        }
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .fade-in {
-        animation: fadeIn 0.5s ease forwards;
-    }
-    
+
+    .btn-cancel i { transition: transform 0.3s ease; }
+    .btn-cancel:hover i { transform: translateX(-4px); }
+
+    /* ==================== LOADING ==================== */
     .btn-loading {
         position: relative;
         pointer-events: none;
-        opacity: 0.7;
+        opacity: 0.85;
     }
-    
+
     .btn-loading::after {
         content: '';
         position: absolute;
-        width: 18px;
-        height: 18px;
-        top: 50%;
-        right: 15px;
+        width: 18px; height: 18px;
+        top: 50%; right: 18px;
         margin-top: -9px;
-        border: 2px solid white;
-        border-top-color: transparent;
+        border: 2px solid rgba(255,255,255,0.4);
+        border-top-color: white;
         border-radius: 50%;
         animation: spin 0.6s linear infinite;
     }
-    
-    @keyframes spin {
-        to { transform: rotate(360deg); }
+
+    /* ==================== TOAST ==================== */
+    .toast-notification {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: linear-gradient(135deg, #059669, #10b981);
+        color: white;
+        padding: 14px 24px;
+        border-radius: 12px;
+        z-index: 9999;
+        animation: slideInRight 0.35s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 12px 32px rgba(5, 150, 105, 0.35);
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .toast-error {
+        background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+        box-shadow: 0 12px 32px rgba(127, 29, 29, 0.4);
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+        .form-body { padding: 22px; }
+        .form-header { padding: 22px; }
+        .form-header h3 { font-size: 1.3rem; }
+        .option-card { margin-bottom: 15px; }
+        .preview-options li { font-size: 13px; }
+        .points-wrapper { flex-direction: column; align-items: stretch; }
+        .points-stepper { justify-content: center; }
+        .toast-notification { left: 16px; right: 16px; bottom: 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        .reveal { opacity: 1; transform: none; }
     }
 </style>
 
-<div class="container form-container fade-in">
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col-lg-8">
+        <div class="col-lg-9">
             <div class="form-card">
+                <!-- ==================== HEADER ==================== -->
                 <div class="form-header">
-                    <h3><i class="fas fa-edit me-2"></i>Edit Quiz Question</h3>
+                    <h3><i class="fas fa-pen-to-square me-2"></i>Edit Quiz Question</h3>
                     <p>Update your quiz question and options</p>
                     <div class="lesson-badge">
-                        <i class="fas fa-book me-1"></i> {{ lesson.title }}
+                        <i class="fas fa-book me-2"></i> {{ lesson.title }}
                     </div>
                 </div>
-                
+
+                <!-- ==================== BODY ==================== -->
                 <div class="form-body">
                     <!-- Info Alert -->
                     <div class="alert alert-custom alert-warning-custom">
-                        <i class="fas fa-info-circle me-2"></i>
+                        <i class="fas fa-circle-info me-2"></i>
                         <strong>Note:</strong> Changes to this question will affect all future quiz attempts. Student progress for this specific question may be reset.
                     </div>
-                    
-                    <!-- FIXED: Added action and form -->
+
                     <form method="POST" id="quizForm" action="{{ url_for('edit_quiz', quiz_id=quiz.id) }}">
                         {{ form.hidden_tag() if form else '' }}
-                        
-                        <!-- Question Field -->
-                        <div class="form-group">
+
+                        <!-- Question -->
+                        <div class="form-group reveal">
                             <label class="form-label required-field" for="questionInput">
-                                <i class="fas fa-question-circle"></i> Question
+                                <i class="fas fa-circle-question"></i> Question
                             </label>
-                            <input type="text" name="question" class="form-control" id="questionInput" 
-                                   value="{{ quiz.question }}" required 
+                            <input type="text" name="question" class="form-control" id="questionInput"
+                                   value="{{ quiz.question }}" required
                                    placeholder="e.g., What is the output of the following code?">
                             <div class="char-counter" id="questionCounter">0/500 characters</div>
                             <div class="invalid-feedback" id="questionError"></div>
                         </div>
-                        
-                        <!-- Options Section -->
-                        <div class="form-group">
+
+                        <!-- Options -->
+                        <div class="form-group reveal">
                             <label class="form-label required-field">
                                 <i class="fas fa-list-ul"></i> Answer Options
                             </label>
@@ -423,8 +612,8 @@
                                             <span class="option-letter">A</span>
                                             <span class="ms-2 text-muted small">Option A</span>
                                         </div>
-                                        <input type="text" name="option_a" class="form-control" id="optionA" 
-                                               value="{{ quiz.option_a }}" required 
+                                        <input type="text" name="option_a" class="form-control" id="optionA"
+                                               value="{{ quiz.option_a }}" required
                                                placeholder="Enter option A">
                                         <div class="invalid-feedback" id="optionAError"></div>
                                     </div>
@@ -435,8 +624,8 @@
                                             <span class="option-letter">B</span>
                                             <span class="ms-2 text-muted small">Option B</span>
                                         </div>
-                                        <input type="text" name="option_b" class="form-control" id="optionB" 
-                                               value="{{ quiz.option_b }}" required 
+                                        <input type="text" name="option_b" class="form-control" id="optionB"
+                                               value="{{ quiz.option_b }}" required
                                                placeholder="Enter option B">
                                         <div class="invalid-feedback" id="optionBError"></div>
                                     </div>
@@ -447,8 +636,8 @@
                                             <span class="option-letter">C</span>
                                             <span class="ms-2 text-muted small">Option C</span>
                                         </div>
-                                        <input type="text" name="option_c" class="form-control" id="optionC" 
-                                               value="{{ quiz.option_c }}" required 
+                                        <input type="text" name="option_c" class="form-control" id="optionC"
+                                               value="{{ quiz.option_c }}" required
                                                placeholder="Enter option C">
                                         <div class="invalid-feedback" id="optionCError"></div>
                                     </div>
@@ -459,21 +648,21 @@
                                             <span class="option-letter">D</span>
                                             <span class="ms-2 text-muted small">Option D</span>
                                         </div>
-                                        <input type="text" name="option_d" class="form-control" id="optionD" 
-                                               value="{{ quiz.option_d }}" required 
+                                        <input type="text" name="option_d" class="form-control" id="optionD"
+                                               value="{{ quiz.option_d }}" required
                                                placeholder="Enter option D">
                                         <div class="invalid-feedback" id="optionDError"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Correct Answer & Points -->
-                        <div class="row">
+
+                        <!-- Correct Answer + Points -->
+                        <div class="row reveal">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label required-field">
-                                        <i class="fas fa-check-circle"></i> Correct Answer
+                                        <i class="fas fa-circle-check"></i> Correct Answer
                                     </label>
                                     <select name="correct_answer" class="form-select" id="correctAnswer" required>
                                         <option value="a" {% if quiz.correct_answer == 'a' %}selected{% endif %}>A - Option A</option>
@@ -490,25 +679,23 @@
                                     </label>
                                     <div class="points-wrapper">
                                         <div class="points-stepper">
-                                            <button type="button" class="stepper-btn" id="pointsMinus">
+                                            <button type="button" class="stepper-btn" id="pointsMinus" aria-label="Decrease">
                                                 <i class="fas fa-minus"></i>
                                             </button>
-                                            <input type="number" name="points" class="form-control points-value" 
-                                                   id="pointsInput" value="{{ quiz.points }}" min="1" max="100" required
-                                                   style="text-align: center;">
-                                            <button type="button" class="stepper-btn" id="pointsPlus">
+                                            <input type="number" name="points" class="form-control points-value"
+                                                   id="pointsInput" value="{{ quiz.points }}" min="1" max="100" required>
+                                            <button type="button" class="stepper-btn" id="pointsPlus" aria-label="Increase">
                                                 <i class="fas fa-plus"></i>
                                             </button>
                                         </div>
-                                        <small class="text-muted">Points for this question</small>
                                     </div>
                                     <div class="invalid-feedback" id="pointsError"></div>
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Live Preview Section -->
-                        <div class="preview-card">
+
+                        <!-- Live Preview -->
+                        <div class="preview-card reveal">
                             <div class="preview-title">
                                 <i class="fas fa-eye"></i>
                                 <span>Live Preview</span>
@@ -524,20 +711,20 @@
                                     <li id="previewD"><strong>D.</strong> {{ quiz.option_d }}</li>
                                 </ul>
                                 <div class="mt-3 text-muted small">
-                                    <i class="fas fa-info-circle"></i>
-                                    Correct answer: <strong id="previewCorrect">{{ quiz.correct_answer|upper }}</strong>
-                                    | Points: <strong id="previewPoints">{{ quiz.points }}</strong>
+                                    <i class="fas fa-circle-info"></i>
+                                    Correct answer: <strong id="previewCorrect" style="color: var(--crimson-700);">{{ quiz.correct_answer|upper }}</strong>
+                                    | Points: <strong id="previewPoints" style="color: var(--crimson-700);">{{ quiz.points }}</strong>
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Form Actions -->
-                        <div class="d-grid gap-3">
-                            <button type="submit" class="btn btn-update text-white">
-                                <i class="fas fa-save me-2"></i>Update Question
+
+                        <!-- Actions -->
+                        <div class="d-grid gap-3 reveal">
+                            <button type="submit" class="btn btn-update">
+                                <i class="fas fa-floppy-disk me-2"></i>Update Question
                             </button>
-                            <a href="{{ url_for('manage_quizzes', lesson_id=lesson.id) }}" class="btn btn-cancel text-white text-center">
-                                <i class="fas fa-arrow-left me-2"></i>Cancel
+                            <a href="{{ url_for('manage_quizzes', lesson_id=lesson.id) }}" class="btn btn-cancel">
+                                <i class="fas fa-arrow-left"></i>Cancel
                             </a>
                         </div>
                     </form>
@@ -548,7 +735,21 @@
 </div>
 
 <script>
-    // DOM Elements
+    // ==================== SCROLL REVEAL ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal');
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => obs.observe(el));
+    });
+
+    // ==================== ELEMENTS ====================
     const questionInput = document.getElementById('questionInput');
     const questionCounter = document.getElementById('questionCounter');
     const optionA = document.getElementById('optionA');
@@ -557,8 +758,7 @@
     const optionD = document.getElementById('optionD');
     const correctAnswer = document.getElementById('correctAnswer');
     const pointsInput = document.getElementById('pointsInput');
-    
-    // Preview Elements
+
     const previewQuestionText = document.getElementById('previewQuestionText');
     const previewA = document.getElementById('previewA');
     const previewB = document.getElementById('previewB');
@@ -566,9 +766,48 @@
     const previewD = document.getElementById('previewD');
     const previewCorrect = document.getElementById('previewCorrect');
     const previewPoints = document.getElementById('previewPoints');
-    
-    // Question character counter
+
+    function setInvalid(input, message) {
+        input.classList.add('is-invalid');
+        input.classList.remove('is-valid');
+        const errorDiv = input.parentElement.querySelector('.invalid-feedback');
+        if (errorDiv) errorDiv.textContent = message;
+    }
+
+    function setValid(input) {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+        const errorDiv = input.parentElement.querySelector('.invalid-feedback');
+        if (errorDiv) errorDiv.textContent = '';
+    }
+
+    function validateField(input, value, minLength = 1) {
+        if (!value || value.trim().length < minLength) {
+            setInvalid(input, 'This field is required');
+            return false;
+        }
+        setValid(input);
+        return true;
+    }
+
+    function showToast(msg, type = 'error') {
+        let toast = document.querySelector('.toast-notification');
+        if (toast) toast.remove();
+
+        toast = document.createElement('div');
+        toast.className = 'toast-notification' + (type === 'error' ? ' toast-error' : '');
+        toast.innerHTML = `<i class="fas fa-${type === 'error' ? 'circle-exclamation' : 'circle-check'} me-2"></i>${msg}`;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.animation = 'slideOutRight 0.3s ease forwards';
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
+    }
+
+    // ==================== QUESTION COUNTER ====================
     function updateQuestionCounter() {
+        if (!questionInput || !questionCounter) return;
         const length = questionInput.value.length;
         questionCounter.textContent = `${length}/500 characters`;
         if (length > 500) {
@@ -587,34 +826,10 @@
             questionInput.classList.remove('is-valid', 'is-invalid');
         }
     }
-    
-    // Validation functions
-    function setInvalid(input, message) {
-        input.classList.add('is-invalid');
-        input.classList.remove('is-valid');
-        const errorDiv = input.parentElement.querySelector('.invalid-feedback');
-        if (errorDiv) errorDiv.textContent = message;
-    }
-    
-    function setValid(input) {
-        input.classList.remove('is-invalid');
-        input.classList.add('is-valid');
-        const errorDiv = input.parentElement.querySelector('.invalid-feedback');
-        if (errorDiv) errorDiv.textContent = '';
-    }
-    
-    function validateField(input, value, minLength = 1) {
-        if (!value || value.trim().length < minLength) {
-            setInvalid(input, 'This field is required');
-            return false;
-        } else {
-            setValid(input);
-            return true;
-        }
-    }
-    
-    // Update live preview
+
+    // ==================== LIVE PREVIEW ====================
     function updatePreview() {
+        if (!previewQuestionText) return;
         previewQuestionText.textContent = questionInput.value || 'Enter your question here...';
         previewA.innerHTML = `<strong>A.</strong> ${optionA.value || 'Option A'}`;
         previewB.innerHTML = `<strong>B.</strong> ${optionB.value || 'Option B'}`;
@@ -622,94 +837,80 @@
         previewD.innerHTML = `<strong>D.</strong> ${optionD.value || 'Option D'}`;
         previewCorrect.textContent = correctAnswer.value.toUpperCase();
         previewPoints.textContent = pointsInput.value;
-        
-        // Highlight correct answer in preview
+
         const previewItems = [previewA, previewB, previewC, previewD];
-        previewItems.forEach(item => {
-            item.classList.remove('correct-highlight');
-        });
+        previewItems.forEach(item => item.classList.remove('correct-highlight'));
         const correctIndex = ['a', 'b', 'c', 'd'].indexOf(correctAnswer.value);
-        if (correctIndex >= 0) {
-            previewItems[correctIndex].classList.add('correct-highlight');
-        }
+        if (correctIndex >= 0) previewItems[correctIndex].classList.add('correct-highlight');
     }
-    
-    // Points stepper
+
+    // ==================== POINTS STEPPER ====================
     function setupPointsStepper() {
-        const pointsMinus = document.getElementById('pointsMinus');
-        const pointsPlus = document.getElementById('pointsPlus');
-        
-        if (pointsMinus) {
-            pointsMinus.addEventListener('click', function() {
+        const minus = document.getElementById('pointsMinus');
+        const plus = document.getElementById('pointsPlus');
+
+        if (minus) {
+            minus.addEventListener('click', function() {
                 let value = parseInt(pointsInput.value) || 1;
-                if (value > 1) {
-                    pointsInput.value = value - 1;
-                    updatePreview();
-                }
+                if (value > 1) { pointsInput.value = value - 1; updatePreview(); }
             });
         }
-        
-        if (pointsPlus) {
-            pointsPlus.addEventListener('click', function() {
+        if (plus) {
+            plus.addEventListener('click', function() {
                 let value = parseInt(pointsInput.value) || 1;
-                if (value < 100) {
-                    pointsInput.value = value + 1;
-                    updatePreview();
-                }
+                if (value < 100) { pointsInput.value = value + 1; updatePreview(); }
             });
         }
-        
-        pointsInput.addEventListener('input', function() {
-            let value = parseInt(this.value);
-            if (isNaN(value) || value < 1) this.value = 1;
-            if (value > 100) this.value = 100;
-            updatePreview();
-        });
+        if (pointsInput) {
+            pointsInput.addEventListener('input', function() {
+                let value = parseInt(this.value);
+                if (isNaN(value) || value < 1) this.value = 1;
+                if (value > 100) this.value = 100;
+                updatePreview();
+            });
+        }
     }
-    
-    // Event listeners
+
+    // ==================== EVENT LISTENERS ====================
     if (questionInput) {
         questionInput.addEventListener('input', () => {
             updateQuestionCounter();
             updatePreview();
         });
     }
-    
     if (optionA) optionA.addEventListener('input', updatePreview);
     if (optionB) optionB.addEventListener('input', updatePreview);
     if (optionC) optionC.addEventListener('input', updatePreview);
     if (optionD) optionD.addEventListener('input', updatePreview);
     if (correctAnswer) correctAnswer.addEventListener('change', updatePreview);
-    
-    // Form validation and submission
+
+    // ==================== FORM VALIDATION ====================
     const form = document.getElementById('quizForm');
-    
     function validateForm() {
-        const isQuestionValid = validateField(questionInput, questionInput.value);
-        const isOptionAValid = validateField(optionA, optionA.value);
-        const isOptionBValid = validateField(optionB, optionB.value);
-        const isOptionCValid = validateField(optionC, optionC.value);
-        const isOptionDValid = validateField(optionD, optionD.value);
-        const isPointsValid = pointsInput.value >= 1 && pointsInput.value <= 100;
-        
-        if (!isPointsValid) {
-            setInvalid(pointsInput, 'Points must be between 1 and 100');
-        } else {
-            setValid(pointsInput);
-        }
-        
-        return isQuestionValid && isOptionAValid && isOptionBValid && 
-               isOptionCValid && isOptionDValid && isPointsValid;
+        const isQ = validateField(questionInput, questionInput.value);
+        const isA = validateField(optionA, optionA.value);
+        const isB = validateField(optionB, optionB.value);
+        const isC = validateField(optionC, optionC.value);
+        const isD = validateField(optionD, optionD.value);
+        const isP = pointsInput.value >= 1 && pointsInput.value <= 100;
+        if (!isP) setInvalid(pointsInput, 'Points must be between 1 and 100');
+        else setValid(pointsInput);
+        return isQ && isA && isB && isC && isD && isP;
     }
-    
+
     if (form) {
         form.addEventListener('submit', function(e) {
             if (!validateForm()) {
                 e.preventDefault();
-                alert('Please fix the errors before submitting.');
+                showToast('Please fill in all fields correctly.');
+                const firstInvalid = document.querySelector('.is-invalid');
+                if (firstInvalid) {
+                    firstInvalid.focus();
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
                 return false;
             }
-            
+
             const submitBtn = document.querySelector('.btn-update');
             if (submitBtn) {
                 submitBtn.classList.add('btn-loading');
@@ -717,17 +918,15 @@
             }
         });
     }
-    
+
     // Blur validation
-    if (questionInput) {
-        questionInput.addEventListener('blur', () => validateField(questionInput, questionInput.value));
-    }
+    if (questionInput) questionInput.addEventListener('blur', () => validateField(questionInput, questionInput.value));
     if (optionA) optionA.addEventListener('blur', () => validateField(optionA, optionA.value));
     if (optionB) optionB.addEventListener('blur', () => validateField(optionB, optionB.value));
     if (optionC) optionC.addEventListener('blur', () => validateField(optionC, optionC.value));
     if (optionD) optionD.addEventListener('blur', () => validateField(optionD, optionD.value));
-    
-    // Initial setup
+
+    // ==================== INIT ====================
     updateQuestionCounter();
     setupPointsStepper();
     updatePreview();

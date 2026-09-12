@@ -2,251 +2,571 @@
 
 {% block content %}
 <style>
-    /* Modern Public Profile Styles */
+    /* ============================================================
+       PUBLIC PROFILE — CRIMSON RED + ANIMATIONS
+       ============================================================ */
     :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --primary-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --danger-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+
+        --crimson-900: #450a0a;
+        --crimson-800: #7f1d1d;
+        --crimson-700: #991b1b;
+        --crimson-600: #b91c1c;
+        --crimson-500: #dc2626;
+        --crimson-400: #ef4444;
+        --crimson-300: #f87171;
+        --crimson-200: #fecaca;
+        --crimson-100: #fee2e2;
+        --crimson-50:  #fef2f2;
     }
-    
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
+    }
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-14px) rotate(3deg); }
+    }
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
+    }
+    @keyframes shimmer {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+        50%      { box-shadow: 0 0 0 12px rgba(220, 38, 38, 0); }
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.6s cubic-bezier(.2,.7,.2,1),
+                    transform 0.6s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    /* ==================== PROFILE HEADER ==================== */
     .profile-header {
-        background: var(--primary-gradient);
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
         border-radius: 20px;
-        padding: 30px;
+        padding: 40px;
         margin-bottom: 30px;
         color: white;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.28);
     }
-    
+
     .profile-header::before {
-        content: '👤';
+        content: '';
         position: absolute;
-        bottom: -20px;
-        right: 20px;
-        font-size: 100px;
-        opacity: 0.1;
-    }
-    
-    .profile-avatar {
-        width: 120px;
-        height: 120px;
+        top: -50%; right: -25%;
+        width: 400px; height: 400px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, transparent 70%);
         border-radius: 50%;
-        border: 4px solid white;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        object-fit: cover;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
     }
-    
+
+    .profile-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50%; left: -15%;
+        width: 320px; height: 320px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 10s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .profile-header > * { position: relative; z-index: 1; }
+
+    .profile-header .row {
+        animation: fadeInDown 0.7s cubic-bezier(.2,.7,.2,1);
+    }
+
+    .profile-avatar,
     .avatar-placeholder {
         width: 120px;
         height: 120px;
         border-radius: 50%;
-        border: 4px solid white;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        border: 4px solid rgba(255, 255, 255, 0.9);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        object-fit: cover;
+        transition: all 0.4s cubic-bezier(.2,.7,.2,1);
+    }
+
+    .profile-avatar:hover,
+    .avatar-placeholder:hover {
+        transform: scale(1.05) rotate(3deg);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .avatar-placeholder {
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 48px;
-        font-weight: bold;
-        background: rgba(255,255,255,0.2);
+        font-weight: 800;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
     }
-    
-    /* Info Cards */
+
+    .profile-header h2 {
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .profile-header .opacity-90 {
+        opacity: 0.9;
+        font-weight: 500;
+    }
+
+    .profile-header .badge {
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+    }
+
+    .profile-header .badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .profile-header .badge.bg-light {
+        background: rgba(255, 255, 255, 0.95) !important;
+    }
+
+    /* ==================== FOLLOW BUTTON ==================== */
+    .follow-btn {
+        background: rgba(255, 255, 255, 0.95);
+        border: none;
+        color: var(--crimson-800);
+        padding: 11px 26px;
+        border-radius: 25px;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        font-weight: 700;
+        font-size: 0.88rem;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .follow-btn::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(185, 28, 28, 0.15), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .follow-btn:hover::before { left: 100%; }
+
+    .follow-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+        color: var(--crimson-900);
+        background: #fff;
+    }
+
+    /* ==================== INFO CARD ==================== */
     .info-card {
         background: white;
         border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
         margin-bottom: 25px;
-        transition: all 0.3s ease;
-        border: none;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        border: 1px solid #e2e8f0;
     }
-    
+
     .info-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        transform: translateY(-4px);
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.1);
+        border-color: var(--crimson-200);
     }
-    
+
     .info-card-header {
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        padding: 15px 20px;
-        border-bottom: 2px solid #667eea;
+        background: linear-gradient(135deg, #fef2f2 0%, #fafafa 100%);
+        padding: 16px 20px;
+        border-bottom: 2px solid var(--crimson-500);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
-    
+
     .info-card-header h5 {
         margin: 0;
-        font-weight: 600;
+        font-weight: 700;
+        color: var(--crimson-900);
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        letter-spacing: -0.01em;
     }
-    
-    .info-card-body {
-        padding: 20px;
+
+    .info-card-header h5 i {
+        color: var(--crimson-600);
+        transition: transform 0.3s ease;
     }
-    
-    /* Stats Cards */
+
+    .info-card:hover .info-card-header h5 i { transform: scale(1.15); }
+
+    .info-card-header small { color: #64748b; font-size: 0.82rem; }
+
+    .info-card-body { padding: 20px; }
+
+    /* ==================== STATS ==================== */
     .stats-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 15px;
-        margin-bottom: 20px;
+        gap: 12px;
     }
-    
+
     .stat-card {
         background: white;
         border-radius: 12px;
-        padding: 15px;
+        padding: 16px;
         text-align: center;
-        transition: all 0.3s ease;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.05);
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: var(--primary-gradient);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s ease;
+    }
+
+    .stat-card:hover::before { transform: scaleX(1); }
+
     .stat-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(127, 29, 29, 0.12);
+        border-color: var(--crimson-200);
     }
-    
+
     .stat-icon {
-        width: 45px;
-        height: 45px;
+        width: 46px;
+        height: 46px;
         border-radius: 12px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         margin-bottom: 10px;
-        font-size: 22px;
+        font-size: 21px;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
     }
-    
+
+    .stat-card:hover .stat-icon {
+        transform: scale(1.12) rotate(-6deg);
+        box-shadow: 0 8px 20px rgba(127, 29, 29, 0.15);
+    }
+
     .stat-value {
-        font-size: 24px;
-        font-weight: 700;
-        margin-bottom: 5px;
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin-bottom: 4px;
+        color: var(--crimson-900);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        letter-spacing: -0.03em;
+        transition: color 0.3s ease;
     }
-    
+
+    .stat-card:hover .stat-value { color: var(--crimson-700); }
+
     .stat-label {
-        font-size: 11px;
-        color: #6c757d;
+        font-size: 0.72rem;
+        color: #64748b;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
-    
-    /* Skill Tags */
+
+    /* ==================== CONTACT INFO ==================== */
+    .info-card-body > div {
+        padding: 6px 0;
+        font-size: 0.88rem;
+        color: #475569;
+        transition: all 0.25s ease;
+    }
+
+    .info-card-body > div:hover {
+        padding-left: 6px;
+    }
+
+    .info-card-body > div i {
+        color: var(--crimson-600) !important;
+        width: 20px;
+        transition: transform 0.3s ease;
+    }
+
+    .info-card-body > div:hover i { transform: scale(1.15); }
+
+    .info-card-body > div strong { color: var(--crimson-900); }
+
+    .info-card-body a {
+        color: var(--crimson-700);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s ease;
+    }
+
+    .info-card-body a:hover {
+        color: var(--crimson-500);
+        text-decoration: underline;
+    }
+
+    /* ==================== SKILLS ==================== */
     .skill-tag {
         display: inline-block;
-        padding: 4px 10px;
-        background: linear-gradient(135deg, #667eea15, #764ba215);
-        color: #667eea;
+        padding: 5px 12px;
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
+        color: var(--crimson-700);
         border-radius: 20px;
         font-size: 11px;
+        font-weight: 600;
         margin: 3px;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        border: 1px solid var(--crimson-200);
+        cursor: default;
     }
-    
+
     .skill-tag:hover {
+        transform: translateY(-3px) scale(1.05);
         background: var(--primary-gradient);
         color: white;
-        transform: scale(1.05);
+        border-color: transparent;
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.25);
     }
-    
-    /* Social Buttons */
+
+    /* ==================== SOCIAL ==================== */
     .social-buttons {
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
         margin-top: 10px;
     }
-    
+
     .social-btn {
-        padding: 8px 16px;
+        padding: 9px 18px;
         border-radius: 25px;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 8px;
         font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     }
-    
+
     .social-btn:hover {
-        transform: translateY(-2px);
-    }
-    
-    .social-twitter {
-        background: #1DA1F2;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         color: white;
     }
-    
-    .social-linkedin {
-        background: #0077b5;
-        color: white;
-    }
-    
-    .social-github {
-        background: #333;
-        color: white;
-    }
-    
-    /* Course Cards */
+
+    .social-twitter { background: #1DA1F2; color: white; }
+    .social-linkedin { background: #0077b5; color: white; }
+    .social-github { background: #333; color: white; }
+
+    /* ==================== COURSE CARDS ==================== */
     .course-card {
         background: white;
-        border-radius: 12px;
+        border-radius: 14px;
         overflow: hidden;
-        transition: all 0.3s ease;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        transition: all 0.4s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
         height: 100%;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
     }
-    
+
     .course-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        transform: translateY(-6px);
+        box-shadow: 0 20px 40px rgba(127, 29, 29, 0.15);
+        border-color: var(--crimson-300);
     }
-    
+
     .course-image {
         height: 140px;
         object-fit: cover;
         width: 100%;
+        transition: transform 0.6s cubic-bezier(.2,.7,.2,1);
     }
-    
+
+    .course-card:hover .course-image {
+        transform: scale(1.08);
+    }
+
     .course-body {
-        padding: 12px;
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        min-height: 140px;
     }
-    
+
     .course-title {
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 700;
         margin-bottom: 8px;
+        color: var(--crimson-900);
+        line-height: 1.4;
+        transition: color 0.3s ease;
     }
-    
+
+    .course-card:hover .course-title { color: var(--crimson-700); }
+
+    .course-body .text-muted {
+        font-size: 12px;
+        color: #64748b;
+    }
+
+    /* ==================== VIEW COURSE BUTTON (FIXED) ==================== */
+    .btn-view-course {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        padding: 10px 16px;
+        background: linear-gradient(180deg, #b91c1c 0%, #7f1d1d 100%);
+        color: #ffffff !important;
+        font-weight: 700;
+        font-size: 0.82rem;
+        border: 1px solid #7f1d1d;
+        border-radius: 10px;
+        text-decoration: none !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 4px 12px rgba(127, 29, 29, 0.25);
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        position: relative;
+        overflow: hidden;
+        margin-top: auto;
+        cursor: pointer;
+    }
+
+    .btn-view-course::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-view-course:hover::before { left: 100%; }
+
+    .btn-view-course:hover {
+        color: #ffffff !important;
+        background: linear-gradient(180deg, #991b1b 0%, #450a0a 100%);
+        transform: translateY(-2px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 10px 24px rgba(127, 29, 29, 0.4);
+    }
+
+    .btn-view-course i {
+        font-size: 0.75rem;
+        transition: transform 0.3s ease;
+    }
+
+    .btn-view-course:hover i {
+        transform: scale(1.2);
+    }
+
+    /* ==================== BUTTONS ==================== */
     .btn-primary {
-        background: var(--primary-gradient);
-        border: none;
-        transition: all 0.3s ease;
+        background: linear-gradient(180deg, var(--crimson-600) 0%, var(--crimson-700) 100%);
+        border: 1px solid var(--crimson-800);
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
         color: white;
+        font-weight: 700;
+        border-radius: 10px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 4px 16px rgba(127, 29, 29, 0.2);
+        position: relative;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
     }
-    
+
+    .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-primary:hover::before { left: 100%; }
+
     .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 8px 20px rgba(127, 29, 29, 0.4);
         color: white;
+        background: linear-gradient(180deg, var(--crimson-700) 0%, var(--crimson-800) 100%);
     }
-    
+
     .btn-outline-primary {
-        border: 2px solid #667eea;
-        color: #667eea;
-        transition: all 0.3s ease;
+        border: 2px solid var(--crimson-600);
+        color: var(--crimson-700);
+        background: transparent;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        font-weight: 600;
+        border-radius: 10px;
     }
-    
+
     .btn-outline-primary:hover {
         background: var(--primary-gradient);
         border-color: transparent;
         color: white;
         transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(127, 29, 29, 0.3);
     }
-    
-    /* Activity Timeline */
+
+    /* ==================== TIMELINE ==================== */
     .timeline {
         position: relative;
         padding-left: 30px;
     }
-    
+
     .timeline::before {
         content: '';
         position: absolute;
@@ -254,115 +574,99 @@
         top: 0;
         bottom: 0;
         width: 2px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: var(--primary-gradient);
+        border-radius: 2px;
     }
-    
+
     .timeline-item {
         position: relative;
-        margin-bottom: 20px;
-        padding: 10px 15px;
-        background: #f8f9fa;
+        margin-bottom: 16px;
+        padding: 12px 16px;
+        background: linear-gradient(135deg, #fef2f2 0%, #fafafa 100%);
         border-radius: 12px;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        border-left: 3px solid transparent;
     }
-    
+
     .timeline-item:hover {
-        background: #e9ecef;
-        transform: translateX(5px);
+        background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%);
+        transform: translateX(6px);
+        border-left-color: var(--crimson-500);
+        box-shadow: 0 4px 12px rgba(127, 29, 29, 0.1);
     }
-    
+
     .timeline-dot {
         position: absolute;
         left: -24px;
-        top: 15px;
-        width: 10px;
-        height: 10px;
+        top: 18px;
+        width: 12px;
+        height: 12px;
         border-radius: 50%;
         background: var(--primary-gradient);
         border: 2px solid white;
-        box-shadow: 0 0 0 2px #667eea;
+        box-shadow: 0 0 0 2px var(--crimson-500);
+        transition: all 0.3s ease;
     }
-    
+
+    .timeline-item:hover .timeline-dot {
+        transform: scale(1.3);
+        box-shadow: 0 0 0 3px var(--crimson-600), 0 0 12px rgba(220, 38, 38, 0.5);
+    }
+
     .timeline-time {
         font-size: 11px;
-        color: #6c757d;
+        color: #64748b;
         margin-bottom: 5px;
+        font-weight: 500;
     }
-    
+
+    .timeline-time i { color: var(--crimson-600); }
+
     .timeline-text {
         font-size: 13px;
         margin: 0;
+        color: #475569;
     }
-    
-    /* Follow Button */
-    .follow-btn {
-        background: rgba(255,255,255,0.2);
-        border: 2px solid rgba(255,255,255,0.5);
-        color: white;
-        padding: 8px 20px;
-        border-radius: 25px;
-        transition: all 0.3s ease;
-    }
-    
-    .follow-btn:hover {
-        background: white;
-        color: #667eea;
-        transform: translateY(-2px);
-    }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-        .profile-header {
-            padding: 20px;
-            text-align: center;
-        }
-        
-        .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-        
-        .social-buttons {
-            justify-content: center;
-        }
-        
-        .timeline {
-            padding-left: 20px;
-        }
-        
-        .timeline-dot {
-            left: -14px;
-        }
-    }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    .fade-in-up {
-        animation: fadeInUp 0.5s ease forwards;
-    }
-    
+
+    /* ==================== EMPTY STATE ==================== */
     .empty-state {
         text-align: center;
         padding: 40px 20px;
     }
-    
+
     .empty-icon {
-        font-size: 50px;
-        color: #dee2e6;
+        font-size: 56px;
+        color: var(--crimson-200);
         margin-bottom: 15px;
+        animation: float 3.5s ease-in-out infinite;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+        .profile-header {
+            padding: 28px 22px;
+            text-align: center;
+        }
+        .profile-header .col-md-7 { text-align: center !important; }
+        .profile-header .col-md-3 { text-align: center !important; }
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        .social-buttons { justify-content: center; }
+        .timeline { padding-left: 20px; }
+        .timeline-dot { left: -14px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        .reveal { opacity: 1; transform: none; }
     }
 </style>
 
-<div class="fade-in-up">
-    <!-- Profile Header -->
+<div>
+    <!-- ==================== PROFILE HEADER ==================== -->
     <div class="profile-header">
         <div class="row align-items-center">
             <div class="col-md-2 text-center text-md-start mb-3 mb-md-0">
@@ -379,75 +683,79 @@
                 <p class="mb-2 opacity-90">
                     <i class="fas fa-at me-1"></i>@{{ user.username }}
                 </p>
-                <div>
+                <div class="d-flex gap-2 flex-wrap justify-content-center justify-content-md-start">
                     {% if user.is_instructor %}
-                        <span class="badge bg-light text-primary px-3 py-2 me-2">
-                            <i class="fas fa-chalkboard-teacher me-1"></i>Instructor
+                        <span class="badge bg-light px-3 py-2">
+                            <i class="fas fa-chalkboard-teacher me-1" style="color: var(--crimson-600);"></i>
+                            <span style="color: var(--crimson-700);">Instructor</span>
                         </span>
                     {% else %}
-                        <span class="badge bg-light text-success px-3 py-2 me-2">
-                            <i class="fas fa-graduation-cap me-1"></i>Student
+                        <span class="badge bg-light px-3 py-2">
+                            <i class="fas fa-graduation-cap me-1" style="color: #059669;"></i>
+                            <span style="color: #059669;">Student</span>
                         </span>
                     {% endif %}
-                    
-                    <span class="badge bg-light text-secondary px-3 py-2">
-                        <i class="far fa-calendar-alt me-1"></i>Joined {{ user.date_joined.strftime('%b %Y') }}
+
+                    <span class="badge bg-light px-3 py-2">
+                        <i class="far fa-calendar me-1" style="color: var(--crimson-600);"></i>
+                        <span style="color: var(--crimson-700);">Joined {{ user.date_joined.strftime('%b %Y') }}</span>
                     </span>
                 </div>
             </div>
             <div class="col-md-3 text-center text-md-end mt-3 mt-md-0">
                 {% if not is_owner and current_user.is_authenticated %}
                     <button class="follow-btn" onclick="alert('Follow feature coming soon!')">
-                        <i class="fas fa-user-plus me-1"></i>Follow
+                        <i class="fas fa-user-plus"></i>Follow
                     </button>
                 {% endif %}
             </div>
         </div>
     </div>
-    
+
     <div class="row">
-        <!-- Left Column -->
+        <!-- ==================== LEFT COLUMN ==================== -->
         <div class="col-lg-4">
-            <!-- Stats Overview -->
-            <div class="info-card">
+
+            <!-- Stats -->
+            <div class="info-card reveal">
                 <div class="info-card-header">
                     <h5><i class="fas fa-chart-simple me-2"></i>Statistics</h5>
                 </div>
                 <div class="info-card-body">
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-icon" style="background: linear-gradient(135deg, #667eea20, #764ba220);">
-                                <i class="fas fa-calendar" style="color: #667eea;"></i>
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #fee2e2, #fecaca);">
+                                <i class="fas fa-calendar" style="color: #b91c1c;"></i>
                             </div>
                             <div class="stat-value">{{ user.date_joined.strftime('%Y') }}</div>
-                            <div class="stat-label">Member Since</div>
+                            <div class="stat-label">Member</div>
                         </div>
-                        
+
                         <div class="stat-card">
-                            <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe20, #00f2fe20);">
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #cffafe, #a5f3fc);">
                                 {% if user.is_instructor %}
-                                    <i class="fas fa-book" style="color: #4facfe;"></i>
+                                    <i class="fas fa-book" style="color: #0891b2;"></i>
                                 {% else %}
-                                    <i class="fas fa-graduation-cap" style="color: #4facfe;"></i>
+                                    <i class="fas fa-graduation-cap" style="color: #0891b2;"></i>
                                 {% endif %}
                             </div>
                             <div class="stat-value">{{ total_courses }}</div>
                             <div class="stat-label">
-                                {% if user.is_instructor %}Courses Created{% else %}Enrolled Courses{% endif %}
+                                {% if user.is_instructor %}Courses{% else %}Enrolled{% endif %}
                             </div>
                         </div>
-                        
+
                         {% if not user.is_instructor %}
                         <div class="stat-card">
-                            <div class="stat-icon" style="background: linear-gradient(135deg, #11998e20, #38ef7d20);">
-                                <i class="fas fa-check-circle" style="color: #11998e;"></i>
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);">
+                                <i class="fas fa-circle-check" style="color: #059669;"></i>
                             </div>
                             <div class="stat-value">{{ completed_lessons }}</div>
-                            <div class="stat-label">Lessons Completed</div>
+                            <div class="stat-label">Lessons</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-icon" style="background: linear-gradient(135deg, #f6d36520, #fda08520);">
-                                <i class="fas fa-trophy" style="color: #f6d365;"></i>
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
+                                <i class="fas fa-trophy" style="color: #d97706;"></i>
                             </div>
                             <div class="stat-value">
                                 {% set ns = namespace(passed=0) %}
@@ -464,37 +772,38 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Contact Info -->
-            <div class="info-card">
+            <div class="info-card reveal">
                 <div class="info-card-header">
                     <h5><i class="fas fa-address-card me-2"></i>Contact Info</h5>
                 </div>
                 <div class="info-card-body">
-                    <div class="mb-2">
-                        <i class="fas fa-map-marker-alt me-2" style="color: #667eea;"></i>
+                    <div>
+                        <i class="fas fa-location-dot me-2"></i>
                         <strong>Location:</strong> {{ user.location or 'Not provided' }}
                     </div>
-                    <div class="mb-2">
-                        <i class="fas fa-briefcase me-2" style="color: #667eea;"></i>
+                    <div>
+                        <i class="fas fa-briefcase me-2"></i>
                         <strong>Occupation:</strong> {{ user.occupation or 'Not provided' }}
                     </div>
                     <div>
-                        <i class="fas fa-university me-2" style="color: #667eea;"></i>
+                        <i class="fas fa-university me-2"></i>
                         <strong>Education:</strong> {{ user.education or 'Not provided' }}
                     </div>
                     {% if user.website %}
-                    <div class="mt-2">
-                        <i class="fas fa-globe me-2" style="color: #667eea;"></i>
-                        <strong>Website:</strong> <a href="{{ user.website }}" target="_blank">{{ user.website }}</a>
+                    <div>
+                        <i class="fas fa-globe me-2"></i>
+                        <strong>Website:</strong>
+                        <a href="{{ user.website }}" target="_blank" rel="noopener">Visit</a>
                     </div>
                     {% endif %}
                 </div>
             </div>
-            
+
             <!-- Skills -->
             {% if user.skills %}
-            <div class="info-card">
+            <div class="info-card reveal">
                 <div class="info-card-header">
                     <h5><i class="fas fa-code me-2"></i>Skills</h5>
                 </div>
@@ -507,27 +816,27 @@
                 </div>
             </div>
             {% endif %}
-            
+
             <!-- Social Links -->
             {% if user.social_twitter or user.social_linkedin or user.social_github %}
-            <div class="info-card">
+            <div class="info-card reveal">
                 <div class="info-card-header">
-                    <h5><i class="fas fa-share-alt me-2"></i>Connect</h5>
+                    <h5><i class="fas fa-share-nodes me-2"></i>Connect</h5>
                 </div>
                 <div class="info-card-body">
                     <div class="social-buttons">
                         {% if user.social_twitter %}
-                            <a href="{{ user.social_twitter }}" target="_blank" class="social-btn social-twitter">
+                            <a href="{{ user.social_twitter }}" target="_blank" rel="noopener" class="social-btn social-twitter">
                                 <i class="fab fa-twitter"></i> Twitter
                             </a>
                         {% endif %}
                         {% if user.social_linkedin %}
-                            <a href="{{ user.social_linkedin }}" target="_blank" class="social-btn social-linkedin">
+                            <a href="{{ user.social_linkedin }}" target="_blank" rel="noopener" class="social-btn social-linkedin">
                                 <i class="fab fa-linkedin"></i> LinkedIn
                             </a>
                         {% endif %}
                         {% if user.social_github %}
-                            <a href="{{ user.social_github }}" target="_blank" class="social-btn social-github">
+                            <a href="{{ user.social_github }}" target="_blank" rel="noopener" class="social-btn social-github">
                                 <i class="fab fa-github"></i> GitHub
                             </a>
                         {% endif %}
@@ -536,25 +845,26 @@
             </div>
             {% endif %}
         </div>
-        
-        <!-- Right Column -->
+
+        <!-- ==================== RIGHT COLUMN ==================== -->
         <div class="col-lg-8">
+
             <!-- Bio -->
-            <div class="info-card">
+            <div class="info-card reveal">
                 <div class="info-card-header">
                     <h5><i class="fas fa-user me-2"></i>About</h5>
                 </div>
                 <div class="info-card-body">
-                    <p>{{ user.bio or 'No bio provided yet.' }}</p>
+                    <p class="mb-0">{{ user.bio or 'No bio provided yet.' }}</p>
                 </div>
             </div>
-            
-            <!-- Courses (for Instructors) -->
+
+            <!-- Courses (Instructor only) -->
             {% if user.is_instructor and user.created_courses %}
-            <div class="info-card">
+            <div class="info-card reveal">
                 <div class="info-card-header">
                     <h5><i class="fas fa-book me-2"></i>Courses by {{ user.username }}</h5>
-                    <small class="text-muted">{{ user.created_courses.count() if user.created_courses else 0 }} courses</small>
+                    <small>{{ user.created_courses.count() }} courses</small>
                 </div>
                 <div class="info-card-body">
                     <div class="row">
@@ -563,20 +873,21 @@
                             <div class="course-card">
                                 {% if course.image_url %}
                                     <img src="{{ course.image_url }}" class="course-image" alt="{{ course.title }}"
+                                         loading="lazy"
                                          onerror="this.src='https://via.placeholder.com/400x140?text=' + encodeURIComponent('{{ course.title }}')">
                                 {% else %}
-                                    <img src="https://via.placeholder.com/400x140?text={{ course.title|replace(' ', '+') }}" class="course-image" alt="{{ course.title }}">
+                                    <img src="https://via.placeholder.com/400x140?text={{ course.title|replace(' ', '+') }}" class="course-image" alt="{{ course.title }}" loading="lazy">
                                 {% endif %}
                                 <div class="course-body">
                                     <div class="course-title">{{ course.title[:50] }}{% if course.title|length > 50 %}...{% endif %}</div>
-                                    <div class="text-muted small mb-2">
-                                        <i class="fas fa-users me-1"></i>{{ course.enrollments.count() }} students
+                                    <div class="text-muted small mb-3">
+                                        <i class="fas fa-users me-1" style="color: var(--crimson-600);"></i>{{ course.enrollments.count() }} students
                                         {% if course.avg_rating %}
-                                        <br><i class="fas fa-star text-warning me-1"></i>{{ "%.1f"|format(course.avg_rating) }}/5
+                                        <br><i class="fas fa-star me-1" style="color: #fbbf24;"></i>{{ "%.1f"|format(course.avg_rating) }}/5
                                         {% endif %}
                                     </div>
-                                    <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-primary btn-sm w-100">
-                                        <i class="fas fa-eye me-1"></i>View Course
+                                    <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn-view-course">
+                                        <i class="fas fa-eye"></i> View Course
                                     </a>
                                 </div>
                             </div>
@@ -593,11 +904,11 @@
                 </div>
             </div>
             {% endif %}
-            
+
             <!-- Recent Activity -->
-            <div class="info-card">
+            <div class="info-card reveal">
                 <div class="info-card-header">
-                    <h5><i class="fas fa-history me-2"></i>Recent Activity</h5>
+                    <h5><i class="fas fa-clock-rotate-left me-2"></i>Recent Activity</h5>
                 </div>
                 <div class="info-card-body">
                     {% if recent_activities %}
@@ -622,10 +933,10 @@
                     {% endif %}
                 </div>
             </div>
-            
-            <!-- Message Button (if not owner) -->
+
+            <!-- Message Button -->
             {% if not is_owner and current_user.is_authenticated %}
-            <div class="info-card">
+            <div class="info-card reveal">
                 <div class="info-card-body text-center">
                     <button class="btn btn-primary btn-lg w-100" onclick="alert('Messaging feature coming soon!')">
                         <i class="fas fa-envelope me-2"></i>Send Message
@@ -638,25 +949,44 @@
 </div>
 
 <script>
-    // Animate stats on load
+    // ==================== SCROLL REVEAL ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal');
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => obs.observe(el));
+    });
+
+    // ==================== ANIMATED COUNTERS ====================
     window.addEventListener('load', () => {
-        const statValues = document.querySelectorAll('.stat-value');
-        statValues.forEach(stat => {
-            const value = stat.innerText;
-            if (value && !isNaN(parseFloat(value))) {
-                let current = 0;
-                const target = parseInt(value);
-                const increment = target / 50;
-                const updateValue = () => {
-                    if (current < target) {
-                        current += increment;
+        document.querySelectorAll('.stat-value').forEach(stat => {
+            const raw = stat.innerText.replace('%', '').trim();
+            const value = parseFloat(raw);
+            if (!isNaN(value)) {
+                const target = value;
+                const duration = 900;
+                const startTime = performance.now();
+
+                function update(now) {
+                    const elapsed = now - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    const current = target * eased;
+                    if (Number.isInteger(target)) {
                         stat.innerText = Math.floor(current);
-                        requestAnimationFrame(updateValue);
                     } else {
-                        stat.innerText = target;
+                        stat.innerText = current.toFixed(1);
                     }
-                };
-                updateValue();
+                    if (progress < 1) requestAnimationFrame(update);
+                    else stat.innerText = target;
+                }
+                requestAnimationFrame(update);
             }
         });
     });

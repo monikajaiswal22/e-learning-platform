@@ -2,192 +2,516 @@
 
 {% block content %}
 <style>
-    /* Modern Dashboard Styles */
+    /* ============================================================
+       DASHBOARD — CRIMSON RED + ANIMATIONS
+       ============================================================ */
     :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --primary-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --danger-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+
+        --crimson-900: #450a0a;
+        --crimson-800: #7f1d1d;
+        --crimson-700: #991b1b;
+        --crimson-600: #b91c1c;
+        --crimson-500: #dc2626;
+        --crimson-400: #ef4444;
+        --crimson-300: #f87171;
+        --crimson-200: #fecaca;
+        --crimson-100: #fee2e2;
+        --crimson-50:  #fef2f2;
     }
-    
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
+    }
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-14px) rotate(3deg); }
+    }
+    @keyframes shimmer {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
+    }
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+        50%      { box-shadow: 0 0 0 12px rgba(220, 38, 38, 0); }
+    }
+    @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.6s cubic-bezier(.2,.7,.2,1),
+                    transform 0.6s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    .reveal-stagger > * {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.55s cubic-bezier(.2,.7,.2,1),
+                    transform 0.55s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal-stagger.revealed > * {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .reveal-stagger.revealed > *:nth-child(1) { transition-delay: 0.05s; }
+    .reveal-stagger.revealed > *:nth-child(2) { transition-delay: 0.12s; }
+    .reveal-stagger.revealed > *:nth-child(3) { transition-delay: 0.19s; }
+    .reveal-stagger.revealed > *:nth-child(4) { transition-delay: 0.26s; }
+
+    /* ==================== HEADER ==================== */
     .dashboard-header {
-        background: var(--primary-gradient);
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
         border-radius: 20px;
-        padding: 30px;
+        padding: 32px 30px;
         margin-bottom: 30px;
         color: white;
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.28);
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        top: -60%; right: -15%;
+        width: 420px; height: 420px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.45) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .dashboard-header::after {
+        content: '';
+        position: absolute;
+        bottom: -60%; left: -10%;
+        width: 380px; height: 380px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 10s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .dashboard-header > .row {
+        position: relative;
+        z-index: 1;
+        animation: fadeInDown 0.7s cubic-bezier(.2,.7,.2,1);
+    }
+
+    .dashboard-header h1 {
+        font-weight: 800;
+        letter-spacing: -0.03em;
+    }
+
+    .dashboard-header h1 i {
+        color: #fbbf24;
+        animation: float 3.5s ease-in-out infinite;
+        filter: drop-shadow(0 4px 10px rgba(251, 191, 36, 0.4));
+    }
+
+    .dashboard-header p { opacity: 0.92; }
+
+    .dashboard-header .btn-light {
+        background: rgba(255, 255, 255, 0.95);
+        color: var(--crimson-800);
+        border: none;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-header .btn-light::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(185, 28, 28, 0.12), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .dashboard-header .btn-light:hover::before { left: 100%; }
+
+    .dashboard-header .btn-light:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+        color: var(--crimson-900);
+    }
+
+    /* ==================== STAT CARDS ==================== */
     .stat-card {
         background: white;
-        border-radius: 20px;
-        padding: 25px;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        border: none;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        border-radius: 18px;
+        padding: 26px 22px;
+        transition: all 0.4s cubic-bezier(.2,.7,.2,1);
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+        position: relative;
+        overflow: hidden;
+        height: 100%;
     }
-    
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: var(--primary-gradient);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s ease;
+    }
+
+    .stat-card:hover::before { transform: scaleX(1); }
+
     .stat-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        transform: translateY(-6px);
+        box-shadow: 0 20px 44px rgba(127, 29, 29, 0.15);
+        border-color: var(--crimson-200);
     }
-    
+
     .stat-icon {
         width: 60px;
         height: 60px;
-        border-radius: 15px;
+        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 28px;
-        margin-bottom: 15px;
+        font-size: 26px;
+        margin: 0 auto 14px;
+        transition: all 0.4s cubic-bezier(.2,.7,.2,1);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
     }
-    
+
+    .stat-card:hover .stat-icon {
+        transform: scale(1.1) rotate(-6deg);
+        box-shadow: 0 10px 24px rgba(127, 29, 29, 0.25);
+    }
+
+    .stat-icon i { transition: transform 0.3s ease; }
+    .stat-card:hover .stat-icon i { transform: scale(1.15); }
+
     .stat-number {
-        font-size: 32px;
-        font-weight: bold;
-        margin: 10px 0;
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 8px 0;
+        color: var(--crimson-900);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        letter-spacing: -0.03em;
+        transition: transform 0.3s ease;
     }
-    
+
+    .stat-card:hover .stat-number {
+        transform: scale(1.05);
+        color: var(--crimson-700);
+    }
+
+    .stat-card .text-muted {
+        font-size: 0.82rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #64748b;
+    }
+
+    /* ==================== COURSE CARDS ==================== */
     .course-card {
         background: white;
         border-radius: 16px;
         overflow: hidden;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        transition: all 0.4s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
         margin-bottom: 25px;
-        border: none;
+        border: 1px solid #e2e8f0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
     }
-    
+
     .course-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        transform: translateY(-8px);
+        box-shadow: 0 24px 48px rgba(127, 29, 29, 0.18);
+        border-color: var(--crimson-300);
     }
-    
-    .course-image {
-        height: 220px;
-        object-fit: cover;
-        width: 100%;
-        transition: transform 0.3s ease;
-    }
-    
-    .course-card:hover .course-image {
-        transform: scale(1.05);
-    }
-    
+
     .image-wrapper {
         overflow: hidden;
         position: relative;
+        height: 200px;
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
     }
-    
+
+    .course-image {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        transition: transform 0.7s cubic-bezier(.2,.7,.2,1);
+    }
+
+    .course-card:hover .course-image { transform: scale(1.1); }
+
     .course-badge {
         position: absolute;
-        top: 15px;
-        right: 15px;
-        background: rgba(0,0,0,0.7);
+        top: 14px;
+        right: 14px;
+        background: rgba(69, 10, 10, 0.85);
         backdrop-filter: blur(10px);
-        padding: 5px 12px;
-        border-radius: 20px;
-        color: white;
+        padding: 6px 12px;
+        border-radius: 50px;
+        color: #fbbf24;
         font-size: 12px;
-        font-weight: 500;
+        font-weight: 600;
         z-index: 1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
     }
-    
+
+    .course-card:hover .course-badge {
+        transform: scale(1.08);
+        background: rgba(127, 29, 29, 0.95);
+    }
+
+    /* ==================== PROGRESS BAR ==================== */
     .progress-wrapper {
-        background: #f0f0f0;
+        background: #f1f5f9;
         border-radius: 10px;
         padding: 3px;
-        margin: 15px 0;
+        margin: 12px 0;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
     }
-    
+
     .progress-bar-custom {
         background: var(--primary-gradient);
         border-radius: 8px;
-        transition: width 0.5s ease;
+        transition: width 1s cubic-bezier(.2,.7,.2,1);
         position: relative;
         overflow: hidden;
         height: 8px;
     }
-    
+
     .progress-bar-custom::after {
         content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
         animation: shimmer 2s infinite;
     }
-    
-    @keyframes shimmer {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100%); }
-    }
-    
+
+    .text-primary { color: var(--crimson-700) !important; }
+
+    /* ==================== BUTTONS ==================== */
     .btn-custom {
         padding: 10px 20px;
-        border-radius: 12px;
+        border-radius: 10px;
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
         border: none;
+        font-size: 0.88rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    .btn-custom::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .btn-custom:hover::before { left: 100%; }
+
     .btn-custom-primary {
         background: var(--primary-gradient);
         color: white;
+        box-shadow: 0 4px 12px rgba(127, 29, 29, 0.2);
     }
-    
+
     .btn-custom-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 24px rgba(127, 29, 29, 0.35);
         color: white;
+        background: linear-gradient(135deg, #991b1b 0%, #450a0a 100%);
     }
-    
+
     .btn-custom-success {
         background: var(--success-gradient);
         color: white;
+        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
     }
-    
+
     .btn-custom-success:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(17, 153, 142, 0.4);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 24px rgba(5, 150, 105, 0.35);
         color: white;
     }
-    
+
+    /* ==================== COURSE ACTION BUTTONS ==================== */
+    .course-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+    }
+
+    .course-actions .btn {
+        font-size: 0.78rem;
+        padding: 7px 8px;
+        border-radius: 8px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: all 0.25s cubic-bezier(.2,.7,.2,1);
+        border-width: 1.5px;
+    }
+
+    .course-actions .btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-outline-primary {
+        color: var(--crimson-700) !important;
+        border-color: var(--crimson-600) !important;
+    }
+    .btn-outline-primary:hover {
+        background: var(--primary-gradient) !important;
+        border-color: transparent !important;
+        color: white !important;
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.3);
+    }
+
+    .btn-outline-info {
+        color: #0e7490 !important;
+        border-color: #0891b2 !important;
+    }
+    .btn-outline-info:hover {
+        background: var(--info-gradient) !important;
+        border-color: transparent !important;
+        color: white !important;
+        box-shadow: 0 6px 16px rgba(8, 145, 178, 0.3);
+    }
+
+    .btn-outline-warning {
+        color: #b45309 !important;
+        border-color: #d97706 !important;
+    }
+    .btn-outline-warning:hover {
+        background: var(--warning-gradient) !important;
+        border-color: transparent !important;
+        color: white !important;
+        box-shadow: 0 6px 16px rgba(217, 119, 6, 0.3);
+    }
+
+    .btn-outline-success {
+        color: #047857 !important;
+        border-color: #059669 !important;
+    }
+    .btn-outline-success:hover {
+        background: var(--success-gradient) !important;
+        border-color: transparent !important;
+        color: white !important;
+        box-shadow: 0 6px 16px rgba(5, 150, 105, 0.3);
+    }
+
+    .btn-outline-danger {
+        color: var(--crimson-700) !important;
+        border-color: var(--crimson-600) !important;
+    }
+    .btn-outline-danger:hover {
+        background: var(--primary-gradient) !important;
+        border-color: transparent !important;
+        color: white !important;
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.3);
+    }
+
+    /* ==================== TABLE ==================== */
     .quiz-table {
         border-radius: 16px;
         overflow: hidden;
+        font-size: 0.88rem;
     }
-    
+
     .quiz-table thead {
-        background: var(--primary-gradient);
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%);
         color: white;
     }
-    
+
     .quiz-table th {
-        padding: 15px;
+        padding: 14px 16px;
         font-weight: 600;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border: none;
     }
-    
+
+    .quiz-table tbody tr { transition: background 0.2s ease; }
+    .quiz-table tbody tr:hover { background: var(--crimson-50); }
+
+    .quiz-table td {
+        padding: 14px 16px;
+        vertical-align: middle;
+        border-color: #f1f5f9;
+    }
+
+    /* ==================== BADGES ==================== */
     .badge-custom {
         padding: 8px 15px;
         border-radius: 20px;
         font-weight: 500;
     }
-    
+
+    .badge.bg-success { background: var(--success-gradient) !important; }
+    .badge.bg-danger  { background: var(--primary-gradient) !important; }
+    .badge.bg-warning { background: var(--warning-gradient) !important; color: #fff !important; }
+    .badge.bg-info    { background: var(--info-gradient) !important; }
+
+    /* ==================== SECTION TITLE ==================== */
     .section-title {
-        font-size: 24px;
-        font-weight: 700;
+        font-size: 1.45rem;
+        font-weight: 800;
         margin-bottom: 25px;
+        color: var(--crimson-900);
         position: relative;
-        padding-bottom: 10px;
+        padding-bottom: 12px;
+        letter-spacing: -0.02em;
     }
-    
+
+    .section-title i { color: var(--crimson-600); }
+
     .section-title::after {
         content: '';
         position: absolute;
@@ -197,60 +521,94 @@
         height: 3px;
         background: var(--primary-gradient);
         border-radius: 2px;
+        animation: scaleIn 0.6s ease both;
     }
-    
+
+    /* ==================== EMPTY STATE ==================== */
     .empty-state {
         text-align: center;
         padding: 60px 20px;
         background: white;
         border-radius: 20px;
+        border: 1px solid var(--crimson-100);
+        animation: fadeInUp 0.5s ease;
     }
-    
+
     .empty-state-icon {
-        font-size: 80px;
-        color: #ddd;
+        font-size: 76px;
+        color: var(--crimson-200);
         margin-bottom: 20px;
+        animation: float 3.5s ease-in-out infinite;
     }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+
+    .empty-state h4 {
+        color: var(--crimson-900);
+        font-weight: 700;
     }
-    
-    .fade-in-up {
-        animation: fadeInUp 0.5s ease forwards;
+
+    /* ==================== MODAL ==================== */
+    .modal-content {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
     }
-    
+
+    .modal-header {
+        background: var(--primary-gradient) !important;
+        color: white;
+        border: none;
+        padding: 20px 24px;
+    }
+
+    .modal-header .modal-title {
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+    }
+
+    .modal-body { padding: 24px; }
+    .modal-footer { border: none; padding: 16px 24px 24px; }
+
+    /* ==================== ALERT ==================== */
+    .alert-success {
+        background: #ecfdf5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
     @media (max-width: 768px) {
-        .stat-number {
-            font-size: 24px;
+        .stat-number { font-size: 1.5rem; }
+        .dashboard-header { padding: 24px 20px; }
+        .dashboard-header h1 { font-size: 1.4rem; }
+        .section-title { font-size: 1.2rem; }
+        .stat-icon { width: 50px; height: 50px; font-size: 22px; }
+        .course-actions { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
         }
-        
-        .dashboard-header h1 {
-            font-size: 24px;
-        }
-        
-        .section-title {
-            font-size: 20px;
-        }
+        .reveal { opacity: 1; transform: none; }
     }
 </style>
 
-<!-- Dashboard Header -->
-<div class="dashboard-header fade-in-up">
+<!-- ==================== DASHBOARD HEADER ==================== -->
+<div class="dashboard-header">
     <div class="row align-items-center">
         <div class="col-md-8">
             <h1 class="mb-2">
-                <i class="fas fa-tachometer-alt me-2"></i> 
-                Welcome back, {{ current_user.username }}! 👋
+                <i class="fas fa-gauge-high me-2"></i>
+                Welcome back, {{ current_user.username }}!
             </h1>
-            <p class="mb-0 opacity-90">
+            <p class="mb-0">
                 {% if instructor %}
                     Manage your courses, track student progress, and create amazing content.
                 {% else %}
@@ -261,7 +619,7 @@
         <div class="col-md-4 text-md-end mt-3 mt-md-0">
             {% if instructor %}
                 <a href="{{ url_for('add_course') }}" class="btn btn-light btn-custom">
-                    <i class="fas fa-plus-circle me-2"></i>Create New Course
+                    <i class="fas fa-circle-plus"></i> Create New Course
                 </a>
             {% endif %}
         </div>
@@ -269,14 +627,14 @@
 </div>
 
 {% if instructor %}
-    <!-- INSTRUCTOR DASHBOARD -->
-    
-    <!-- Statistics Cards -->
-    <div class="row mb-5 fade-in-up" style="animation-delay: 0.1s">
+    <!-- ==================== INSTRUCTOR DASHBOARD ==================== -->
+
+    <!-- Statistics -->
+    <div class="row mb-5 reveal-stagger">
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="stat-card text-center">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea20, #764ba220);">
-                    <i class="fas fa-book" style="color: #667eea;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #fee2e2, #fecaca);">
+                    <i class="fas fa-book" style="color: #b91c1c;"></i>
                 </div>
                 <div class="stat-number">{{ courses|length }}</div>
                 <div class="text-muted">Total Courses</div>
@@ -284,8 +642,8 @@
         </div>
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="stat-card text-center">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #11998e20, #38ef7d20);">
-                    <i class="fas fa-users" style="color: #11998e;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);">
+                    <i class="fas fa-users" style="color: #059669;"></i>
                 </div>
                 <div class="stat-number">
                     {% set ns = namespace(total_students=0) %}
@@ -299,8 +657,8 @@
         </div>
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="stat-card text-center">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe20, #00f2fe20);">
-                    <i class="fas fa-video" style="color: #4facfe;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #cffafe, #a5f3fc);">
+                    <i class="fas fa-video" style="color: #0891b2;"></i>
                 </div>
                 <div class="stat-number">
                     {% set ns = namespace(total_lessons=0) %}
@@ -314,8 +672,8 @@
         </div>
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="stat-card text-center">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #f6d36520, #fda08520);">
-                    <i class="fas fa-star" style="color: #f6d365;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
+                    <i class="fas fa-star" style="color: #d97706;"></i>
                 </div>
                 <div class="stat-number">
                     {% set ns = namespace(total_rating=0.0, course_count=0) %}
@@ -331,83 +689,89 @@
             </div>
         </div>
     </div>
-    
-    <!-- My Courses Section -->
-    <div class="fade-in-up" style="animation-delay: 0.2s">
+
+    <!-- My Courses -->
+    <div class="reveal">
         <h3 class="section-title">
             <i class="fas fa-graduation-cap me-2"></i>My Courses
         </h3>
-        
-        <div class="row">
+
+        <div class="row reveal-stagger">
             {% for course in courses %}
             <div class="col-lg-4 col-md-6">
                 <div class="course-card">
                     <div class="image-wrapper">
                         {% if course.image_url %}
-                            <img src="{{ course.image_url }}" class="course-image" alt="{{ course.title }}" 
+                            <img src="{{ course.image_url }}" class="course-image" alt="{{ course.title }}"
+                                 loading="lazy"
                                  onerror="this.src='https://via.placeholder.com/400x220?text=' + encodeURIComponent('{{ course.title }}')">
                         {% else %}
-                            <img src="https://via.placeholder.com/400x220?text={{ course.title|replace(' ', '+') }}" class="course-image" alt="{{ course.title }}">
+                            <img src="https://via.placeholder.com/400x220?text={{ course.title|replace(' ', '+') }}" class="course-image" alt="{{ course.title }}" loading="lazy">
                         {% endif %}
                         <div class="course-badge">
                             <i class="fas fa-users me-1"></i>{{ course.enrollments.count() }} students
                         </div>
                     </div>
-                    <div class="p-3">
-                        <h5 class="card-title mb-2">{{ course.title }}</h5>
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <h5 class="card-title mb-2" style="color: var(--crimson-900); font-weight: 700;">{{ course.title }}</h5>
                         <p class="text-muted small mb-3">
                             <i class="fas fa-calendar-alt me-1"></i>
                             Created: {{ course.created_at.strftime('%b %d, %Y') }}
                         </p>
-                        <p class="card-text small text-secondary mb-3">
+                        <p class="card-text small text-secondary mb-3 flex-grow-1">
                             {{ course.description[:80] }}{% if course.description|length > 80 %}...{% endif %}
                         </p>
-                        
+
                         <div class="mb-3">
                             <span class="badge bg-info me-2">
                                 <i class="fas fa-video me-1"></i>{{ course.lessons.count() }} lessons
                             </span>
                             {% if course.avg_rating %}
-                            <span class="badge bg-warning text-dark">
+                            <span class="badge bg-warning">
                                 <i class="fas fa-star me-1"></i>{{ "%.1f"|format(course.avg_rating) }}/5
                             </span>
                             {% endif %}
                         </div>
-                        
-                        <div class="d-grid gap-2">
-                            <div class="btn-group" role="group">
-                                <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-eye"></i> View
-                                </a>
-                                <a href="{{ url_for('manage_lessons', course_id=course.id) }}" class="btn btn-sm btn-outline-warning">
-                                    <i class="fas fa-list"></i> Lessons
-                                </a>
-                                <a href="{{ url_for('add_lesson', course_id=course.id) }}" class="btn btn-sm btn-outline-success">
-                                    <i class="fas fa-plus"></i> Add
-                                </a>
-                                <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteCourseModal{{ course.id }}">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
+
+                        <!-- ✅ COURSE ACTIONS (2x2 grid) -->
+                        <div class="course-actions">
+                            <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-outline-primary" title="View Course">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <a href="{{ url_for('edit_course', course_id=course.id) }}" class="btn btn-outline-info" title="Edit Course Details">
+                                <i class="fas fa-pen"></i> Edit
+                            </a>
+                            <a href="{{ url_for('manage_lessons', course_id=course.id) }}" class="btn btn-outline-warning" title="Manage Lessons">
+                                <i class="fas fa-list"></i> Lessons
+                            </a>
+                            <a href="{{ url_for('add_lesson', course_id=course.id) }}" class="btn btn-outline-success" title="Add New Lesson">
+                                <i class="fas fa-plus"></i> Add
+                            </a>
+                            <a href="{{ url_for('edit_course_image', course_id=course.id) }}" class="btn btn-outline-secondary" title="Edit Course Image" style="grid-column: 1 / -1;">
+                                <i class="fas fa-image"></i> Edit Image
+                            </a>
+                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteCourseModal{{ course.id }}" title="Delete Course" style="grid-column: 1 / -1;">
+                                <i class="fas fa-trash"></i> Delete Course
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Delete Course Modal -->
             <div class="modal fade" id="deleteCourseModal{{ course.id }}" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header" style="background: var(--danger-gradient); color: white;">
+                        <div class="modal-header">
                             <h5 class="modal-title">
-                                <i class="fas fa-exclamation-triangle me-2"></i>Delete Course
+                                <i class="fas fa-triangle-exclamation me-2"></i>Delete Course
                             </h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
                             <p class="mb-3">Are you sure you want to delete <strong class="text-danger">"{{ course.title }}"</strong>?</p>
                             <div class="alert alert-danger">
-                                <i class="fas fa-info-circle me-2"></i>
+                                <i class="fas fa-circle-info me-2"></i>
                                 <strong>This action cannot be undone!</strong> The following will be permanently deleted:
                                 <ul class="mt-2 mb-0">
                                     <li>All {{ course.lessons.count() }} lessons in this course</li>
@@ -432,23 +796,23 @@
                     <h4>No Courses Yet</h4>
                     <p class="text-muted">You haven't created any courses. Start your teaching journey!</p>
                     <a href="{{ url_for('add_course') }}" class="btn btn-custom-primary btn-custom mt-3">
-                        <i class="fas fa-plus-circle me-2"></i>Create Your First Course
+                        <i class="fas fa-circle-plus"></i> Create Your First Course
                     </a>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
-    
+
 {% else %}
-    <!-- STUDENT DASHBOARD -->
-    
-    <!-- Student Statistics -->
-    <div class="row mb-5 fade-in-up" style="animation-delay: 0.1s">
+    <!-- ==================== STUDENT DASHBOARD ==================== -->
+
+    <!-- Statistics -->
+    <div class="row mb-5 reveal-stagger">
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="stat-card text-center">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea20, #764ba220);">
-                    <i class="fas fa-graduation-cap" style="color: #667eea;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #fee2e2, #fecaca);">
+                    <i class="fas fa-graduation-cap" style="color: #b91c1c;"></i>
                 </div>
                 <div class="stat-number">{{ enrollments|length }}</div>
                 <div class="text-muted">Enrolled Courses</div>
@@ -456,8 +820,8 @@
         </div>
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="stat-card text-center">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #11998e20, #38ef7d20);">
-                    <i class="fas fa-check-circle" style="color: #11998e;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);">
+                    <i class="fas fa-circle-check" style="color: #059669;"></i>
                 </div>
                 <div class="stat-number">
                     {% set ns = namespace(completed_courses=0) %}
@@ -482,8 +846,8 @@
         </div>
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="stat-card text-center">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe20, #00f2fe20);">
-                    <i class="fas fa-puzzle-piece" style="color: #4facfe;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #cffafe, #a5f3fc);">
+                    <i class="fas fa-puzzle-piece" style="color: #0891b2;"></i>
                 </div>
                 <div class="stat-number">{{ current_user.quiz_attempts.count() }}</div>
                 <div class="text-muted">Quizzes Taken</div>
@@ -491,8 +855,8 @@
         </div>
         <div class="col-md-3 col-sm-6 mb-3">
             <div class="stat-card text-center">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #f6d36520, #fda08520);">
-                    <i class="fas fa-trophy" style="color: #f6d365;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
+                    <i class="fas fa-trophy" style="color: #d97706;"></i>
                 </div>
                 <div class="stat-number">
                     {% set passed_count = namespace(value=0) %}
@@ -507,31 +871,32 @@
             </div>
         </div>
     </div>
-    
-    <!-- Enrolled Courses Section -->
-    <div class="fade-in-up" style="animation-delay: 0.2s">
+
+    <!-- My Learning Journey -->
+    <div class="reveal">
         <h3 class="section-title">
-            <i class="fas fa-play-circle me-2"></i>My Learning Journey
+            <i class="fas fa-circle-play me-2"></i>My Learning Journey
         </h3>
-        
-        <div class="row">
+
+        <div class="row reveal-stagger">
             {% for enrollment in enrollments %}
             <div class="col-lg-4 col-md-6">
                 <div class="course-card">
                     <div class="image-wrapper">
                         {% if enrollment.course.image_url %}
                             <img src="{{ enrollment.course.image_url }}" class="course-image" alt="{{ enrollment.course.title }}"
+                                 loading="lazy"
                                  onerror="this.src='https://via.placeholder.com/400x220?text=' + encodeURIComponent('{{ enrollment.course.title }}')">
                         {% else %}
-                            <img src="https://via.placeholder.com/400x220?text={{ enrollment.course.title|replace(' ', '+') }}" class="course-image" alt="{{ enrollment.course.title }}">
+                            <img src="https://via.placeholder.com/400x220?text={{ enrollment.course.title|replace(' ', '+') }}" class="course-image" alt="{{ enrollment.course.title }}" loading="lazy">
                         {% endif %}
                         <div class="course-badge">
                             <i class="fas fa-calendar me-1"></i>
                             {{ enrollment.enrolled_at.strftime('%b %d, %Y') }}
                         </div>
                     </div>
-                    <div class="p-3">
-                        <h5 class="card-title mb-2">{{ enrollment.course.title }}</h5>
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <h5 class="card-title mb-2" style="color: var(--crimson-900); font-weight: 700;">{{ enrollment.course.title }}</h5>
                         <p class="text-muted small mb-3">
                             <i class="fas fa-user-tie me-1"></i>
                             {{ enrollment.course.instructor.username }}
@@ -539,8 +904,7 @@
                         <p class="card-text small text-secondary mb-3">
                             {{ enrollment.course.description[:80] }}{% if enrollment.course.description|length > 80 %}...{% endif %}
                         </p>
-                        
-                        <!-- Progress Calculation - FIXED -->
+
                         {% set total_lessons = enrollment.course.lessons.count() %}
                         {% set completed_count = namespace(value=0) %}
                         {% for lesson in enrollment.course.lessons.all() %}
@@ -551,28 +915,28 @@
                             {% endfor %}
                         {% endfor %}
                         {% set progress_percentage = (completed_count.value / total_lessons * 100) if total_lessons > 0 else 0 %}
-                        
+
                         <div class="mb-2">
                             <div class="d-flex justify-content-between mb-1">
                                 <small class="text-muted">Progress</small>
-                                <small class="fw-bold text-primary">{{ progress_percentage|int }}%</small>
+                                <small class="fw-bold" style="color: var(--crimson-700);">{{ progress_percentage|int }}%</small>
                             </div>
                             <div class="progress-wrapper">
                                 <div class="progress-bar-custom" style="width: {{ progress_percentage }}%;"></div>
                             </div>
                             <small class="text-muted">
-                                <i class="fas fa-check-circle me-1"></i>
+                                <i class="fas fa-circle-check me-1"></i>
                                 {{ completed_count.value }}/{{ total_lessons }} lessons completed
                             </small>
                         </div>
-                        
+
                         <div class="d-grid gap-2 mt-3">
                             <a href="{{ url_for('learn_course', course_id=enrollment.course.id) }}" class="btn btn-custom-primary btn-custom">
-                                <i class="fas fa-play me-2"></i>Continue Learning
+                                <i class="fas fa-play"></i> Continue Learning
                             </a>
                             {% if completed_count.value == total_lessons and total_lessons > 0 %}
                                 <div class="alert alert-success text-center mb-0 py-2">
-                                    <i class="fas fa-check-circle me-1"></i>
+                                    <i class="fas fa-circle-check me-1"></i>
                                     <strong>Course Completed! 🎉</strong>
                                 </div>
                             {% endif %}
@@ -589,20 +953,20 @@
                     <h4>No Enrollments Yet</h4>
                     <p class="text-muted">You haven't enrolled in any courses. Start learning today!</p>
                     <a href="{{ url_for('courses') }}" class="btn btn-custom-primary btn-custom mt-3">
-                        <i class="fas fa-search me-2"></i>Browse Courses
+                        <i class="fas fa-search"></i> Browse Courses
                     </a>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
-    
-    <!-- Quiz Results Section -->
-    <div class="fade-in-up mt-5" style="animation-delay: 0.3s">
+
+    <!-- Quiz Performance -->
+    <div class="reveal mt-5">
         <h3 class="section-title">
             <i class="fas fa-chart-line me-2"></i>Quiz Performance
         </h3>
-        
+
         <div class="card border-0 shadow-sm rounded-4">
             <div class="card-body p-0">
                 {% set quiz_attempts = current_user.quiz_attempts.all() %}
@@ -624,29 +988,33 @@
                                 {% for attempt in quiz_attempts|sort(attribute='attempted_at', reverse=True) %}
                                 <tr>
                                     <td>{{ attempt.attempted_at.strftime('%b %d, %Y') }}</td>
-                                    <td><strong>{{ attempt.quiz.lesson.course.title[:30] }}</strong></td>
+                                    <td><strong style="color: var(--crimson-900);">{{ attempt.quiz.lesson.course.title[:30] }}</strong></td>
                                     <td>{{ attempt.quiz.lesson.title[:25] }}</td>
                                     <td><span class="fw-bold">{{ attempt.score }}/{{ attempt.total_questions }}</span></td>
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
-                                            <div class="progress-wrapper flex-grow-1 mb-0">
+                                            <div class="progress-wrapper flex-grow-1 mb-0" style="min-width: 80px;">
                                                 <div class="progress-bar-custom" style="width: {{ attempt.percentage }}%;"></div>
                                             </div>
-                                            <span>{{ "%.0f"|format(attempt.percentage) }}%</span>
+                                            <span style="color: var(--crimson-700); font-weight: 600;">{{ "%.0f"|format(attempt.percentage) }}%</span>
                                         </div>
                                     </td>
                                     <td>
                                         {% if attempt.passed %}
-                                            <span class="badge bg-success">Passed ✓</span>
+                                            <span class="badge bg-success">Passed</span>
                                         {% else %}
-                                            <span class="badge bg-danger">Failed ✗</span>
+                                            <span class="badge bg-danger">Failed</span>
                                         {% endif %}
                                     </td>
                                     <td>
                                         {% if attempt.passed %}
-                                            <a href="{{ url_for('generate_certificate', course_id=attempt.quiz.lesson.course.id) }}" class="btn btn-sm btn-success">Certificate</a>
+                                            <a href="{{ url_for('generate_certificate', course_id=attempt.quiz.lesson.course.id) }}" class="btn btn-sm btn-success">
+                                                <i class="fas fa-download me-1"></i> Certificate
+                                            </a>
                                         {% else %}
-                                            <button class="btn btn-sm btn-secondary" disabled>Locked</button>
+                                            <button class="btn btn-sm btn-secondary" disabled>
+                                                <i class="fas fa-lock me-1"></i> Locked
+                                            </button>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -661,16 +1029,18 @@
                         </div>
                         <h4>No Quiz Attempts Yet</h4>
                         <p class="text-muted">Take quizzes in your enrolled courses to track your progress!</p>
-                        <a href="{{ url_for('courses') }}" class="btn btn-custom-primary btn-custom mt-3">Start Learning</a>
+                        <a href="{{ url_for('courses') }}" class="btn btn-custom-primary btn-custom mt-3">
+                            <i class="fas fa-play"></i> Start Learning
+                        </a>
                     </div>
                 {% endif %}
             </div>
         </div>
     </div>
-    
+
     <!-- Performance Stats -->
     {% if quiz_attempts %}
-    <div class="row mt-4 fade-in-up">
+    <div class="row mt-4 reveal-stagger">
         <div class="col-md-4 mb-3">
             <div class="stat-card text-center p-3">
                 <div class="small text-muted mb-2">Average Score</div>
@@ -679,7 +1049,7 @@
                     {% set ns.total_percentage = ns.total_percentage + attempt.percentage %}
                 {% endfor %}
                 {% set avg_score = ns.total_percentage / quiz_attempts|length %}
-                <div class="stat-number mb-0" style="font-size: 28px;">{{ "%.1f"|format(avg_score) }}%</div>
+                <div class="stat-number mb-0" style="font-size: 1.75rem;">{{ "%.1f"|format(avg_score) }}%</div>
             </div>
         </div>
         <div class="col-md-4 mb-3">
@@ -691,7 +1061,7 @@
                         {% set ns.best_score = attempt.percentage %}
                     {% endif %}
                 {% endfor %}
-                <div class="stat-number mb-0" style="font-size: 28px;">{{ "%.0f"|format(ns.best_score) }}%</div>
+                <div class="stat-number mb-0" style="font-size: 1.75rem;">{{ "%.0f"|format(ns.best_score) }}%</div>
             </div>
         </div>
         <div class="col-md-4 mb-3">
@@ -704,12 +1074,33 @@
                     {% endif %}
                 {% endfor %}
                 {% set pass_rate = (ns.pass_count / quiz_attempts|length * 100) if quiz_attempts|length > 0 else 0 %}
-                <div class="stat-number mb-0" style="font-size: 28px;">{{ "%.0f"|format(pass_rate) }}%</div>
+                <div class="stat-number mb-0" style="font-size: 1.75rem;">{{ "%.0f"|format(pass_rate) }}%</div>
             </div>
         </div>
     </div>
     {% endif %}
-    
+
 {% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal, .reveal-stagger');
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => obs.observe(el));
+
+        document.querySelectorAll('.progress-bar-custom').forEach(bar => {
+            const targetWidth = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => { bar.style.width = targetWidth; }, 200);
+        });
+    });
+</script>
 
 {% endblock %}

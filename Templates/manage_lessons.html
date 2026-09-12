@@ -2,567 +2,779 @@
 
 {% block content %}
 <style>
-    /* Modern Manage Lessons Styles */
+    /* ============================================================
+       MANAGE LESSONS — CRIMSON RED + ANIMATIONS
+       ============================================================ */
     :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --primary-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --danger-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+
+        --crimson-900: #450a0a;
+        --crimson-800: #7f1d1d;
+        --crimson-700: #991b1b;
+        --crimson-600: #b91c1c;
+        --crimson-500: #dc2626;
+        --crimson-400: #ef4444;
+        --crimson-300: #f87171;
+        --crimson-200: #fecaca;
+        --crimson-100: #fee2e2;
+        --crimson-50:  #fef2f2;
     }
-    
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
+    }
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-14px) rotate(3deg); }
+    }
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
+    }
+    @keyframes shimmer {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    @keyframes slideInRight {
+        from { transform: translateX(120%); opacity: 0; }
+        to   { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to   { transform: translateX(120%); opacity: 0; }
+    }
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+        50%      { box-shadow: 0 0 0 12px rgba(220, 38, 38, 0); }
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.6s cubic-bezier(.2,.7,.2,1),
+                    transform 0.6s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    /* ==================== PAGE HEADER ==================== */
     .page-header {
-        background: var(--primary-gradient);
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
         border-radius: 20px;
-        padding: 25px 30px;
+        padding: 28px 30px;
         margin-bottom: 30px;
         color: white;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 16px 40px rgba(127, 29, 29, 0.28);
     }
-    
+
     .page-header::before {
-        content: '📋';
+        content: '';
         position: absolute;
-        bottom: -20px;
-        right: 20px;
-        font-size: 80px;
-        opacity: 0.1;
+        top: -50%; right: -25%;
+        width: 340px; height: 340px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.45) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
     }
-    
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50%; left: -15%;
+        width: 280px; height: 280px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 10s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .page-header > * { position: relative; z-index: 1; }
+
     .page-header h3 {
         margin: 0;
-        font-weight: 700;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    
-    .page-header p {
-        margin: 5px 0 0;
-        opacity: 0.9;
+
+    .page-header h3 i {
+        color: #fbbf24;
+        animation: float 3.5s ease-in-out infinite;
+        filter: drop-shadow(0 4px 10px rgba(251, 191, 36, 0.4));
     }
-    
+
+    .page-header p { margin: 6px 0 0; opacity: 0.92; }
+
     .stats-bar {
         display: flex;
-        gap: 20px;
+        gap: 12px;
         margin-top: 15px;
         flex-wrap: wrap;
     }
-    
+
     .stat-pill {
-        background: rgba(255,255,255,0.2);
+        background: rgba(255, 255, 255, 0.15);
         backdrop-filter: blur(10px);
         padding: 8px 16px;
         border-radius: 30px;
-        font-size: 14px;
+        font-size: 0.85rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
     }
-    
-    /* Toolbar */
+
+    .stat-pill i { color: #fbbf24; }
+
+    .stat-pill:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .add-btn {
+        background: rgba(255, 255, 255, 0.95);
+        border: none;
+        padding: 10px 22px;
+        border-radius: 30px;
+        color: var(--crimson-800);
+        font-weight: 700;
+        font-size: 0.88rem;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .add-btn::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(185, 28, 28, 0.15), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .add-btn:hover::before { left: 100%; }
+
+    .add-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+        color: var(--crimson-900);
+    }
+
+    /* ==================== TOOLBAR ==================== */
     .toolbar {
         background: white;
         border-radius: 16px;
-        padding: 15px 20px;
+        padding: 16px 20px;
         margin-bottom: 25px;
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
         gap: 15px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+        border: 1px solid var(--crimson-100);
+        animation: fadeInUp 0.5s ease 0.1s backwards;
     }
-    
+
     .search-box {
         position: relative;
-        min-width: 250px;
+        min-width: 260px;
+        flex: 1;
+        max-width: 400px;
     }
-    
+
     .search-box i {
         position: absolute;
-        left: 12px;
+        left: 16px;
         top: 50%;
         transform: translateY(-50%);
-        color: #6c757d;
-    }
-    
-    .search-box input {
-        padding-left: 35px;
-        border: 2px solid #e9ecef;
-        border-radius: 25px;
-        padding: 10px 15px 10px 35px;
-        width: 100%;
-        transition: all 0.3s ease;
-    }
-    
-    .search-box input:focus {
-        border-color: #667eea;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-    
-    .filter-buttons {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-    
-    .filter-btn {
-        padding: 8px 16px;
-        border-radius: 25px;
-        border: 2px solid #e9ecef;
-        background: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: 13px;
-    }
-    
-    .filter-btn.active {
-        background: var(--primary-gradient);
-        border-color: #667eea;
-        color: white;
-    }
-    
-    .filter-btn:hover:not(.active) {
-        background: #f8f9fa;
-        border-color: #667eea;
-    }
-    
-    .add-btn {
-        background: var(--success-gradient);
-        border: none;
-        padding: 10px 20px;
-        border-radius: 25px;
-        color: white;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        text-decoration: none;
-    }
-    
-    .add-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(17, 153, 142, 0.3);
-        color: white;
-    }
-    
-    /* Table Styles */
-    .table-container {
-        background: white;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-    }
-    
-    .table-custom {
-        margin-bottom: 0;
-    }
-    
-    .table-custom thead {
-        background: linear-gradient(135deg, #2c3e50, #34495e);
-        color: white;
-    }
-    
-    .table-custom th {
-        padding: 15px;
-        font-weight: 600;
-        border: none;
-    }
-    
-    .table-custom td {
-        padding: 15px;
-        vertical-align: middle;
-    }
-    
-    .table-custom tbody tr {
-        transition: all 0.3s ease;
-        border-bottom: 1px solid #e9ecef;
-    }
-    
-    .table-custom tbody tr:hover {
-        background: #f8f9fa;
-        transform: scale(1.01);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    
-    .lesson-order {
-        width: 50px;
-        text-align: center;
-        font-weight: 700;
-        font-size: 18px;
-        color: #667eea;
-    }
-    
-    .drag-handle {
-        cursor: move;
-        color: #adb5bd;
+        color: #94a3b8;
         transition: color 0.3s ease;
+        pointer-events: none;
     }
-    
-    .drag-handle:hover {
-        color: #667eea;
+
+    .search-box input {
+        padding: 11px 16px 11px 42px;
+        border: 2px solid #e2e8f0;
+        border-radius: 30px;
+        width: 100%;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        font-size: 14px;
+        background: #fafafa;
+        color: var(--crimson-900);
     }
-    
-    /* Badge Styles */
-    .badge-custom {
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 500;
+
+    .search-box input::placeholder { color: #94a3b8; }
+
+    .search-box input:hover {
+        border-color: var(--crimson-200);
+        background: white;
     }
-    
-    .badge-video {
-        background: linear-gradient(135deg, #4facfe20, #00f2fe20);
-        color: #4facfe;
+
+    .search-box input:focus {
+        border-color: var(--crimson-500);
+        outline: none;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
     }
-    
-    .badge-quiz {
-        background: linear-gradient(135deg, #f6d36520, #fda08520);
-        color: #f6d365;
-    }
-    
-    .badge-no {
-        background: #e9ecef;
-        color: #6c757d;
-    }
-    
-    /* Action Buttons */
-    .action-buttons {
+
+    .search-box:focus-within i { color: var(--crimson-600); }
+
+    .filter-buttons {
         display: flex;
         gap: 8px;
         flex-wrap: wrap;
     }
-    
+
+    .filter-btn {
+        padding: 8px 16px;
+        border-radius: 25px;
+        border: 2px solid #e2e8f0;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        font-size: 13px;
+        font-weight: 600;
+        color: #475569;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .filter-btn::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .filter-btn:hover::before { left: 100%; }
+
+    .filter-btn.active {
+        background: var(--primary-gradient);
+        border-color: transparent;
+        color: white;
+        box-shadow: 0 4px 12px rgba(127, 29, 29, 0.3);
+        transform: translateY(-1px);
+    }
+
+    .filter-btn:hover:not(.active) {
+        background: var(--crimson-50);
+        border-color: var(--crimson-300);
+        color: var(--crimson-700);
+        transform: translateY(-1px);
+    }
+
+    /* ==================== TABLE ==================== */
+    .table-container {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+        border: 1px solid var(--crimson-100);
+        animation: fadeInUp 0.6s ease 0.15s backwards;
+    }
+
+    .table-custom { margin-bottom: 0; }
+
+    .table-custom thead {
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%);
+        color: white;
+    }
+
+    .table-custom th {
+        padding: 16px;
+        font-weight: 700;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border: none;
+    }
+
+    .table-custom th:first-child,
+    .table-custom td:first-child {
+        padding-left: 22px;
+    }
+
+    .table-custom th:last-child,
+    .table-custom td:last-child {
+        padding-right: 22px;
+    }
+
+    .table-custom td {
+        padding: 16px;
+        vertical-align: middle;
+        color: #475569;
+        font-size: 0.9rem;
+    }
+
+    .table-custom tbody tr {
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        border-bottom: 1px solid #f1f5f9;
+        position: relative;
+    }
+
+    .table-custom tbody tr::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 3px;
+        background: var(--primary-gradient);
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: transform 0.3s ease;
+    }
+
+    .table-custom tbody tr:hover::before { transform: scaleY(1); }
+
+    .table-custom tbody tr:hover {
+        background: var(--crimson-50);
+        box-shadow: 0 4px 12px rgba(127, 29, 29, 0.06);
+    }
+
+    .lesson-order {
+        width: 50px;
+        text-align: center;
+        font-weight: 800;
+        font-size: 18px;
+        color: var(--crimson-700);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* ==================== BADGES ==================== */
+    .badge-custom {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .badge-video {
+        background: linear-gradient(135deg, #e0f2fe, #cffafe);
+        color: #0891b2;
+        border: 1px solid #a5f3fc;
+    }
+
+    .badge-quiz {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        color: #b45309;
+        border: 1px solid #fde047;
+    }
+
+    .badge-no {
+        background: #f1f5f9;
+        color: #94a3b8;
+        border: 1px solid #e2e8f0;
+    }
+
+    /* ==================== ACTION BUTTONS ==================== */
+    .action-buttons {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
     .action-btn {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
         border: none;
         cursor: pointer;
         text-decoration: none;
+        font-size: 0.85rem;
+        position: relative;
     }
-    
+
+    .action-btn:hover { transform: translateY(-3px); }
+
     .action-btn-view {
-        background: #4facfe20;
-        color: #4facfe;
+        background: linear-gradient(135deg, #e0f2fe, #cffafe);
+        color: #0891b2;
     }
-    
     .action-btn-view:hover {
-        background: #4facfe;
+        background: var(--info-gradient);
         color: white;
-        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(8, 145, 178, 0.4);
     }
-    
+
     .action-btn-edit {
-        background: #f6d36520;
-        color: #f6d365;
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        color: #b45309;
     }
-    
     .action-btn-edit:hover {
-        background: #f6d365;
+        background: var(--warning-gradient);
         color: white;
-        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(217, 119, 6, 0.4);
     }
-    
+
     .action-btn-quiz {
-        background: #667eea20;
-        color: #667eea;
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
+        color: var(--crimson-700);
     }
-    
     .action-btn-quiz:hover {
-        background: #667eea;
+        background: var(--primary-gradient);
         color: white;
-        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.4);
     }
-    
+
     .action-btn-delete {
-        background: #eb334920;
-        color: #eb3349;
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
+        color: var(--crimson-700);
     }
-    
     .action-btn-delete:hover {
-        background: #eb3349;
+        background: var(--primary-gradient);
         color: white;
-        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.4);
     }
-    
-    /* Content Preview */
+
+    /* ==================== CONTENT PREVIEW ==================== */
     .content-preview {
-        max-width: 200px;
+        max-width: 220px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        color: #6c757d;
-        font-size: 13px;
+        color: #64748b;
+        font-size: 0.83rem;
     }
-    
-    /* Empty State */
-    .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-    }
-    
-    .empty-icon {
-        font-size: 80px;
-        color: #dee2e6;
-        margin-bottom: 20px;
-    }
-    
-    .btn-primary {
-        background: var(--primary-gradient);
-        border: none;
-        color: white;
-        padding: 10px 25px;
-        border-radius: 25px;
-        transition: all 0.3s ease;
-        text-decoration: none;
-    }
-    
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        color: white;
-    }
-    
-    .btn-secondary {
-        background: #6c757d;
-        border: none;
-        color: white;
-        padding: 8px 20px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-secondary:hover {
-        background: #5a6268;
-        color: white;
-    }
-    
-    .btn-danger {
-        background: var(--danger-gradient);
-        border: none;
-        color: white;
-        padding: 8px 20px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-danger:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(235, 51, 73, 0.4);
-        color: white;
-    }
-    
-    .btn-light {
-        background: rgba(255,255,255,0.2);
-        border: none;
-        color: white;
-        padding: 5px 15px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-light:hover {
-        background: rgba(255,255,255,0.3);
-        color: white;
-    }
-    
-    .btn-outline-light {
-        background: transparent;
-        border: 2px solid white;
-        color: white;
-        padding: 5px 15px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-outline-light:hover {
-        background: white;
-        color: #667eea;
-    }
-    
-    /* Toast Notification */
-    .toast-notification {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #28a745;
-        color: white;
-        padding: 12px 24px;
-        border-radius: 10px;
-        z-index: 1000;
-        animation: slideInRight 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    }
-    
-    @keyframes slideInRight {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    /* Bulk Actions Bar */
+
+    /* ==================== BULK ACTIONS ==================== */
     .bulk-actions-bar {
-        background: #667eea;
+        background: linear-gradient(135deg, #7f1d1d, #450a0a);
         color: white;
-        padding: 12px 20px;
-        border-radius: 12px;
+        padding: 14px 22px;
+        border-radius: 14px;
         margin-bottom: 20px;
         display: none;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 15px;
+        box-shadow: 0 12px 28px rgba(127, 29, 29, 0.3);
     }
-    
+
     .bulk-actions-bar.show {
         display: flex;
-        animation: fadeIn 0.3s ease;
+        animation: fadeInUp 0.35s cubic-bezier(.2,.7,.2,1);
     }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
+
+    .bulk-actions-bar strong { color: #fbbf24; }
+
+    .bulk-actions-bar .btn-light {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
     }
-    
-    /* Modal Styles */
-    .modal-content {
-        border: none;
-        border-radius: 20px;
+
+    .bulk-actions-bar .btn-light:hover {
+        background: rgba(255, 255, 255, 0.25);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .bulk-actions-bar .btn-outline-light {
+        background: transparent;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+    }
+
+    .bulk-actions-bar .btn-outline-light:hover {
+        background: white;
+        color: var(--crimson-800);
+        border-color: white;
+    }
+
+    /* ==================== EMPTY STATE ==================== */
+    .empty-state {
+        text-align: center;
+        padding: 70px 20px;
+    }
+
+    .empty-icon {
+        font-size: 80px;
+        color: var(--crimson-200);
+        margin-bottom: 20px;
+        animation: float 3.5s ease-in-out infinite;
+    }
+
+    .empty-state h4 {
+        color: var(--crimson-900);
+        font-weight: 700;
+    }
+
+    .btn-primary {
+        background: linear-gradient(180deg, var(--crimson-600) 0%, var(--crimson-700) 100%);
+        border: 1px solid var(--crimson-800);
+        color: white;
+        padding: 11px 26px;
+        border-radius: 25px;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 4px 16px rgba(127, 29, 29, 0.25);
+        position: relative;
         overflow: hidden;
     }
-    
-    .modal-header {
-        padding: 15px 20px;
-        border-bottom: none;
+
+    .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.6s ease;
     }
-    
-    .modal-footer {
-        border-top: none;
-        padding: 15px 20px;
+
+    .btn-primary:hover::before { left: 100%; }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 12px 28px rgba(127, 29, 29, 0.4);
+        color: white;
+        background: linear-gradient(180deg, var(--crimson-700) 0%, var(--crimson-800) 100%);
     }
-    
-    .modal-body {
-        padding: 20px;
-    }
-    
-    .btn-close-white {
-        filter: brightness(0) invert(1);
-    }
-    
-    /* Alert */
-    .alert-danger {
-        background: linear-gradient(135deg, #eb334920, #f45c4320);
+
+    /* ==================== MODAL ==================== */
+    .modal-content {
         border: none;
-        border-radius: 12px;
-        color: #eb3349;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
     }
-    
-    /* Responsive */
+
+    .modal-header {
+        padding: 18px 22px;
+        border-bottom: none;
+        background: var(--primary-gradient);
+        color: white;
+    }
+
+    .modal-header .modal-title {
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+    }
+
+    .modal-body { padding: 22px; }
+    .modal-footer { border-top: none; padding: 16px 22px 22px; }
+
+    .btn-close-white { filter: brightness(0) invert(1); }
+
+    .btn-secondary {
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        color: #475569;
+        padding: 8px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        background: #e2e8f0;
+        color: var(--crimson-800);
+    }
+
+    .btn-danger {
+        background: var(--primary-gradient);
+        border: none;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.4);
+        color: white;
+    }
+
+    /* ==================== ALERT ==================== */
+    .alert-danger {
+        background: linear-gradient(135deg, #fef2f2, #fee2e2);
+        border: 1px solid #fecaca;
+        border-left: 4px solid var(--crimson-500);
+        border-radius: 12px;
+        color: #991b1b;
+        font-size: 0.88rem;
+    }
+
+    .alert-danger i { color: var(--crimson-600); }
+
+    /* ==================== CHECKBOX ==================== */
+    .lesson-checkbox,
+    #selectAllCheckbox {
+        width: 18px !important;
+        height: 18px !important;
+        cursor: pointer;
+        accent-color: var(--crimson-600);
+        transition: transform 0.2s ease;
+    }
+
+    .lesson-checkbox:checked,
+    #selectAllCheckbox:checked {
+        transform: scale(1.1);
+    }
+
+    /* ==================== TOAST ==================== */
+    .toast-notification {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: linear-gradient(135deg, #059669, #10b981);
+        color: white;
+        padding: 14px 24px;
+        border-radius: 12px;
+        z-index: 9999;
+        animation: slideInRight 0.35s cubic-bezier(.2,.7,.2,1);
+        box-shadow: 0 12px 32px rgba(5, 150, 105, 0.35);
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
     @media (max-width: 768px) {
-        .page-header {
-            padding: 20px;
-        }
-        
+        .page-header { padding: 22px 20px; }
+        .page-header h3 { font-size: 1.35rem; }
         .toolbar {
             flex-direction: column;
             align-items: stretch;
         }
-        
-        .search-box {
-            width: 100%;
-        }
-        
-        .table-custom {
-            font-size: 13px;
-        }
-        
-        .table-custom td, 
-        .table-custom th {
-            padding: 10px;
-        }
-        
-        .action-buttons {
-            flex-wrap: wrap;
-        }
-        
-        .content-preview {
-            max-width: 120px;
-        }
+        .search-box { width: 100%; max-width: none; }
+        .table-custom { font-size: 13px; }
+        .table-custom td,
+        .table-custom th { padding: 12px 10px; }
+        .action-buttons { flex-wrap: wrap; }
+        .content-preview { max-width: 120px; }
+        .toast-notification { left: 16px; right: 16px; bottom: 16px; }
     }
-    
-    /* Dragging styles */
-    .dragging {
-        opacity: 0.5;
-        background: #f8f9fa;
-    }
-    
-    .drag-over {
-        border-top: 2px solid #667eea;
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        .reveal { opacity: 1; transform: none; }
     }
 </style>
 
 <div class="container">
-    <!-- Page Header -->
+    <!-- ==================== PAGE HEADER ==================== -->
     <div class="page-header">
-        <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
                 <h3><i class="fas fa-chalkboard-teacher me-2"></i>Manage Lessons</h3>
                 <p>{{ course.title }}</p>
+                <div class="stats-bar">
+                    <div class="stat-pill">
+                        <i class="fas fa-book"></i> {{ lessons|length }} Lessons
+                    </div>
+                    <div class="stat-pill">
+                        <i class="fas fa-video"></i> {{ lessons_with_video }} With Video
+                    </div>
+                    <div class="stat-pill">
+                        <i class="fas fa-puzzle-piece"></i> {{ lessons_with_quizzes }} With Quizzes
+                    </div>
+                </div>
             </div>
             <a href="{{ url_for('add_lesson', course_id=course.id) }}" class="add-btn">
-                <i class="fas fa-plus me-2"></i>Add New Lesson
+                <i class="fas fa-circle-plus"></i> Add New Lesson
             </a>
         </div>
-        <div class="stats-bar">
-            <div class="stat-pill">
-                <i class="fas fa-book me-1"></i> Total Lessons: {{ lessons|length }}
-            </div>
-            <div class="stat-pill">
-                <i class="fas fa-video me-1"></i> With Video: {{ lessons_with_video }}
-            </div>
-            <div class="stat-pill">
-                <i class="fas fa-puzzle-piece me-1"></i> With Quizzes: {{ lessons_with_quizzes }}
-            </div>
-        </div>
     </div>
-    
-    <!-- Bulk Actions Bar -->
+
+    <!-- ==================== BULK ACTIONS ==================== -->
     <div class="bulk-actions-bar" id="bulkActionsBar">
         <div>
-            <i class="fas fa-check-circle me-2"></i>
-            <span id="selectedCount">0</span> lessons selected
+            <i class="fas fa-circle-check me-2"></i>
+            <strong id="selectedCount">0</strong> lessons selected
         </div>
-        <div>
+        <div class="d-flex gap-2 flex-wrap">
             <button class="btn btn-light" onclick="bulkDelete()">
                 <i class="fas fa-trash me-1"></i> Delete Selected
             </button>
             <button class="btn btn-outline-light" onclick="clearSelection()">
-                <i class="fas fa-times me-1"></i> Cancel
+                <i class="fas fa-xmark me-1"></i> Cancel
             </button>
         </div>
     </div>
-    
-    <!-- Toolbar -->
+
+    <!-- ==================== TOOLBAR ==================== -->
     <div class="toolbar">
         <div class="search-box">
             <i class="fas fa-search"></i>
             <input type="text" id="searchInput" placeholder="Search lessons...">
         </div>
         <div class="filter-buttons">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="video">With Video</button>
-            <button class="filter-btn" data-filter="no-video">No Video</button>
-            <button class="filter-btn" data-filter="quiz">With Quiz</button>
-            <button class="filter-btn" data-filter="no-quiz">No Quiz</button>
+            <button class="filter-btn active" data-filter="all"><i class="fas fa-th-large"></i> All</button>
+            <button class="filter-btn" data-filter="video"><i class="fas fa-video"></i> Video</button>
+            <button class="filter-btn" data-filter="no-video"><i class="fas fa-ban"></i> No Video</button>
+            <button class="filter-btn" data-filter="quiz"><i class="fas fa-puzzle-piece"></i> Quiz</button>
+            <button class="filter-btn" data-filter="no-quiz"><i class="fas fa-ban"></i> No Quiz</button>
         </div>
     </div>
-    
-    <!-- Lessons Table -->
+
+    <!-- ==================== LESSONS TABLE ==================== -->
     <div class="table-container">
         {% if lessons %}
             <div class="table-responsive">
@@ -570,25 +782,29 @@
                     <thead>
                         <tr>
                             <th style="width: 30px;">
-                                <input type="checkbox" id="selectAllCheckbox" style="width: 18px; height: 18px; cursor: pointer;">
+                                <input type="checkbox" id="selectAllCheckbox">
                             </th>
                             <th style="width: 60px;">#</th>
                             <th>Lesson Title</th>
                             <th>Video</th>
                             <th>Quiz</th>
                             <th>Content</th>
-                            <th style="width: 180px;">Actions</th>
+                            <th style="width: 200px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="lessonsTableBody">
                         {% for lesson in lessons %}
-                        <tr data-lesson-id="{{ lesson.id }}" data-has-video="{% if lesson.video_url %}true{% else %}false{% endif %}" data-has-quiz="{% if lesson.quizzes.count() > 0 %}true{% else %}false{% endif %}">
+                        <tr data-lesson-id="{{ lesson.id }}"
+                            data-has-video="{% if lesson.video_url %}true{% else %}false{% endif %}"
+                            data-has-quiz="{% if lesson.quizzes.count() > 0 %}true{% else %}false{% endif %}">
                             <td>
-                                <input type="checkbox" class="lesson-checkbox" data-lesson-id="{{ lesson.id }}" data-lesson-title="{{ lesson.title }}" style="width: 18px; height: 18px; cursor: pointer;">
+                                <input type="checkbox" class="lesson-checkbox"
+                                       data-lesson-id="{{ lesson.id }}"
+                                       data-lesson-title="{{ lesson.title }}">
                             </td>
                             <td class="lesson-order">{{ lesson.order }}</td>
                             <td>
-                                <strong>{{ lesson.title }}</strong>
+                                <strong style="color: var(--crimson-900);">{{ lesson.title }}</strong>
                                 <br>
                                 <small class="text-muted">ID: {{ lesson.id }}</small>
                             </td>
@@ -599,7 +815,7 @@
                                     </span>
                                 {% else %}
                                     <span class="badge-custom badge-no">
-                                        <i class="fas fa-times"></i> No
+                                        <i class="fas fa-xmark"></i> No
                                     </span>
                                 {% endif %}
                             </td>
@@ -611,7 +827,7 @@
                                     </span>
                                 {% else %}
                                     <span class="badge-custom badge-no">
-                                        <i class="fas fa-times"></i> No
+                                        <i class="fas fa-xmark"></i> No
                                     </span>
                                 {% endif %}
                             </td>
@@ -622,49 +838,49 @@
                             </td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="{{ url_for('learn_course', course_id=course.id) }}#lesson-{{ lesson.id }}" 
+                                    <a href="{{ url_for('learn_course', course_id=course.id) }}#lesson-{{ lesson.id }}"
                                        class="action-btn action-btn-view" target="_blank" title="View Lesson">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ url_for('edit_lesson', lesson_id=lesson.id) }}" 
+                                    <a href="{{ url_for('edit_lesson', lesson_id=lesson.id) }}"
                                        class="action-btn action-btn-edit" title="Edit Lesson">
-                                        <i class="fas fa-edit"></i>
+                                        <i class="fas fa-pen"></i>
                                     </a>
                                     {% if lesson.quizzes.count() > 0 %}
-                                        <a href="{{ url_for('manage_quizzes', lesson_id=lesson.id) }}" 
+                                        <a href="{{ url_for('manage_quizzes', lesson_id=lesson.id) }}"
                                            class="action-btn action-btn-quiz" title="Manage Quizzes">
                                             <i class="fas fa-puzzle-piece"></i>
                                         </a>
                                     {% else %}
-                                        <a href="{{ url_for('add_quiz', lesson_id=lesson.id) }}" 
+                                        <a href="{{ url_for('add_quiz', lesson_id=lesson.id) }}"
                                            class="action-btn action-btn-quiz" title="Add Quiz">
                                             <i class="fas fa-plus"></i>
                                         </a>
                                     {% endif %}
-                                    <button type="button" 
-                                            class="action-btn action-btn-delete" 
-                                            data-bs-toggle="modal" 
+                                    <button type="button"
+                                            class="action-btn action-btn-delete"
+                                            data-bs-toggle="modal"
                                             data-bs-target="#deleteModal{{ lesson.id }}" title="Delete Lesson">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
                         </tr>
-                        
-                        <!-- Delete Modal for each lesson -->
+
+                        <!-- Delete Modal -->
                         <div class="modal fade" id="deleteModal{{ lesson.id }}" tabindex="-1">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header" style="background: var(--danger-gradient); color: white;">
+                                    <div class="modal-header">
                                         <h5 class="modal-title">
-                                            <i class="fas fa-exclamation-triangle me-2"></i>Delete Lesson
+                                            <i class="fas fa-triangle-exclamation me-2"></i>Delete Lesson
                                         </h5>
                                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
                                         <p>Are you sure you want to delete <strong class="text-danger">"{{ lesson.title }}"</strong>?</p>
-                                        <div class="alert alert-danger">
-                                            <i class="fas fa-info-circle me-2"></i>
+                                        <div class="alert alert-danger mb-0">
+                                            <i class="fas fa-circle-info me-2"></i>
                                             <strong>This action cannot be undone!</strong> The following will be permanently deleted:
                                             <ul class="mt-2 mb-0">
                                                 <li>All quizzes and questions in this lesson</li>
@@ -692,8 +908,8 @@
                 </div>
                 <h4>No Lessons Yet</h4>
                 <p class="text-muted">Start creating your first lesson for this course!</p>
-                <a href="{{ url_for('add_lesson', course_id=course.id) }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>Add First Lesson
+                <a href="{{ url_for('add_lesson', course_id=course.id) }}" class="btn btn-primary mt-3">
+                    <i class="fas fa-circle-plus"></i> Add First Lesson
                 </a>
             </div>
         {% endif %}
@@ -701,54 +917,40 @@
 </div>
 
 <script>
-    // Search functionality
+    // ==================== SEARCH & FILTER ====================
     const searchInput = document.getElementById('searchInput');
     const filterBtns = document.querySelectorAll('.filter-btn');
-    const tableRows = document.querySelectorAll('#lessonsTableBody tr');
+    const tableRows = document.querySelectorAll('#lessonsTableBody tr[data-lesson-id]');
     let currentFilter = 'all';
-    
+
     function filterTable() {
         if (!searchInput) return;
-        const searchTerm = searchInput.value.toLowerCase();
-        
+        const searchTerm = searchInput.value.toLowerCase().trim();
+
         tableRows.forEach(row => {
             const title = row.querySelector('td:nth-child(3) strong')?.innerText.toLowerCase() || '';
             const content = row.querySelector('.content-preview')?.innerText.toLowerCase() || '';
             const hasVideo = row.dataset.hasVideo === 'true';
             const hasQuiz = row.dataset.hasQuiz === 'true';
-            
+
             let matchesFilter = true;
             switch(currentFilter) {
-                case 'video':
-                    matchesFilter = hasVideo;
-                    break;
-                case 'no-video':
-                    matchesFilter = !hasVideo;
-                    break;
-                case 'quiz':
-                    matchesFilter = hasQuiz;
-                    break;
-                case 'no-quiz':
-                    matchesFilter = !hasQuiz;
-                    break;
-                default:
-                    matchesFilter = true;
+                case 'video':    matchesFilter = hasVideo; break;
+                case 'no-video': matchesFilter = !hasVideo; break;
+                case 'quiz':     matchesFilter = hasQuiz; break;
+                case 'no-quiz':  matchesFilter = !hasQuiz; break;
             }
-            
+
             const matchesSearch = title.includes(searchTerm) || content.includes(searchTerm);
-            
-            if (matchesFilter && matchesSearch) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+
+            row.style.display = (matchesFilter && matchesSearch) ? '' : 'none';
         });
     }
-    
+
     if (searchInput) {
         searchInput.addEventListener('input', filterTable);
     }
-    
+
     filterBtns.forEach(btn => {
         btn.addEventListener('click', function() {
             filterBtns.forEach(b => b.classList.remove('active'));
@@ -757,13 +959,13 @@
             filterTable();
         });
     });
-    
-    // Select All functionality
+
+    // ==================== BULK SELECT ====================
     const selectAllCheckbox = document.getElementById('selectAllCheckbox');
     const lessonCheckboxes = document.querySelectorAll('.lesson-checkbox');
     const bulkActionsBar = document.getElementById('bulkActionsBar');
     const selectedCountSpan = document.getElementById('selectedCount');
-    
+
     function updateBulkActions() {
         const checkedCount = document.querySelectorAll('.lesson-checkbox:checked').length;
         if (checkedCount > 0) {
@@ -772,8 +974,7 @@
         } else {
             if (bulkActionsBar) bulkActionsBar.classList.remove('show');
         }
-        
-        // Update select all checkbox
+
         if (selectAllCheckbox) {
             const visibleCheckboxes = Array.from(lessonCheckboxes).filter(cb => cb.closest('tr').style.display !== 'none');
             const allChecked = visibleCheckboxes.length > 0 && visibleCheckboxes.every(cb => cb.checked);
@@ -781,11 +982,11 @@
             selectAllCheckbox.indeterminate = visibleCheckboxes.some(cb => cb.checked) && !allChecked;
         }
     }
-    
+
     if (selectAllCheckbox) {
         selectAllCheckbox.addEventListener('change', function() {
             const isChecked = this.checked;
-            const visibleRows = Array.from(document.querySelectorAll('#lessonsTableBody tr')).filter(row => row.style.display !== 'none');
+            const visibleRows = Array.from(document.querySelectorAll('#lessonsTableBody tr[data-lesson-id]')).filter(row => row.style.display !== 'none');
             visibleRows.forEach(row => {
                 const checkbox = row.querySelector('.lesson-checkbox');
                 if (checkbox) checkbox.checked = isChecked;
@@ -793,45 +994,47 @@
             updateBulkActions();
         });
     }
-    
+
     lessonCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', updateBulkActions);
     });
-    
+
     function clearSelection() {
         lessonCheckboxes.forEach(cb => cb.checked = false);
         updateBulkActions();
     }
-    
+    window.clearSelection = clearSelection;
+
     function bulkDelete() {
         const selectedLessons = Array.from(document.querySelectorAll('.lesson-checkbox:checked'))
             .map(cb => ({
                 id: cb.dataset.lessonId,
                 title: cb.dataset.lessonTitle
             }));
-        
+
         if (selectedLessons.length === 0) return;
-        
+
         if (confirm(`Delete ${selectedLessons.length} lesson(s)?\n\n${selectedLessons.map(l => `• ${l.title}`).join('\n')}\n\nThis action cannot be undone!`)) {
             window.location.href = `/instructor/lesson/${selectedLessons[0].id}/delete`;
         }
     }
-    
-    // Export to CSV
+    window.bulkDelete = bulkDelete;
+
+    // ==================== CSV EXPORT ====================
     function exportToCSV() {
-        const visibleRows = Array.from(document.querySelectorAll('#lessonsTableBody tr')).filter(row => row.style.display !== 'none');
+        const visibleRows = Array.from(document.querySelectorAll('#lessonsTableBody tr[data-lesson-id]')).filter(row => row.style.display !== 'none');
         let csvContent = "Order,Title,Has Video,Has Quiz,Content Preview\n";
-        
+
         visibleRows.forEach(row => {
             const order = row.querySelector('.lesson-order')?.innerText || '';
             const title = row.querySelector('td:nth-child(3) strong')?.innerText || '';
             const hasVideo = row.dataset.hasVideo === 'true' ? 'Yes' : 'No';
             const hasQuiz = row.dataset.hasQuiz === 'true' ? 'Yes' : 'No';
             const content = row.querySelector('.content-preview')?.innerText || '';
-            
+
             csvContent += `"${order}","${title}","${hasVideo}","${hasQuiz}","${content}"\n`;
         });
-        
+
         const blob = new Blob([csvContent], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -841,44 +1044,45 @@
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        
+
         showToast('Export complete!');
     }
-    
+
     function showToast(message) {
         let toast = document.querySelector('.toast-notification');
         if (toast) toast.remove();
-        
+
         toast = document.createElement('div');
         toast.className = 'toast-notification';
-        toast.innerHTML = `<i class="fas fa-check-circle me-2"></i>${message}`;
+        toast.innerHTML = `<i class="fas fa-circle-check me-2"></i>${message}`;
         document.body.appendChild(toast);
-        
+
         setTimeout(() => {
-            toast.remove();
+            toast.style.animation = 'slideOutRight 0.3s ease forwards';
+            setTimeout(() => toast.remove(), 300);
         }, 3000);
     }
-    
-    // Add export button to toolbar
+
+    // Add Export button
     const toolbar = document.querySelector('.toolbar');
-    if (toolbar && document.querySelector('#lessonsTableBody tr')) {
+    if (toolbar && document.querySelector('#lessonsTableBody tr[data-lesson-id]')) {
         const exportBtn = document.createElement('button');
         exportBtn.className = 'filter-btn';
-        exportBtn.innerHTML = '<i class="fas fa-download me-1"></i>Export';
+        exportBtn.innerHTML = '<i class="fas fa-download"></i> Export';
         exportBtn.onclick = exportToCSV;
         const filterButtons = toolbar.querySelector('.filter-buttons');
         if (filterButtons) {
             filterButtons.appendChild(exportBtn);
         }
     }
-    
-    // Animate on load
+
+    // ==================== ANIMATE TABLE ROWS ====================
     window.addEventListener('load', () => {
-        document.querySelectorAll('.table-custom tbody tr').forEach((row, index) => {
+        document.querySelectorAll('.table-custom tbody tr[data-lesson-id]').forEach((row, index) => {
             row.style.opacity = '0';
             row.style.transform = 'translateY(10px)';
             setTimeout(() => {
-                row.style.transition = 'all 0.3s ease';
+                row.style.transition = 'all 0.4s cubic-bezier(.2,.7,.2,1)';
                 row.style.opacity = '1';
                 row.style.transform = 'translateY(0)';
             }, index * 50);

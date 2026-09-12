@@ -2,148 +2,264 @@
 
 {% block content %}
 <style>
-    /* Modern Form Styles */
+    /* ============================================================
+       ADD LESSON — CRIMSON RED + ANIMATIONS
+       ============================================================ */
     :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --primary-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --danger-gradient: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+
+        --crimson-900: #450a0a;
+        --crimson-800: #7f1d1d;
+        --crimson-700: #991b1b;
+        --crimson-600: #b91c1c;
+        --crimson-500: #dc2626;
+        --crimson-400: #ef4444;
+        --crimson-300: #f87171;
+        --crimson-200: #fecaca;
+        --crimson-100: #fee2e2;
+        --crimson-50:  #fef2f2;
     }
-    
-    .form-container {
-        padding: 20px;
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-24px); }
+        to   { opacity: 1; transform: translateY(0); }
     }
-    
-    .form-header {
-        background: var(--primary-gradient);
-        border-radius: 20px 20px 0 0;
-        padding: 25px 30px;
-        color: white;
-        position: relative;
-        overflow: hidden;
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
     }
-    
-    .form-header::before {
-        content: '📖';
-        position: absolute;
-        bottom: -20px;
-        right: 20px;
-        font-size: 80px;
-        opacity: 0.1;
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
     }
-    
-    .form-header h3 {
-        margin: 0;
-        font-weight: 700;
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50%      { transform: translateY(-14px) rotate(3deg); }
     }
-    
-    .form-header p {
-        margin: 5px 0 0;
-        opacity: 0.9;
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
     }
-    
-    .course-badge {
-        background: rgba(255,255,255,0.2);
-        backdrop-filter: blur(10px);
-        padding: 8px 16px;
-        border-radius: 30px;
-        display: inline-block;
-        margin-top: 15px;
-        font-size: 14px;
+    @keyframes shimmer {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
     }
-    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.85); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+        50%      { box-shadow: 0 0 0 14px rgba(220, 38, 38, 0); }
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.6s cubic-bezier(.2,.7,.2,1),
+                    transform 0.6s cubic-bezier(.2,.7,.2,1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    .form-container { padding: 20px; }
+
+    /* ==================== FORM CARD ==================== */
     .form-card {
         background: white;
         border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        box-shadow: 0 20px 50px rgba(127, 29, 29, 0.12);
         margin-bottom: 30px;
+        border: 1px solid var(--crimson-100);
+        animation: fadeInUp 0.7s cubic-bezier(.2,.7,.2,1);
     }
-    
-    .form-body {
+
+    .form-header {
+        background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 50%, #7f1d1d 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 14s ease-in-out infinite;
         padding: 30px;
+        color: white;
+        position: relative;
+        overflow: hidden;
     }
-    
-    .form-group {
-        margin-bottom: 25px;
+
+    .form-header::before {
+        content: '';
+        position: absolute;
+        top: -50%; right: -25%;
+        width: 340px; height: 340px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+        pointer-events: none;
     }
-    
+
+    .form-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50%; left: -15%;
+        width: 280px; height: 280px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: floatSlow 10s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .form-header > * { position: relative; z-index: 1; }
+
+    .form-header h3 {
+        margin: 0;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .form-header h3 i {
+        color: #fbbf24;
+        animation: float 3.5s ease-in-out infinite;
+        filter: drop-shadow(0 4px 10px rgba(251, 191, 36, 0.4));
+    }
+
+    .form-header p { margin: 8px 0 0; opacity: 0.92; font-size: 0.95rem; }
+
+    .course-badge {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 8px 18px;
+        border-radius: 30px;
+        display: inline-flex;
+        align-items: center;
+        margin-top: 15px;
+        font-size: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .course-badge i { color: #fbbf24; }
+
+    .course-badge:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .form-body { padding: 30px; }
+    .form-group { margin-bottom: 26px; }
+
     .form-label {
         font-weight: 600;
         margin-bottom: 8px;
-        color: #2c3e50;
+        color: var(--crimson-900);
         display: flex;
         align-items: center;
         gap: 8px;
+        font-size: 0.9rem;
     }
-    
+
     .form-label i {
-        color: #667eea;
+        color: var(--crimson-600);
         width: 18px;
+        transition: transform 0.3s ease;
     }
-    
+
+    .form-group:hover .form-label i { transform: scale(1.15); }
+
     .required-field::after {
         content: '*';
-        color: #eb3349;
-        margin-left: 4px;
+        color: var(--crimson-600);
+        margin-left: 2px;
+        font-weight: 700;
     }
-    
+
+    /* ==================== INPUTS ==================== */
     .form-control, .form-select {
-        border: 2px solid #e9ecef;
+        border: 2px solid #e2e8f0;
         border-radius: 12px;
-        padding: 12px 15px;
-        transition: all 0.3s ease;
+        padding: 12px 16px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
         font-size: 14px;
+        color: var(--crimson-900);
+        background: #fafafa;
     }
-    
+
+    .form-control::placeholder { color: #94a3b8; }
+
+    .form-control:hover, .form-select:hover {
+        border-color: var(--crimson-200);
+        background: white;
+    }
+
     .form-control:focus, .form-select:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        border-color: var(--crimson-500);
+        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
         outline: none;
+        background: white;
+        transform: translateY(-1px);
     }
-    
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 150px;
+        line-height: 1.6;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* Validation states */
     .form-control.is-valid {
-        border-color: #11998e;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2311998e' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+        border-color: #059669;
+        background: #ecfdf5;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23059669' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
         background-repeat: no-repeat;
         background-position: right 12px center;
         background-size: 16px;
-        padding-right: 35px;
+        padding-right: 38px;
     }
-    
+
     .form-control.is-invalid {
-        border-color: #eb3349;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23eb3349'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23eb3349' stroke='none'/%3e%3c/svg%3e");
+        border-color: var(--crimson-500);
+        background: #fef2f2;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc2626'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc2626' stroke='none'/%3e%3c/svg%3e");
         background-repeat: no-repeat;
         background-position: right 12px center;
         background-size: 16px;
-        padding-right: 35px;
+        padding-right: 38px;
     }
-    
+
     .invalid-feedback {
-        color: #eb3349;
+        color: var(--crimson-600);
         font-size: 12px;
-        margin-top: 5px;
+        margin-top: 6px;
         display: block;
+        font-weight: 500;
     }
-    
+
     .valid-feedback {
-        color: #11998e;
+        color: #059669;
         font-size: 12px;
-        margin-top: 5px;
+        margin-top: 6px;
         display: block;
+        font-weight: 500;
     }
-    
-    /* Video Preview */
+
+    /* ==================== VIDEO PREVIEW ==================== */
     .video-preview-container {
-        background: #f8f9fa;
+        background: linear-gradient(135deg, #fef2f2 0%, #fafafa 100%);
+        border: 2px dashed var(--crimson-200);
         border-radius: 16px;
-        padding: 20px;
+        padding: 22px;
         margin-top: 15px;
         text-align: center;
+        animation: scaleIn 0.4s cubic-bezier(.2,.7,.2,1);
     }
-    
+
     .video-preview {
         position: relative;
         padding-bottom: 56.25%;
@@ -151,267 +267,320 @@
         overflow: hidden;
         border-radius: 12px;
         background: #000;
+        box-shadow: 0 12px 32px rgba(127, 29, 29, 0.15);
     }
-    
+
     .video-preview iframe,
     .video-preview video {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
         border: none;
     }
-    
+
     .video-placeholder {
-        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        background: linear-gradient(135deg, #7f1d1d, #450a0a);
         padding: 40px;
         text-align: center;
         border-radius: 12px;
         color: white;
+        position: relative;
+        padding-bottom: 40px;
+        height: auto;
     }
-    
+
     .video-placeholder i {
         font-size: 48px;
         margin-bottom: 15px;
-        opacity: 0.5;
+        color: #fbbf24;
+        animation: float 3s ease-in-out infinite;
     }
-    
-    /* Order Input with Stepper */
+
+    /* ==================== ORDER STEPPER ==================== */
     .order-input-wrapper {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 14px;
         flex-wrap: wrap;
     }
-    
+
     .order-stepper {
         display: flex;
         align-items: center;
-        gap: 5px;
+        gap: 8px;
     }
-    
+
     .stepper-btn {
-        width: 36px;
-        height: 36px;
-        border: 2px solid #e9ecef;
+        width: 40px;
+        height: 40px;
+        border: 2px solid #e2e8f0;
         background: white;
         border-radius: 10px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
         display: flex;
         align-items: center;
         justify-content: center;
+        color: var(--crimson-700);
+        font-weight: 700;
     }
-    
+
     .stepper-btn:hover {
-        background: #667eea;
-        border-color: #667eea;
+        background: var(--primary-gradient);
+        border-color: transparent;
         color: white;
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.25);
     }
-    
+
+    .stepper-btn:active { transform: translateY(0) scale(0.98); }
+
     .order-value {
         width: 80px;
         text-align: center;
-        font-weight: 600;
+        font-weight: 700;
         font-size: 18px;
+        color: var(--crimson-900) !important;
+        background: white !important;
     }
-    
-    /* Template Suggestions */
-    .template-section {
-        margin-top: 20px;
-    }
-    
+
+    /* ==================== TEMPLATES ==================== */
+    .template-section { margin-top: 20px; }
+
     .template-buttons {
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
         margin-top: 10px;
     }
-    
+
     .template-btn {
-        background: #f8f9fa;
-        border: 2px solid #e9ecef;
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
         padding: 8px 16px;
         border-radius: 25px;
         font-size: 12px;
+        font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        color: #475569;
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    .template-btn::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .template-btn:hover::before { left: 100%; }
+
     .template-btn:hover {
         background: var(--primary-gradient);
         color: white;
-        border-color: #667eea;
-    }
-    
-    /* Submit Buttons */
-    .btn-submit {
-        background: var(--success-gradient);
-        border: none;
-        padding: 14px;
-        font-size: 16px;
-        font-weight: 600;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        color: white;
-    }
-    
-    .btn-submit:hover {
+        border-color: transparent;
         transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(17, 153, 142, 0.3);
-        color: white;
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.25);
     }
-    
-    .btn-cancel {
-        background: #6c757d;
-        border: none;
-        padding: 14px;
-        font-size: 16px;
-        font-weight: 600;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        color: white;
-        text-decoration: none;
-    }
-    
-    .btn-cancel:hover {
-        background: #5a6268;
-        transform: translateY(-2px);
-        color: white;
-    }
-    
-    .btn-outline-danger {
-        background: transparent;
-        color: #eb3349;
-        border: 2px solid #eb3349;
-        padding: 5px 15px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        cursor: pointer;
-    }
-    
-    .btn-outline-danger:hover {
-        background: #eb3349;
-        color: white;
-    }
-    
-    /* Character Counters */
+
+    /* ==================== CHARACTER COUNTERS ==================== */
     .char-counter {
         text-align: right;
         font-size: 12px;
-        color: #6c757d;
-        margin-top: 5px;
+        color: #94a3b8;
+        margin-top: 6px;
+        font-weight: 500;
+        transition: color 0.3s ease;
     }
-    
-    .char-counter.warning {
-        color: #f6d365;
+
+    .char-counter.warning { color: #d97706; font-weight: 600; }
+    .char-counter.danger { color: var(--crimson-600); font-weight: 700; }
+
+    /* ==================== BUTTONS ==================== */
+    .btn-submit {
+        background: linear-gradient(180deg, var(--crimson-600) 0%, var(--crimson-700) 100%);
+        border: 1px solid var(--crimson-800);
+        padding: 15px;
+        font-size: 1rem;
+        font-weight: 700;
+        border-radius: 12px;
+        transition: all 0.35s cubic-bezier(.2,.7,.2,1);
+        color: white;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 4px 16px rgba(127, 29, 29, 0.25);
+        position: relative;
+        overflow: hidden;
+        letter-spacing: -0.01em;
     }
-    
-    .char-counter.danger {
-        color: #eb3349;
+
+    .btn-submit::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.6s ease;
     }
-    
-    /* Tips Card */
-    .tips-card {
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        border-radius: 16px;
-        padding: 20px;
-        margin-top: 30px;
+
+    .btn-submit:hover::before { left: 100%; }
+
+    .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 12px 28px rgba(127, 29, 29, 0.4);
+        color: white;
+        background: linear-gradient(180deg, var(--crimson-700) 0%, var(--crimson-800) 100%);
     }
-    
-    .tips-title {
+
+    .btn-submit:active { transform: translateY(-1px); }
+
+    .btn-cancel {
+        background: #f1f5f9;
+        border: 2px solid #e2e8f0;
+        padding: 14px;
+        font-size: 1rem;
         font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        color: #475569;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-cancel:hover {
+        background: #e2e8f0;
+        border-color: #cbd5e1;
+        color: var(--crimson-800);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+    }
+
+    .btn-cancel i { transition: transform 0.3s ease; }
+    .btn-cancel:hover i { transform: translateX(-4px); }
+
+    .btn-outline-danger {
+        background: transparent;
+        color: var(--crimson-600);
+        border: 2px solid var(--crimson-600);
+        padding: 8px 18px;
+        border-radius: 10px;
+        transition: all 0.3s cubic-bezier(.2,.7,.2,1);
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-outline-danger:hover {
+        background: var(--primary-gradient);
+        border-color: transparent;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(127, 29, 29, 0.25);
+    }
+
+    /* ==================== TIPS CARD ==================== */
+    .tips-card {
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border-radius: 16px;
+        padding: 22px;
+        margin-top: 30px;
+        border: 1px solid #fde68a;
+        animation: fadeInUp 0.6s ease 0.3s backwards;
+    }
+
+    .tips-title {
+        font-weight: 700;
         margin-bottom: 15px;
         display: flex;
         align-items: center;
         gap: 10px;
+        color: #92400e;
     }
-    
+
+    .tips-title i {
+        color: #d97706;
+        animation: float 2.5s ease-in-out infinite;
+    }
+
     .tips-list {
         margin: 0;
         padding-left: 20px;
     }
-    
+
     .tips-list li {
         margin-bottom: 8px;
         font-size: 13px;
+        color: #78350f;
     }
-    
-    /* Loading */
+
+    .tips-list strong { color: #92400e; }
+
+    /* ==================== LOADING ==================== */
     .btn-loading {
         position: relative;
         pointer-events: none;
-        opacity: 0.7;
+        opacity: 0.85;
     }
-    
+
     .btn-loading::after {
         content: '';
         position: absolute;
-        width: 18px;
-        height: 18px;
-        top: 50%;
-        right: 15px;
+        width: 18px; height: 18px;
+        top: 50%; right: 18px;
         margin-top: -9px;
-        border: 2px solid white;
-        border-top-color: transparent;
+        border: 2px solid rgba(255,255,255,0.4);
+        border-top-color: white;
         border-radius: 50%;
         animation: spin 0.6s linear infinite;
     }
-    
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-    
-    /* Responsive */
+
+    /* ==================== RESPONSIVE ==================== */
     @media (max-width: 768px) {
-        .form-body {
-            padding: 20px;
-        }
-        
-        .form-header {
-            padding: 20px;
-        }
-        
-        .order-input-wrapper {
-            flex-direction: column;
-            align-items: stretch;
-        }
-        
-        .order-stepper {
-            justify-content: center;
-        }
+        .form-body { padding: 22px; }
+        .form-header { padding: 22px; }
+        .form-header h3 { font-size: 1.3rem; }
+        .order-input-wrapper { flex-direction: column; align-items: stretch; }
+        .order-stepper { justify-content: center; }
     }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .fade-in {
-        animation: fadeIn 0.5s ease forwards;
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        .reveal { opacity: 1; transform: none; }
     }
 </style>
 
-<div class="container form-container fade-in">
+<div class="container form-container">
     <div class="row justify-content-center">
-        <div class="col-lg-8">
+        <div class="col-lg-9">
             <div class="form-card">
+                <!-- ==================== HEADER ==================== -->
                 <div class="form-header">
-                    <h3><i class="fas fa-plus-circle me-2"></i>Add New Lesson</h3>
+                    <h3><i class="fas fa-circle-plus me-2"></i>Add New Lesson</h3>
                     <p>Create engaging content for your students</p>
                     <div class="course-badge">
-                        <i class="fas fa-book me-1"></i> {{ course.title }}
+                        <i class="fas fa-book me-2"></i> {{ course.title }}
                     </div>
                 </div>
-                
+
+                <!-- ==================== BODY ==================== -->
                 <div class="form-body">
-                    <!-- FIXED: Added action -->
                     <form method="POST" id="lessonForm" action="{{ url_for('add_lesson', course_id=course.id) }}">
                         {{ form.hidden_tag() }}
-                        
+
                         <!-- Lesson Title -->
-                        <div class="form-group">
+                        <div class="form-group reveal">
                             <label class="form-label required-field" for="lessonTitle">
                                 <i class="fas fa-heading"></i> Lesson Title
                             </label>
@@ -420,27 +589,27 @@
                             <div class="invalid-feedback" id="titleError"></div>
                             <div class="valid-feedback" id="titleValid"></div>
                             {% for error in form.title.errors %}
-                                <span class="text-danger small">{{ error }}</span>
+                                <span class="text-danger small d-block mt-1">{{ error }}</span>
                             {% endfor %}
                         </div>
-                        
+
                         <!-- Lesson Content -->
-                        <div class="form-group">
+                        <div class="form-group reveal">
                             <label class="form-label required-field" for="lessonContent">
                                 <i class="fas fa-align-left"></i> Lesson Content
                             </label>
-                            {{ form.content(class="form-control", rows="6", placeholder="Write the lesson content here. Include key points, explanations, examples, and summary.", id="lessonContent") }}
+                            {{ form.content(class="form-control", rows="8", placeholder="Write the lesson content here. Include key points, explanations, examples, and summary.", id="lessonContent") }}
                             <div class="char-counter" id="contentCounter">0/5000 characters</div>
                             <div class="invalid-feedback" id="contentError"></div>
                             {% for error in form.content.errors %}
-                                <span class="text-danger small">{{ error }}</span>
+                                <span class="text-danger small d-block mt-1">{{ error }}</span>
                             {% endfor %}
                         </div>
-                        
+
                         <!-- Content Templates -->
-                        <div class="template-section">
+                        <div class="template-section reveal">
                             <label class="form-label">
-                                <i class="fas fa-magic"></i> Content Templates
+                                <i class="fas fa-wand-magic-sparkles"></i> Content Templates
                             </label>
                             <div class="template-buttons">
                                 <button type="button" class="template-btn" onclick="insertTemplate('introduction')">
@@ -457,77 +626,75 @@
                                 </button>
                             </div>
                         </div>
-                        
+
                         <!-- Video URL -->
-                        <div class="form-group">
+                        <div class="form-group reveal">
                             <label class="form-label" for="videoUrl">
-                                <i class="fas fa-video"></i> Video URL
+                                <i class="fas fa-video"></i> Video URL <span class="text-muted" style="font-weight: 400;">(optional)</span>
                             </label>
-                            {{ form.video_url(class="form-control", placeholder="https://www.youtube.com/watch?v=VIDEO_ID or https://www.youtube.com/embed/VIDEO_ID", id="videoUrl") }}
-                            <small class="text-muted">
-                                <i class="fas fa-info-circle"></i> 
+                            {{ form.video_url(class="form-control", placeholder="https://www.youtube.com/watch?v=VIDEO_ID or https://vimeo.com/VIDEO_ID", id="videoUrl") }}
+                            <small class="text-muted d-block mt-1">
+                                <i class="fas fa-circle-info"></i>
                                 Supports YouTube, Vimeo, and direct MP4 links
                             </small>
                             <div class="invalid-feedback" id="videoError"></div>
                             {% for error in form.video_url.errors %}
-                                <span class="text-danger small">{{ error }}</span>
+                                <span class="text-danger small d-block mt-1">{{ error }}</span>
                             {% endfor %}
                         </div>
-                        
+
                         <!-- Video Preview -->
                         <div id="videoPreviewContainer" style="display: none;">
                             <div class="video-preview-container">
                                 <label class="form-label">
                                     <i class="fas fa-eye"></i> Video Preview
                                 </label>
-                                <div id="videoPreview" class="video-preview">
-                                    <!-- Video preview will appear here -->
-                                </div>
-                                <button type="button" class="btn btn-outline-danger mt-2" id="clearVideo">
+                                <div id="videoPreview" class="video-preview"></div>
+                                <button type="button" class="btn btn-outline-danger mt-3" id="clearVideo">
                                     <i class="fas fa-times"></i> Remove Video
                                 </button>
                             </div>
                         </div>
-                        
+
                         <!-- Lesson Order -->
-                        <div class="form-group">
+                        <div class="form-group reveal">
                             <label class="form-label required-field" for="lessonOrder">
                                 <i class="fas fa-sort-numeric-down"></i> Lesson Order
                             </label>
                             <div class="order-input-wrapper">
                                 <div class="order-stepper">
-                                    <button type="button" class="stepper-btn" id="orderMinus">
+                                    <button type="button" class="stepper-btn" id="orderMinus" aria-label="Decrease">
                                         <i class="fas fa-minus"></i>
                                     </button>
-                                    {{ form.order(class="form-control order-value", id="lessonOrder", style="text-align: center;") }}
-                                    <button type="button" class="stepper-btn" id="orderPlus">
+                                    {{ form.order(class="form-control order-value", id="lessonOrder") }}
+                                    <button type="button" class="stepper-btn" id="orderPlus" aria-label="Increase">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
                                 <small class="text-muted">
-                                    <i class="fas fa-info-circle"></i> 
+                                    <i class="fas fa-circle-info"></i>
                                     Lessons are ordered from smallest to largest number
                                 </small>
                             </div>
                             <div class="invalid-feedback" id="orderError"></div>
                             {% for error in form.order.errors %}
-                                <span class="text-danger small">{{ error }}</span>
+                                <span class="text-danger small d-block mt-1">{{ error }}</span>
                             {% endfor %}
                         </div>
-                        
-                        <!-- Action Buttons -->
-                        <div class="d-grid gap-3 mt-4">
-                            {{ form.submit(class="btn btn-submit text-white", value="➕ Add Lesson") }}
-                            <a href="{{ url_for('manage_lessons', course_id=course.id) }}" class="btn btn-cancel text-white text-center">
-                                <i class="fas fa-arrow-left me-2"></i>Cancel
+
+                        <!-- Actions -->
+                        <div class="d-grid gap-3 mt-4 reveal">
+                            {{ form.submit(class="btn btn-submit", value="➕ Add Lesson") }}
+                            <a href="{{ url_for('manage_lessons', course_id=course.id) }}" class="btn btn-cancel">
+                                <i class="fas fa-arrow-left"></i>Cancel
                             </a>
                         </div>
                     </form>
-                    
+
                     <!-- Pro Tips -->
-                    <div class="tips-card">
+                    <div class="tips-card reveal">
                         <div class="tips-title">
-                            <i class="fas fa-lightbulb text-warning"></i>
+                            <i class="fas fa-lightbulb"></i>
                             <span>Pro Tips for Great Lessons</span>
                         </div>
                         <ul class="tips-list">
@@ -545,31 +712,47 @@
 </div>
 
 <script>
-    // Character counters
+    // ==================== SCROLL REVEAL ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal');
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(el => obs.observe(el));
+    });
+
+    // ==================== ELEMENTS ====================
     const titleInput = document.getElementById('lessonTitle');
     const titleCounter = document.getElementById('titleCounter');
     const contentInput = document.getElementById('lessonContent');
     const contentCounter = document.getElementById('contentCounter');
-    
-    // Get error elements
+
     const titleError = document.getElementById('titleError');
     const contentError = document.getElementById('contentError');
     const videoError = document.getElementById('videoError');
     const orderError = document.getElementById('orderError');
     const titleValid = document.getElementById('titleValid');
-    
+
     function setInvalid(input, errorElement, message) {
+        if (!input) return;
         input.classList.add('is-invalid');
         input.classList.remove('is-valid');
         if (errorElement) errorElement.textContent = message;
     }
-    
+
     function setValid(input, errorElement) {
+        if (!input) return;
         input.classList.remove('is-invalid');
         input.classList.add('is-valid');
         if (errorElement) errorElement.textContent = '';
     }
-    
+
+    // ==================== TITLE COUNTER ====================
     if (titleInput) {
         titleInput.addEventListener('input', function() {
             const length = this.value.length;
@@ -598,7 +781,8 @@
         });
         titleInput.dispatchEvent(new Event('input'));
     }
-    
+
+    // ==================== CONTENT COUNTER ====================
     if (contentInput) {
         contentInput.addEventListener('input', function() {
             const length = this.value.length;
@@ -623,13 +807,13 @@
         });
         contentInput.dispatchEvent(new Event('input'));
     }
-    
-    // Order stepper
+
+    // ==================== ORDER STEPPER ====================
     const orderInput = document.getElementById('lessonOrder');
     const orderMinus = document.getElementById('orderMinus');
     const orderPlus = document.getElementById('orderPlus');
-    
-    if (orderMinus) {
+
+    if (orderMinus && orderInput) {
         orderMinus.addEventListener('click', function() {
             let value = parseInt(orderInput.value) || 1;
             if (value > 1) {
@@ -638,100 +822,75 @@
             }
         });
     }
-    
-    if (orderPlus) {
+
+    if (orderPlus && orderInput) {
         orderPlus.addEventListener('click', function() {
             let value = parseInt(orderInput.value) || 1;
             orderInput.value = value + 1;
             orderInput.dispatchEvent(new Event('input'));
         });
     }
-    
+
     if (orderInput) {
         orderInput.addEventListener('input', function() {
             let value = parseInt(this.value);
-            if (isNaN(value) || value < 1) {
-                this.value = 1;
-            }
+            if (isNaN(value) || value < 1) this.value = 1;
             setValid(orderInput, orderError);
         });
     }
-    
-    // Video URL preview
+
+    // ==================== VIDEO PREVIEW ====================
     const videoUrlInput = document.getElementById('videoUrl');
     const previewContainer = document.getElementById('videoPreviewContainer');
     const previewDiv = document.getElementById('videoPreview');
     const clearVideoBtn = document.getElementById('clearVideo');
-    
+
     function getYoutubeEmbedUrl(url) {
-        // YouTube watch URL patterns
-        const watchRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/;
+        const watchRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?]+)/;
         const match = url.match(watchRegex);
-        if (match) {
-            return `https://www.youtube.com/embed/${match[1]}`;
-        }
-        
-        // Already embed URL
-        if (url.includes('youtube.com/embed/')) {
-            return url;
-        }
-        
+        if (match) return `https://www.youtube.com/embed/${match[1]}`;
+        if (url.includes('youtube.com/embed/')) return url;
         return null;
     }
-    
+
     function getVimeoEmbedUrl(url) {
         const regex = /vimeo\.com\/(\d+)/;
         const match = url.match(regex);
-        if (match) {
-            return `https://player.vimeo.com/video/${match[1]}`;
-        }
+        if (match) return `https://player.vimeo.com/video/${match[1]}`;
         return null;
     }
-    
+
     function updateVideoPreview() {
         if (!videoUrlInput) return;
         let url = videoUrlInput.value.trim();
-        
+
         if (!url) {
             if (previewContainer) previewContainer.style.display = 'none';
             return;
         }
-        
-        let embedUrl = null;
-        let isDirectVideo = false;
-        
-        // Check for YouTube
-        embedUrl = getYoutubeEmbedUrl(url);
-        
-        // Check for Vimeo
-        if (!embedUrl) {
-            embedUrl = getVimeoEmbedUrl(url);
-        }
-        
-        // Check for direct MP4/WebM
-        if (!embedUrl && (url.endsWith('.mp4') || url.endsWith('.webm'))) {
-            isDirectVideo = true;
-        }
-        
-        // If still no match, check if it's already an embed URL
+
+        let embedUrl = getYoutubeEmbedUrl(url) || getVimeoEmbedUrl(url);
+        let isDirectVideo = !embedUrl && (url.endsWith('.mp4') || url.endsWith('.webm'));
+
         if (!embedUrl && !isDirectVideo && (url.includes('/embed/') || url.includes('player.'))) {
             embedUrl = url;
         }
-        
+
         if (previewContainer && previewDiv) {
             if (embedUrl || isDirectVideo) {
                 previewContainer.style.display = 'block';
                 if (embedUrl) {
                     previewDiv.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-                } else if (isDirectVideo) {
+                } else {
                     previewDiv.innerHTML = `<video controls width="100%"><source src="${url}" type="video/mp4">Your browser does not support the video tag.</video>`;
                 }
                 setValid(videoUrlInput, videoError);
             } else if (url) {
                 previewContainer.style.display = 'block';
+                previewDiv.style.paddingBottom = '0';
                 previewDiv.innerHTML = `
                     <div class="video-placeholder">
-                        <i class="fas fa-exclamation-triangle"></i>
+                        <i class="fas fa-triangle-exclamation"></i>
                         <h6>Invalid or Unsupported URL</h6>
                         <p class="mb-0 small">Please enter a valid YouTube, Vimeo, or direct video link</p>
                     </div>
@@ -740,15 +899,12 @@
             }
         }
     }
-    
+
     if (videoUrlInput) {
         videoUrlInput.addEventListener('input', updateVideoPreview);
-        // Trigger preview on load if there's a value
-        if (videoUrlInput.value) {
-            updateVideoPreview();
-        }
+        if (videoUrlInput.value) updateVideoPreview();
     }
-    
+
     if (clearVideoBtn) {
         clearVideoBtn.addEventListener('click', function() {
             if (videoUrlInput) {
@@ -759,97 +915,15 @@
             }
         });
     }
-    
-    // Template insertion
+
+    // ==================== TEMPLATES ====================
     const templates = {
-        introduction: `## Lesson Overview
-
-In this lesson, you will learn:
-
-• Key concept 1
-• Key concept 2  
-• Key concept 3
-
-## Prerequisites
-- Basic understanding of [topic]
-- [Software/Tools] installed
-
-## Learning Objectives
-By the end of this lesson, you will be able to:
-1. Understand [main concept]
-2. Apply [technique] to solve problems
-3. Create your own [project/exercise]`,
-        
-        tutorial: `## Step-by-Step Tutorial
-
-### Step 1: Setup
-1. First, [action]
-2. Then, [action]
-3. Finally, [action]
-
-### Step 2: Implementation
-\`\`\`
-// Example code here
-function example() {
-    console.log("Hello World");
-}
-\`\`\`
-
-### Step 3: Testing
-Test your implementation by:
-- [Test case 1]
-- [Test case 2]
-
-### Common Issues & Solutions
-- **Issue 1:** [Description] → Solution: [Fix]
-- **Issue 2:** [Description] → Solution: [Fix]`,
-        
-        summary: `## Lesson Summary
-
-### Key Takeaways
-- ✅ [Main point 1]
-- ✅ [Main point 2]
-- ✅ [Main point 3]
-
-### Important Terms
-| Term | Definition |
-|------|------------|
-| Term 1 | Definition |
-| Term 2 | Definition |
-
-### Practice Questions
-1. [Question 1]
-2. [Question 2]
-3. [Question 3]
-
-### Next Steps
-- Complete the quiz
-- Work on the assignment
-- Read the additional resources`,
-        
-        quiz: `## Quiz Preparation
-
-### Review Questions
-1. What is [concept]?
-   
-2. Explain how [topic] works.
-
-3. What are the benefits of [technique]?
-
-### Practice Exercise
-**Task:** [Describe the exercise]
-
-**Requirements:**
-- [Requirement 1]
-- [Requirement 2]
-
-**Bonus Challenge:** [Advanced task]
-
-### Key Terms to Remember
-- [Term 1]: [Brief definition]
-- [Term 2]: [Brief definition]`
+        introduction: `## Lesson Overview\n\nIn this lesson, you will learn:\n\n• Key concept 1\n• Key concept 2\n• Key concept 3\n\n## Prerequisites\n- Basic understanding of [topic]\n- [Software/Tools] installed\n\n## Learning Objectives\nBy the end of this lesson, you will be able to:\n1. Understand [main concept]\n2. Apply [technique] to solve problems\n3. Create your own [project/exercise]`,
+        tutorial: `## Step-by-Step Tutorial\n\n### Step 1: Setup\n1. First, [action]\n2. Then, [action]\n3. Finally, [action]\n\n### Step 2: Implementation\n\`\`\`\n// Example code here\nfunction example() {\n    console.log("Hello World");\n}\n\`\`\`\n\n### Step 3: Testing\nTest your implementation by:\n- [Test case 1]\n- [Test case 2]\n\n### Common Issues & Solutions\n- **Issue 1:** [Description] → Solution: [Fix]`,
+        summary: `## Lesson Summary\n\n### Key Takeaways\n- ✅ [Main point 1]\n- ✅ [Main point 2]\n- ✅ [Main point 3]\n\n### Important Terms\n| Term | Definition |\n|------|------------|\n| Term 1 | Definition |\n| Term 2 | Definition |\n\n### Practice Questions\n1. [Question 1]\n2. [Question 2]\n\n### Next Steps\n- Complete the quiz\n- Work on the assignment`,
+        quiz: `## Quiz Preparation\n\n### Review Questions\n1. What is [concept]?\n2. Explain how [topic] works.\n3. What are the benefits of [technique]?\n\n### Practice Exercise\n**Task:** [Describe the exercise]\n\n**Requirements:**\n- [Requirement 1]\n- [Requirement 2]\n\n**Bonus Challenge:** [Advanced task]`
     };
-    
+
     function insertTemplate(type) {
         if (contentInput && templates[type]) {
             const currentContent = contentInput.value;
@@ -859,10 +933,11 @@ Test your implementation by:
             contentInput.focus();
         }
     }
-    
-    // Form validation
+    window.insertTemplate = insertTemplate;
+
+    // ==================== FORM VALIDATION ====================
     const form = document.getElementById('lessonForm');
-    
+
     function validateTitle() {
         if (!titleInput) return false;
         const value = titleInput.value.trim();
@@ -874,13 +949,12 @@ Test your implementation by:
             setInvalid(titleInput, titleError, 'Title must be less than 100 characters');
             if (titleValid) titleValid.textContent = '';
             return false;
-        } else {
-            setValid(titleInput, titleError);
-            if (titleValid) titleValid.textContent = 'Looks good!';
-            return true;
         }
+        setValid(titleInput, titleError);
+        if (titleValid) titleValid.textContent = 'Looks good!';
+        return true;
     }
-    
+
     function validateContent() {
         if (!contentInput) return false;
         const value = contentInput.value.trim();
@@ -890,24 +964,34 @@ Test your implementation by:
         } else if (value.length > 5000) {
             setInvalid(contentInput, contentError, 'Content must be less than 5000 characters');
             return false;
-        } else {
-            setValid(contentInput, contentError);
-            return true;
         }
+        setValid(contentInput, contentError);
+        return true;
     }
-    
+
     if (titleInput) titleInput.addEventListener('blur', validateTitle);
     if (contentInput) contentInput.addEventListener('blur', validateContent);
-    
+
     if (form) {
         form.addEventListener('submit', function(e) {
             const isTitleValid = validateTitle();
             const isContentValid = validateContent();
-            
+
             if (!isTitleValid || !isContentValid) {
                 e.preventDefault();
-                alert('Please fix the errors before submitting.');
-                // Focus first invalid field
+                const toast = document.createElement('div');
+                toast.style.cssText = `
+                    position: fixed; bottom: 24px; right: 24px;
+                    background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+                    color: white; padding: 14px 24px; border-radius: 12px;
+                    z-index: 9999; font-weight: 600; font-size: 0.9rem;
+                    box-shadow: 0 12px 32px rgba(127, 29, 29, 0.35);
+                    animation: fadeInUp 0.35s ease;
+                `;
+                toast.innerHTML = '<i class="fas fa-circle-exclamation me-2"></i>Please fix the errors before submitting.';
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3500);
+
                 const firstInvalid = document.querySelector('.is-invalid');
                 if (firstInvalid) {
                     firstInvalid.focus();
@@ -915,8 +999,7 @@ Test your implementation by:
                 }
                 return false;
             }
-            
-            // Show loading state
+
             const submitBtn = document.querySelector('.btn-submit');
             if (submitBtn) {
                 submitBtn.classList.add('btn-loading');
