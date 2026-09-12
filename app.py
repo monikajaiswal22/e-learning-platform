@@ -39,7 +39,7 @@ UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static', 'uploads')
 INSTANCE_FOLDER = os.path.join(BASE_DIR, 'instance')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
-# Ensure required folders exist (pehle hi bana do)
+# Ensure required folders exist 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(INSTANCE_FOLDER, exist_ok=True)
 
