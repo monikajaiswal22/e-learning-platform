@@ -15,7 +15,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 
 from dotenv import load_dotenv
-load_dotenv()  # .env file load karo
+load_dotenv()
 
 from reportlab.lib.pagesizes import A4, landscape
 from reportlab.pdfgen import canvas
@@ -39,7 +39,7 @@ UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static', 'uploads')
 INSTANCE_FOLDER = os.path.join(BASE_DIR, 'instance')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
-# Ensure required folders exist 
+# Ensure required folders exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(INSTANCE_FOLDER, exist_ok=True)
 
@@ -55,7 +55,6 @@ if not secret_key:
 app.config['SECRET_KEY'] = secret_key
 
 # Database
-# Render pe /tmp use karo (writable), local pe instance/
 if os.environ.get('RENDER'):
     DB_PATH = '/tmp/elearning.db'
 else:
@@ -89,27 +88,16 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-# ==================== DECORATORS ====================
+# ==================== AUTO-INIT DATABASE (Render free tier ke liye) ====================
+# Render free tier pe Shell nahi hota, isliye app start hote hi DB tables + admin user
+# automatically create karte hain.
 
-def admin_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not current_user.is_authenticated or not current_user.is_admin:
-            flash('You do not have permission to access this page.', 'danger')
-            return redirect(url_for('dashboard'))
-        return f(*args, **kwargs)
-    return decorated_function
-
-
-# ==================== CLI COMMAND: INIT DB ====================
-
-@app.cli.command("init-db")
-def init_db_command():
-    """Initialize database and create default users.
-    Usage: flask init-db
-    """
+def initialize_database():
+    """Create tables and default users. Safe to run multiple times."""
     db.create_all()
+    logger.info("✅ Database tables created/verified")
 
+    # Admin user
     admin = User.query.filter_by(email='admin@elearning.com').first()
     if not admin:
         admin = User(
@@ -121,8 +109,9 @@ def init_db_command():
             is_admin=True
         )
         db.session.add(admin)
-        logger.info("Admin user created: admin@elearning.com / admin123")
+        logger.info("✅ Admin created: admin@elearning.com / admin123")
 
+    # Demo instructor
     demo_instructor = User.query.filter_by(email='instructor@example.com').first()
     if not demo_instructor:
         demo_instructor = User(
@@ -135,8 +124,9 @@ def init_db_command():
             is_admin=False
         )
         db.session.add(demo_instructor)
-        logger.info("Demo instructor created: instructor@example.com / instructor123")
+        logger.info("✅ Demo instructor created: instructor@example.com / instructor123")
 
+    # Demo student
     demo_student = User.query.filter_by(email='student@example.com').first()
     if not demo_student:
         demo_student = User(
@@ -149,10 +139,38 @@ def init_db_command():
             is_admin=False
         )
         db.session.add(demo_student)
-        logger.info("Demo student created: student@example.com / student123")
+        logger.info("✅ Demo student created: student@example.com / student123")
 
     db.session.commit()
-    logger.info("Database initialized successfully.")
+    logger.info("✅ Database initialization complete")
+
+
+# App start hote hi auto-init karo
+with app.app_context():
+    try:
+        initialize_database()
+    except Exception as e:
+        logger.exception(f"❌ Database auto-init failed: {e}")
+
+
+# ==================== DECORATORS ====================
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or not current_user.is_admin:
+            flash('You do not have permission to access this page.', 'danger')
+            return redirect(url_for('dashboard'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+# ==================== CLI COMMAND (local use ke liye) ====================
+
+@app.cli.command("init-db")
+def init_db_command():
+    """Initialize database manually. Usage: flask init-db"""
+    initialize_database()
 
 
 # ==================== CONTEXT PROCESSORS ====================
@@ -235,7 +253,6 @@ def register():
 
             hashed_password = generate_password_hash(form.password.data)
 
-            # instructor flag from form — but user is NOT auto-approved
             requested_instructor = bool(
                 getattr(form, 'is_instructor', None) and form.is_instructor.data
             )
@@ -245,8 +262,8 @@ def register():
                 email=form.email.data,
                 password=hashed_password,
                 full_name=form.username.data,
-                is_instructor=False,                     # always False at signup
-                instructor_request=requested_instructor # admin approve karega
+                is_instructor=False,
+                instructor_request=requested_instructor
             )
 
             db.session.add(user)
@@ -268,44 +285,6 @@ def register():
             flash(f'Registration failed: {str(e)}', 'danger')
 
     return render_template('register.html', form=form)
-
-@app.route('/admin/user/<int:user_id>/edit', methods=['GET', 'POST'])
-@login_required
-@admin_required
-def admin_edit_user(user_id):
-    user = User.query.get_or_404(user_id)
-    form = AdminUserForm()
-
-    if form.validate_on_submit():
-        try:
-            # ... checks ...
-
-            user.username = form.username.data
-            user.email = form.email.data
-            user.full_name = form.full_name.data
-            user.is_instructor = form.is_instructor.data
-            user.is_admin = form.is_admin.data
-
-            # Password optional — sirf tab update karo jab diya ho
-            if form.password.data:                      # <-- ye check hona chahiye
-                user.password = generate_password_hash(form.password.data)
-
-            db.session.commit()
-            flash(f'User {user.username} updated successfully!', 'success')
-            return redirect(url_for('admin_users'))
-        except Exception as e:
-            db.session.rollback()
-            logger.exception("Admin edit user failed")
-            flash(f'Error updating user: {str(e)}', 'danger')
-
-    elif request.method == 'GET':
-        form.username.data = user.username
-        form.email.data = user.email
-        form.full_name.data = user.full_name
-        form.is_instructor.data = user.is_instructor
-        form.is_admin.data = user.is_admin
-
-    return render_template('admin/edit_user.html', form=form, user=user)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -604,8 +583,6 @@ def add_course():
 
     if form.validate_on_submit():
         try:
-            # ============ PRICE FIX ============
-            # Agar price None/empty/0 hai toh 0.0 set karo
             price_value = form.price.data
             if price_value is None or price_value == '':
                 price_value = 0.0
@@ -614,7 +591,6 @@ def add_course():
                     price_value = float(price_value)
                 except (ValueError, TypeError):
                     price_value = 0.0
-            # ===================================
 
             image_filename = None
             if form.image.data and allowed_file(form.image.data.filename):
@@ -627,7 +603,7 @@ def add_course():
             course = Course(
                 title=form.title.data,
                 description=form.description.data,
-                price=price_value,              # <-- ye use karo
+                price=price_value,
                 image_url=form.image_url.data if form.image_url.data else (
                     f'/static/uploads/{image_filename}' if image_filename else None
                 ),
@@ -654,6 +630,7 @@ def add_course():
             flash(f'Error creating course: {str(e)}', 'danger')
 
     return render_template('add_course.html', form=form)
+
 
 @app.route('/instructor/course/<int:course_id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -701,6 +678,7 @@ def edit_course(course_id):
 
     return render_template('edit_course.html', form=form, course=course)
 
+
 @app.route('/instructor/course/<int:course_id>/edit-image', methods=['GET', 'POST'])
 @login_required
 def edit_course_image(course_id):
@@ -725,18 +703,14 @@ def edit_course_image(course_id):
             image_url = request.form.get('image_url', '').strip()
             image_file = request.files.get('image')
 
-            # Priority 1: File upload
             if image_file and image_file.filename and allowed_file(image_file.filename):
                 filename = secure_filename(image_file.filename)
                 unique_filename = f"{uuid.uuid4().hex}_{filename}"
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
                 image_file.save(filepath)
                 course.image_url = f'/static/uploads/{unique_filename}'
-
-            # Priority 2: URL
             elif image_url:
                 course.image_url = image_url
-
             else:
                 flash('Please upload an image or paste a URL.', 'warning')
                 return redirect(url_for('edit_course_image', course_id=course_id))
@@ -764,6 +738,7 @@ def edit_course_image(course_id):
         course=course,
         suggested_images=suggested_images
     )
+
 
 @app.route('/instructor/course/<int:course_id>/add_lesson', methods=['GET', 'POST'])
 @login_required
@@ -1339,7 +1314,6 @@ def take_quiz(lesson_id):
             percentage = (score / total) * 100
             passed = percentage >= 70
 
-            # Save one attempt per question (matches existing schema)
             for quiz in quizzes:
                 user_answer = request.form.get(f'quiz_{quiz.id}')
                 is_correct = user_answer and quiz.check_answer(user_answer)
@@ -1546,6 +1520,51 @@ def admin_add_user():
 
     return render_template('admin/add_user.html', form=form)
 
+
+@app.route('/admin/user/<int:user_id>/edit', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def admin_edit_user(user_id):
+    user = User.query.get_or_404(user_id)
+    form = AdminUserForm()
+
+    if form.validate_on_submit():
+        try:
+            if User.query.filter(User.email == form.email.data, User.id != user_id).first():
+                flash('Email already exists.', 'danger')
+                return render_template('admin/edit_user.html', form=form, user=user)
+
+            if User.query.filter(User.username == form.username.data, User.id != user_id).first():
+                flash('Username already exists.', 'danger')
+                return render_template('admin/edit_user.html', form=form, user=user)
+
+            user.username = form.username.data
+            user.email = form.email.data
+            user.full_name = form.full_name.data
+            user.is_instructor = form.is_instructor.data
+            user.is_admin = form.is_admin.data
+
+            if form.password.data:
+                user.password = generate_password_hash(form.password.data)
+
+            db.session.commit()
+            flash(f'User {user.username} updated successfully!', 'success')
+            return redirect(url_for('admin_users'))
+        except Exception as e:
+            db.session.rollback()
+            logger.exception("Admin edit user failed")
+            flash(f'Error updating user: {str(e)}', 'danger')
+
+    elif request.method == 'GET':
+        form.username.data = user.username
+        form.email.data = user.email
+        form.full_name.data = user.full_name
+        form.is_instructor.data = user.is_instructor
+        form.is_admin.data = user.is_admin
+
+    return render_template('admin/edit_user.html', form=form, user=user)
+
+
 @app.route('/admin/user/<int:user_id>/delete')
 @login_required
 @admin_required
@@ -1586,18 +1605,16 @@ def leaderboard():
     """Leaderboard showing top students"""
     from sqlalchemy import func
 
-    # Top users by average quiz score
     top_users = db.session.query(
         User,
         func.avg(QuizAttempt.percentage).label('avg_score'),
         func.count(QuizAttempt.id).label('total_attempts'),
         func.sum(QuizAttempt.score).label('total_score')
     ).join(QuizAttempt, User.id == QuizAttempt.user_id) \
-     .group_by(User.id) \
-     .order_by(func.avg(QuizAttempt.percentage).desc()) \
-     .limit(10).all()
+        .group_by(User.id) \
+        .order_by(func.avg(QuizAttempt.percentage).desc()) \
+        .limit(10).all()
 
-    # Top courses by enrollment count — Python-side sort (simpler & safe)
     all_courses = Course.query.all()
     top_courses = sorted(
         all_courses,
@@ -1606,6 +1623,7 @@ def leaderboard():
     )[:5]
 
     return render_template('leaderboard.html', top_users=top_users, top_courses=top_courses)
+
 
 @app.route('/search')
 def search():
@@ -1685,20 +1703,16 @@ def generate_certificate(course_id):
         width, height = landscape(A4)
         c = canvas.Canvas(buffer, pagesize=landscape(A4))
 
-        # Background
         c.setFillColor(colors.Color(0.98, 0.97, 0.92))
         c.rect(0, 0, width, height, fill=1, stroke=0)
 
-        # Outer border
         c.setStrokeColor(colors.Color(0.78, 0.66, 0.30))
         c.setLineWidth(6)
         c.rect(40, 40, width - 80, height - 80, fill=0, stroke=1)
 
-        # Inner border
         c.setLineWidth(2)
         c.rect(55, 55, width - 110, height - 110, fill=0, stroke=1)
 
-        # Corner decorations
         def draw_corner(x, y, size_x=30, size_y=30):
             c.setStrokeColor(colors.Color(0.78, 0.66, 0.30))
             c.setLineWidth(3)
@@ -1710,47 +1724,39 @@ def generate_certificate(course_id):
         draw_corner(55, height - 55, 30, -30)
         draw_corner(width - 55, height - 55, -30, -30)
 
-        # Title
         c.setFillColor(colors.Color(0.78, 0.66, 0.30))
         c.setFont("Helvetica-Bold", 30)
         c.drawCentredString(width / 2, height - 120, "CERTIFICATE OF COMPLETION")
 
-        # Decorative line
         c.setStrokeColor(colors.Color(0.78, 0.66, 0.30))
         c.setLineWidth(1.5)
         line_width = 160
         c.line(width / 2 - line_width, height - 138, width / 2 + line_width, height - 138)
 
-        # Subtitle
         c.setFillColor(colors.Color(0.4, 0.4, 0.4))
         c.setFont("Helvetica", 13)
         c.drawCentredString(width / 2, height - 165, "This certificate is proudly presented to")
 
-        # Student name
         c.setFillColor(colors.Color(0.15, 0.15, 0.15))
         c.setFont("Helvetica-Bold", 40)
         student_name = current_user.full_name or current_user.username
         c.drawCentredString(width / 2, height - 230, student_name)
 
-        # Line under name
         c.setStrokeColor(colors.Color(0.78, 0.66, 0.30))
         c.setLineWidth(2)
         name_line_width = 220
         c.line(width / 2 - name_line_width, height - 248,
                width / 2 + name_line_width, height - 248)
 
-        # Completion text
         c.setFillColor(colors.Color(0.3, 0.3, 0.3))
         c.setFont("Helvetica", 15)
         c.drawCentredString(width / 2, height - 290, "for successfully completing the course")
 
-        # Course title
         c.setFillColor(colors.Color(0.2, 0.4, 0.6))
         c.setFont("Helvetica-Bold", 26)
         course_title = (course.title[:50] + "...") if len(course.title) > 50 else course.title
         c.drawCentredString(width / 2, height - 340, course_title)
 
-        # Badge
         badge_y = height - 390
         c.setFillColor(colors.Color(0.78, 0.66, 0.30))
         c.roundRect(width / 2 - 90, badge_y, 180, 32, 16, fill=1, stroke=0)
@@ -1758,7 +1764,6 @@ def generate_certificate(course_id):
         c.setFont("Helvetica-Bold", 14)
         c.drawCentredString(width / 2, badge_y + 12, "100% COMPLETE")
 
-        # Extra text
         c.setFillColor(colors.Color(0.4, 0.4, 0.4))
         c.setFont("Helvetica", 10)
         c.drawCentredString(width / 2, height - 440,
@@ -1766,7 +1771,6 @@ def generate_certificate(course_id):
         c.drawCentredString(width / 2, height - 458,
                             "in mastering all learning objectives and course requirements.")
 
-        # Signatures
         y_signature = 120
         sig_width = 170
 
@@ -1782,13 +1786,11 @@ def generate_certificate(course_id):
         c.line(sig_x2, y_signature + 10, sig_x2 + sig_width, y_signature + 10)
         c.drawCentredString(sig_x2 + sig_width / 2, y_signature - 8, "Academic Director")
 
-        # Date
         c.setFillColor(colors.Color(0.4, 0.4, 0.4))
         c.setFont("Helvetica", 10)
         date_str = datetime.now().strftime("%B %d, %Y")
         c.drawCentredString(width / 2, y_signature - 50, f"Issued on: {date_str}")
 
-        # Certificate ID
         c.setFillColor(colors.Color(0.6, 0.6, 0.6))
         c.setFont("Helvetica", 8)
         cert_id = f"CERT-{course.id}-{current_user.id}-{datetime.now().strftime('%Y%m%d')}"
@@ -1830,8 +1832,5 @@ def internal_error(error):
 # ==================== MAIN ====================
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        logger.info("Database tables ensured.")
     debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
     app.run(debug=debug_mode, host='127.0.0.1', port=5000)
