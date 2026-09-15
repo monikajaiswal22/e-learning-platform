@@ -2,7 +2,7 @@
 
 A full-featured E-Learning Platform built with Python Flask that provides courses, video lessons, quizzes, certificates, and separate portals for Admin, Instructor, and Student.
 
-🔗 Live Demo: https://elearning-platform-xxxx.onrender.com
+🔗 Live Demo: https://e-learning-platform-8fei.onrender.com
 
 🔗 GitHub Repository: https://github.com/monikajaiswal22/e-learning-platform
 
@@ -100,6 +100,10 @@ Separate access for:
 
 ### Deployment
 - Render
+
+> ⚠️ **Note:** This app is hosted on Render's free tier. The first request 
+> may take 30-50 seconds while the server wakes up. Subsequent requests 
+> are fast.  
 
 ---
 
