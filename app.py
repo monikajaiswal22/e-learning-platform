@@ -55,10 +55,13 @@ if not secret_key:
 app.config['SECRET_KEY'] = secret_key
 
 # Database
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'DATABASE_URL',
-    f'sqlite:///{os.path.join(INSTANCE_FOLDER, "elearning.db")}'
-)
+# Render pe /tmp use karo (writable), local pe instance/
+if os.environ.get('RENDER'):
+    DB_PATH = '/tmp/elearning.db'
+else:
+    DB_PATH = os.path.join(INSTANCE_FOLDER, 'elearning.db')
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_PATH}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
