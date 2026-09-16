@@ -103,25 +103,7 @@ Separate access for:
 
 > ⚠️ **Note:** This app is hosted on Render's free tier. The first request 
 > may take 30-50 seconds while the server wakes up. Subsequent requests 
-> are fast.  
-
----
-
-## 🔑 Demo Credentials
-
-⚠️ These credentials are for demonstration purposes only.
-
-### Admin
-- Email: `admin@elearning.com`
-- Password: `admin123`
-
-### Instructor
-- Email: `instructor@example.com`
-- Password: `instructor123`
-
-### Student
-- Email: `student@example.com`
-- Password: `student123`
+> are fast.
 
 ---
 
