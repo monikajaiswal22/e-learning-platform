@@ -75,7 +75,6 @@ Separate access for:
 - Search functionality
 
 ---
-
 ## 🛠️ Tech Stack
 
 ### Backend
@@ -106,7 +105,6 @@ Separate access for:
 > are fast.
 
 ---
-
 ## 🚀 Installation
 
 ### Prerequisites
